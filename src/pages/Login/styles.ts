@@ -1,31 +1,31 @@
 import React from 'react';
-import { makeStyles } from '@material-ui/styles';
-import { Theme } from '@material-ui/core';
+import { makeStyles } from '@material-ui/core/styles';
 ;
 
-const useStyles = makeStyles((theme:any) => ({
+const useStyles = makeStyles(theme => ({
   '@global': {
     body: {
-      backgroundColor: "white",
+      backgroundColor: theme.palette.common.white,
     },
   },
   paper: {
-    marginTop: 64,
+    marginTop: theme.spacing(8),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
   },
   avatar: {
-    margin: 8,
-    backgroundColor: "darkred",
+    margin: theme.spacing(1),
+    backgroundColor: theme.palette.secondary.main,
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: 8,
+    marginTop: theme.spacing(1),
   },
   submit: {
-    margin: 24,
+    margin: theme.spacing(3, 0, 2),
   },
 }));
+
 
 export default useStyles
