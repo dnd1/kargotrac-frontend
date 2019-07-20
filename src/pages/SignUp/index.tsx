@@ -3,8 +3,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
@@ -24,6 +22,16 @@ function MadeWithLove() {
     </Typography>
   );
 }
+
+export interface ISignupProps {
+    firstName: string,
+    lastName: string,
+    email: string,
+    password: string
+  }
+
+// Estilos 
+
 
 const useStyles = makeStyles(theme => ({
   '@global': {
@@ -50,8 +58,31 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
+
+
+// SignUp component
+
 export default function SignUp() {
   const classes = useStyles();
+
+  
+  const [signup, setSignup] = React.useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    password: ""
+  })
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const {name, value} = e.target
+    setSignup({...signup, [name]: value})
+    console.log(signup)
+  }
+
+  const handleSubmit = (evt : any) => {
+    evt.preventDefault();
+    alert(`Submitting Name ${signup.firstName}`)
+    }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -63,7 +94,7 @@ export default function SignUp() {
         <Typography component="h1" variant="h5">
           Sign up
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
             <Grid item xs={12} sm={6}>
               <TextField
@@ -75,6 +106,8 @@ export default function SignUp() {
                 id="firstName"
                 label="First Name"
                 autoFocus
+                value={signup.firstName}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -86,6 +119,8 @@ export default function SignUp() {
                 label="Last Name"
                 name="lastName"
                 autoComplete="lname"
+                value={signup.lastName}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -97,6 +132,8 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
+                value={signup.email}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
@@ -109,6 +146,8 @@ export default function SignUp() {
                 type="password"
                 id="password"
                 autoComplete="current-password"
+                value={signup.password}
+                onChange={handleChange}
               />
             </Grid>
             <Grid item xs={12}>
