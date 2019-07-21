@@ -3,23 +3,13 @@ import { BrowserRouter as Router, Route, Link } from "react-router-dom";
 import Homepage from './pages/Homepage';
 import Login from './pages/Login';
 import SignUp from './pages/SignUp';
+import NavBar from './pages/NavBar'
 
 const App: React.FC = () => {
   return (
     <Router>
-      
-        <ul>
-          <li>
-            <Link to="/">Home</Link>
-          </li>
-          <li>
-            <Link to="/login">Login</Link>
-          </li>
-          <li>
-            <Link to="/signup">Sign up</Link>
-          </li>
-        </ul>  
-        
+       
+          <NavBar/>
           <Route exact path="/" component={() => <Homepage name="Maria" />} />
           <Route path="/login" component={Login} />
           <Route path="/signup" component={SignUp} />

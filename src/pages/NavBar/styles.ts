@@ -13,6 +13,13 @@ const useStyles = makeStyles((theme: Theme) =>
     title: {
       flexGrow: 1,
     },
+    button: {
+      marginLeft: theme.spacing(200),
+    },
+    div: {
+      alignItems: 'center',
+      
+    }
   }),
 );
 
