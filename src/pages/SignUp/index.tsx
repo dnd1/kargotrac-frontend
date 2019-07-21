@@ -3,32 +3,31 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
+//import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from './styles';
+import { Link } from "react-router-dom";
 
 function MadeWithLove() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Built with love by the '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Material-UI
-      </Link>
+      
       {' team.'}
     </Typography>
   );
 }
 
 export interface ISignupProps {
-    firstName: string,
-    lastName: string,
-    email: string,
-    password: string
-  }
+  firstName: string,
+  lastName: string,
+  email: string,
+  password: string
+}
 
 // Estilos 
 
@@ -38,7 +37,7 @@ export interface ISignupProps {
 export default function SignUp() {
   const classes = useStyles();
 
-  
+
   const [signup, setSignup] = React.useState({
     firstName: "",
     lastName: "",
@@ -47,15 +46,15 @@ export default function SignUp() {
   })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const {name, value} = e.target
-    setSignup({...signup, [name]: value})
+    const { name, value } = e.target
+    setSignup({ ...signup, [name]: value })
     console.log(signup)
   }
 
-  const handleSubmit = (evt : any) => {
+  const handleSubmit = (evt: any) => {
     evt.preventDefault();
     alert(`Submitting Name ${signup.firstName}`)
-    }
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -124,7 +123,6 @@ export default function SignUp() {
               />
             </Grid>
             <Grid item xs={12}>
-             
             </Grid>
           </Grid>
           <Button
@@ -138,7 +136,7 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
-              <Link href="/login" variant="body2">
+              <Link to="/login">
                 Already have an account? Sign in
               </Link>
             </Grid>
