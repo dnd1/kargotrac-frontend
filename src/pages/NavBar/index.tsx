@@ -25,9 +25,7 @@ const ButtonAppBar = (props: any) => {
 
         <Toolbar>
 
-          <Button color="inherit" component={Link} to='/'>
-            Home
-          </Button>
+
           {
             props.location.pathname === '/' ?
               <div className={classes.button}>
@@ -36,8 +34,11 @@ const ButtonAppBar = (props: any) => {
               </div> :
               <div>
 
-                <div className={classes.button}>
-                  <Button color="inherit" component={Link} to={props.location.pathname === '/login' ? '/signup' : '/login'}>
+                <div>
+                  <Button color="inherit" component={Link} to='/'>
+                    Home
+                  </Button>
+                  <Button className={classes.button} color="inherit" component={Link} to={props.location.pathname === '/login' ? '/signup' : '/login'}>
                     {props.location.pathname === '/login' ? 'Sign Up' : 'Login'}
                   </Button>
                 </div>
