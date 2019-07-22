@@ -9,17 +9,15 @@ const useStyles = makeStyles((theme: Theme) =>
     },
     menuButton: {
       marginRight: theme.spacing(2),
+      marginTop: theme.spacing(2),
     },
     title: {
       flexGrow: 1,
+      
     },
     button: {
       marginLeft: theme.spacing(200),
     },
-    div: {
-      alignItems: 'center',
-      
-    }
   }),
 );
 
