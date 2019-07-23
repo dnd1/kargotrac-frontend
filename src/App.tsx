@@ -8,12 +8,14 @@ import NavBar from './pages/NavBar'
 const App: React.FC = () => {
   return (
     <Router>
-       
-          <NavBar/>
-          <Route exact path="/" component={() => <Homepage name="Maria" />} />
-          <Route path="/login" component={Login} />
-          <Route path="/signup" component={SignUp} />
+
+      <NavBar />
+      <Route exact path="/" component={() => <Homepage name="Maria" />} />
+      <Route path="/login" component={Login} />
+      <Route path="/signup:id" exact component={SignUp} />
+      <Route path="/signup" exact component={SignUp} />
       
+
     </Router>
   );
 }
