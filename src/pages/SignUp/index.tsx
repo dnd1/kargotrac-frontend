@@ -10,7 +10,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from './styles';
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
+import { sign } from 'crypto';
 
 function MadeWithLove() {
   return (
@@ -23,9 +24,9 @@ function MadeWithLove() {
 }
 
 export interface ISignupProps {
-  firstName: string,
-  lastName: string,
+  username: string,
   email: string,
+  error: boolean,
   password: string
 }
 
@@ -34,32 +35,41 @@ export interface ISignupProps {
 
 // SignUp component
 
-export default function SignUp() {
+ const SignUp = (props: any) => {
   const classes = useStyles();
+  
 
 
   const [signup, setSignup] = React.useState({
-    firstName: "",
-    lastName: "",
+    username: "",
     email: "",
-    password: ""
+    password: "",
+    emailError: false,
+    passError: false
   })
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setSignup({ ...signup, [name]: value })
-    console.log(signup)
+    if(name == 'email'){
+      e.target.value === ""? setSignup({...signup, emailError : true}): setSignup({...signup, emailError : false})
+    }else if(name== 'password'){
+      e.target.value === ""? setSignup({...signup, passError : true}): setSignup({...signup, passError : false})
+    }
+    
   }
 
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
-    alert(`Submitting Name ${signup.firstName}`)
+    alert(`Submitting Name ${signup.username}`)
   }
-
+  
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
       <div className={classes.paper}>
+        Es la empresa {props.match.params.id}
         <Avatar className={classes.avatar}>
           <LockOutlinedIcon />
         </Avatar>
@@ -68,33 +78,6 @@ export default function SignUp() {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <Grid container spacing={2}>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                autoComplete="fname"
-                name="firstName"
-                variant="outlined"
-                required
-                fullWidth
-                id="firstName"
-                label="First Name"
-                autoFocus
-                value={signup.firstName}
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={12} sm={6}>
-              <TextField
-                variant="outlined"
-                required
-                fullWidth
-                id="lastName"
-                label="Last Name"
-                name="lastName"
-                autoComplete="lname"
-                value={signup.lastName}
-                onChange={handleChange}
-              />
-            </Grid>
             <Grid item xs={12}>
               <TextField
                 variant="outlined"
@@ -105,6 +88,20 @@ export default function SignUp() {
                 name="email"
                 autoComplete="email"
                 value={signup.email}
+                onChange={handleChange}
+                error={signup.emailError}
+                helperText={signup.emailError ? 'Please enter a valid Email' : ' '}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                variant="outlined"
+                fullWidth
+                id="username"
+                label="Username"
+                name="username"
+                autoComplete="Uname"
+                value={signup.username}
                 onChange={handleChange}
               />
             </Grid>
@@ -120,6 +117,8 @@ export default function SignUp() {
                 autoComplete="current-password"
                 value={signup.password}
                 onChange={handleChange}
+                error={signup.passError}
+                helperText={signup.passError ? 'Please enter a valid password' : ' '}
               />
             </Grid>
             <Grid item xs={12}>
@@ -136,8 +135,9 @@ export default function SignUp() {
           </Button>
           <Grid container justify="flex-end">
             <Grid item>
+              {'Si ya estás registrado con otra empresa de envíos ve al '}
               <Link to="/login">
-                Already have an account? Sign in
+              login
               </Link>
             </Grid>
           </Grid>
@@ -149,3 +149,5 @@ export default function SignUp() {
     </Container>
   );
 }
+
+export default withRouter(SignUp)
