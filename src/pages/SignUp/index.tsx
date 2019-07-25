@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from './styles';
 import { Link, withRouter } from "react-router-dom";
-import { sign } from 'crypto';
+
 
 function MadeWithLove() {
   return (
@@ -26,36 +26,65 @@ function MadeWithLove() {
 export interface ISignupProps {
   username: string,
   email: string,
-  error: boolean,
-  password: string
+  password: string,
+  emailError: boolean,
+  passError: boolean
 }
 
-// Estilos 
+interface IErrors {
+  emailError: boolean,
+  passError: boolean
+}
 
+/*
+export const userResponse = {
+  "user": {
+      "id": 86,
+      "email": "dianar@gmail.com",
+      "username": "diana",
+      "password": "1234567",
+      "address": null,
+      "phone1": null,
+      "phone2": null,
+      "createdAt": "2019-07-24T19:05:58.000Z",
+      "updatedAt": "2019-07-24T19:05:58.000Z"
+  },
+  "company": 1,
+  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODYsInVzZXJuYW1lIjoiZGlhbmEiLCJpYXQiOjE1NjQwMTgyODAsImV4cCI6MTU2NDE0Nzg4MH0.WvnZevu7EwTBSHdd4Mhr2diPUj3pieHbtfRMwA1h4Mw"
+}
+// Estilos 
+*/
 
 // SignUp component
 
- const SignUp = (props: any) => {
+export const SignUp = (props: any) => {
   const classes = useStyles();
   
 
 
   const [signup, setSignup] = React.useState({
-    username: "",
     email: "",
+    username: "",
     password: "",
-    emailError: false,
+  })
+
+  const [error, setError] = React.useState({
+    emailError : false,
     passError: false
   })
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.persist();
     const { name, value } = e.target
     setSignup({ ...signup, [name]: value })
-    if(name == 'email'){
-      e.target.value === ""? setSignup({...signup, emailError : true}): setSignup({...signup, emailError : false})
-    }else if(name== 'password'){
-      e.target.value === ""? setSignup({...signup, passError : true}): setSignup({...signup, passError : false})
+    console.log(signup)
+    
+    
+    if(name === 'email'){
+      e.target.value === ""? setError({...error, emailError : true}): setError({...error, emailError : false})
+      console.log(error)
+    }else if(name === 'password'){
+      e.target.value === ""? setError({...error, passError : true}): setError({...error, passError : false})
     }
     
   }
@@ -89,8 +118,8 @@ export interface ISignupProps {
                 autoComplete="email"
                 value={signup.email}
                 onChange={handleChange}
-                error={signup.emailError}
-                helperText={signup.emailError ? 'Please enter a valid Email' : ' '}
+                error={error.emailError}
+                helperText={error.emailError ? 'Please enter a valid Email' : ' '}
               />
             </Grid>
             <Grid item xs={12}>
@@ -117,12 +146,11 @@ export interface ISignupProps {
                 autoComplete="current-password"
                 value={signup.password}
                 onChange={handleChange}
-                error={signup.passError}
-                helperText={signup.passError ? 'Please enter a valid password' : ' '}
+                error={error.passError}
+                helperText={error.passError ? 'Please enter a valid password' : ' '}
               />
             </Grid>
-            <Grid item xs={12}>
-            </Grid>
+
           </Grid>
           <Button
             type="submit"
@@ -149,5 +177,4 @@ export interface ISignupProps {
     </Container>
   );
 }
-
-export default withRouter(SignUp)
+withRouter(SignUp)

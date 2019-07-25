@@ -40,6 +40,38 @@ function MadeWithLove() {
 
 
 export default function Login() {
+
+  const [login, setLogin] = React.useState({
+    email: "",
+    password: "",
+    emailError: false,
+    passError: false
+  })
+
+  const [error, setError] = React.useState({
+    emailError : false,
+    passError: false
+  })
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target
+    setLogin({ ...login, [name]: value })
+    if(name === 'email'){
+      e.target.value === ""? setError({...error, emailError : true}): setError({...error, emailError : false})
+      console.log(error)
+    }else if(name === 'password'){
+      e.target.value === ""? setError({...error, passError : true}): setError({...error, passError : false})
+    }
+
+  }
+
+  const handleSubmit = (evt: any) => {
+    evt.preventDefault();
+    alert(`Submitting Name ${login.email}`)
+  }
+
+
   const classes = useStyles();
 
   return (
@@ -52,7 +84,7 @@ export default function Login() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -63,6 +95,10 @@ export default function Login() {
             name="email"
             autoComplete="email"
             autoFocus
+            value={login.email}
+            onChange={handleChange}
+            error={error.emailError}
+            helperText={error.emailError ? 'Please enter a valid Email' : ' '}
           />
           <TextField
             variant="outlined"
@@ -74,6 +110,10 @@ export default function Login() {
             type="password"
             id="password"
             autoComplete="current-password"
+            value={login.password}
+            onChange={handleChange}
+            error={error.passError}
+            helperText={error.passError ? 'Please enter a valid Password' : ' '}
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
@@ -90,9 +130,9 @@ export default function Login() {
           </Button>
           <Grid container>
             <Grid item>
-            {"Si olvidaste tu contraseña ve a "}
+              {"Si olvidaste tu contraseña ve a "}
               <Link to="/">
-              {'Recuperar contraseña'}
+                {'Recuperar contraseña'}
               </Link>
             </Grid>
           </Grid>
