@@ -11,7 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Container from '@material-ui/core/Container';
 import useStyles from './styles';
 import { Link, withRouter } from "react-router-dom";
-
+import axios from 'axios'
 
 function MadeWithLove() {
   return (
@@ -36,7 +36,7 @@ interface IErrors {
   passError: boolean
 }
 
-/*
+
 export const userResponse = {
   "user": {
       "id": 86,
@@ -53,7 +53,7 @@ export const userResponse = {
   "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ODYsInVzZXJuYW1lIjoiZGlhbmEiLCJpYXQiOjE1NjQwMTgyODAsImV4cCI6MTU2NDE0Nzg4MH0.WvnZevu7EwTBSHdd4Mhr2diPUj3pieHbtfRMwA1h4Mw"
 }
 // Estilos 
-*/
+
 
 // SignUp component
 
@@ -92,6 +92,22 @@ export const SignUp = (props: any) => {
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
     alert(`Submitting Name ${signup.username}`)
+    let user = {
+      email: signup.email,
+      username: signup.username,
+      password: signup.password,
+      companyID: props.match.params.id
+    }
+    const {email, username, password, companyID} = user
+    console.log(email)
+    axios.post(`http://localhost:8080/register`, user)
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+        if(res.statusText == "OK"){
+          window.sessionStorage.setItem("session", res.data.token);
+        }
+      })
   }
   
   return (
