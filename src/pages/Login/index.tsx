@@ -26,7 +26,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
 import Container from '@material-ui/core/Container';
-import { Link } from "react-router-dom";
+import { Link, Redirect, withRouter } from "react-router-dom";
+import axios from 'axios';
 
 function MadeWithLove() {
   return (
@@ -39,13 +40,12 @@ function MadeWithLove() {
 }
 
 
-export default function Login() {
+export default function Login(props: any) {
 
   const [login, setLogin] = React.useState({
     email: "",
     password: "",
-    emailError: false,
-    passError: false
+
   })
 
   const [error, setError] = React.useState({
@@ -59,7 +59,6 @@ export default function Login() {
     setLogin({ ...login, [name]: value })
     if(name === 'email'){
       e.target.value === ""? setError({...error, emailError : true}): setError({...error, emailError : false})
-      console.log(error)
     }else if(name === 'password'){
       e.target.value === ""? setError({...error, passError : true}): setError({...error, passError : false})
     }
@@ -69,6 +68,24 @@ export default function Login() {
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
     alert(`Submitting Name ${login.email}`)
+
+    let user = {
+      email: login.email,
+      password: login.password,
+      companyID: props.match.params.id
+    }
+    console.log(user)
+    axios.post(`http://localhost:8080/users`, user)
+      .then(res => {
+        console.log('Este es el status')
+        console.log(res.status)
+        console.log(res);
+        console.log(res.data);
+        if(res.statusText == "OK"){
+          window.sessionStorage.setItem("session", res.data.token);
+        }
+        //
+      })
   }
 
 
@@ -144,3 +161,5 @@ export default function Login() {
     </Container>
   );
 }
+
+withRouter(Login)
