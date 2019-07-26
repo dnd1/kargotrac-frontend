@@ -32,7 +32,6 @@ const ButtonAppBar = (props: any) => {
                     ) : (
                         <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                             <div>
-                                <Box flexGrow={1}></Box>
                                 <Button color="inherit" component={Link} to="/">
                                     Home
                                 </Button>
