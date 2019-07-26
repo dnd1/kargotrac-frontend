@@ -19,7 +19,7 @@ const ButtonAppBar = (props: any) => {
             <AppBar position="static">
                 <Toolbar>
                     {props.location.pathname === '/' ? (
-                        <div className={classes.button}>
+                        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                             <Button color="inherit" component={Link} to="/login">
                                 {' '}
                                 Login{' '}
@@ -30,21 +30,27 @@ const ButtonAppBar = (props: any) => {
                             </Button>
                         </div>
                     ) : (
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                            <div>
-                                <Button color="inherit" component={Link} to="/">
-                                    Home
+                            <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                                <div style={{ justifyContent: 'flex-start' }}>
+                                    <Box flexGrow={1}></Box>
+                                    <Button color="inherit" component={Link} to="/">
+                                        Home
                                 </Button>
-                                <Button
-                                    className={classes.button}
-                                    color="inherit"
-                                    component={Link}
-                                    to={props.location.pathname === '/login' ? '/signup' : '/login'}>
-                                    {props.location.pathname === '/login' ? 'Sign Up' : 'Login'}
-                                </Button>
+                                </div>
+                                <Box flexGrow={1}></Box>
+                                <div style={{ justifyContent: 'flex-end' }}>
+                                    <Button
+                                        className={classes.button}
+                                        color="inherit"
+                                        component={Link}
+                                        to={props.location.pathname === '/login' ? '/signup' : '/login'}>
+                                        {props.location.pathname === '/login' ? 'Sign Up' : 'Login'}
+                                    </Button>
+                                </div>
+
+
                             </div>
-                        </div>
-                    )}
+                        )}
                 </Toolbar>
             </AppBar>
         </div>
