@@ -26,7 +26,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Typography from '@material-ui/core/Typography';
 import useStyles from './styles';
 import Container from '@material-ui/core/Container';
-import { Link, Redirect, withRouter } from "react-router-dom";
+import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from 'axios';
 
 function MadeWithLove() {
@@ -40,7 +40,10 @@ function MadeWithLove() {
 }
 
 
-export default function Login(props: any) {
+export default function Login(props: RouteComponentProps) {
+
+  const id = props.match.params && (props.match.params as any).id
+  console.log("CompanyId", id)
 
   const [login, setLogin] = React.useState({
     email: "",
@@ -72,7 +75,7 @@ export default function Login(props: any) {
     let user = {
       email: login.email,
       password: login.password,
-      companyID: props.match.params.id
+      companyID: id
     }
     console.log(user)
     axios.post(`http://localhost:8080/users`, user)
