@@ -14,7 +14,8 @@ const App: React.FC = () => {
       <NavBar />
 
       <Route exact path="/" component={() => <Homepage name="Maria" />} />
-      <Route path="/login" component={Login} />
+      <Route path="/login:id" exact component={Login} />
+      <Route path="/login" exact component={Login} />
       <Route path="/signup:id" exact component={SignUp} />
       <Route path="/signup" exact component={SignUp} />
     </Router>
