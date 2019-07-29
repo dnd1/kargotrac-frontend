@@ -40,10 +40,11 @@ function MadeWithLove() {
 }
 
 
-export default function Login(props: RouteComponentProps) {
+export const Login = (props: any) => {
 
-  const id = props.match.params && (props.match.params as any).id
-  console.log("CompanyId", id)
+  //const id = props.match.params && (props.match.params as any).id
+  //console.log("CompanyId", id)
+  const classes = useStyles();
 
   const [login, setLogin] = React.useState({
     email: "",
@@ -75,7 +76,7 @@ export default function Login(props: RouteComponentProps) {
     let user = {
       email: login.email,
       password: login.password,
-      companyID: id
+      companyID: props.match.params
     }
     console.log(user)
     axios.post(`http://localhost:8080/users`, user)
@@ -97,7 +98,7 @@ export default function Login(props: RouteComponentProps) {
   }
 
 
-  const classes = useStyles();
+  
 
   return (
     <Container component="main" maxWidth="xs">
