@@ -86,6 +86,11 @@ export default function Login(props: RouteComponentProps) {
         console.log(res.data);
         if(res.statusText == "OK"){
           window.sessionStorage.setItem("session", res.data.token);
+          window.alert(`
+          El usuario ${res.data.user.email} inicio sesion 
+          El token de sesion es ${res.data.token}
+          Con Status ${res.status}
+          `)
         }
         //
       })

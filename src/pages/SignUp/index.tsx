@@ -106,6 +106,11 @@ export const SignUp = (props: any) => {
         console.log(res.data);
         if(res.statusText == "OK"){
           window.sessionStorage.setItem("session", res.data.token);
+          window.alert(`
+          El usuario ${res.data.user.email} ha sido registrado
+          El token de sesion es ${res.data.token}
+          Con Status ${res.status}
+          `)
         }
       })
   }
