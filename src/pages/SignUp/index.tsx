@@ -104,14 +104,15 @@ export const SignUp = (props: any) => {
       .then(res => {
         console.log(res);
         console.log(res.data);
-        if(res.statusText == "OK"){
+        // Hacer siwtch con los casos de errores y adentro del OK esto:
+        if(res.data.status == "success"){
           window.sessionStorage.setItem("session", res.data.token);
           window.alert(`
           El usuario ${res.data.user.email} ha sido registrado
           El token de sesion es ${res.data.token}
           Con Status ${res.status}
           `)
-        }
+        }else window.alert(res.data.msg)
       })
   }
   
