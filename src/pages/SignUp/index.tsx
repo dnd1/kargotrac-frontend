@@ -106,14 +106,13 @@ export const SignUp = (props: any) => {
 
 
     if (!passError && !emailError.emptyEmail && !emailError.format) {
-      setSubmit(true)
       let user = {
         email: signup.email,
         username: signup.username,
         password: signup.password,
         companyID: props.match.params.id
       }
-
+      
       axios.post(`http://localhost:8080/register`, user)
         .then(res => {
           console.log(res);
@@ -127,11 +126,12 @@ export const SignUp = (props: any) => {
   }
 
   const responseHandler = (res: any) => {
-
+    console.log(res)
     if (res.statusText === "OK") {
 
       switch (res.data.status) {
         case 'success':
+          setSubmit(true)
           window.sessionStorage.setItem("session", res.data.token);
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado

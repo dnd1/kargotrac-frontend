@@ -114,7 +114,6 @@ export const Login = (props: any) => {
     validate('emailError', login.email)
 
     if (!passError && !emailError.emptyEmail && !emailError.format) {
-      setSubmit(true)
       let user = {
         email: login.email,
         password: login.password,
@@ -125,6 +124,10 @@ export const Login = (props: any) => {
         .then(res => {
           responseHandler(res)
           //
+        }, (error) => {
+          //setResError({ ...resError, error: true, msg: error})
+          window.alert(error)
+          //setResError({ ...resError, error: true, msg: error})
         })
     }
   }
@@ -135,6 +138,7 @@ export const Login = (props: any) => {
 
       switch (res.data.status) {
         case 'success':
+          setSubmit(true)
           window.sessionStorage.setItem("session", res.data.token);
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado
