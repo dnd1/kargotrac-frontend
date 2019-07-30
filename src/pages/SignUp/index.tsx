@@ -49,6 +49,8 @@ export const SignUp = (props: any) => {
 
   const [passError, setPassError] = React.useState(false)
 
+  const [usernameError, setUsernameError] = React.useState(false)
+
   const [resError, setResError] = React.useState({
     error: false,
     msg: ""
@@ -68,7 +70,7 @@ export const SignUp = (props: any) => {
       validate('emailError', e.target.value)
     } else if (name === 'password') {
       validate('passError', e.target.value)
-    }
+    } else validate('usernameError', e.target.value)
 
   }
 
@@ -85,8 +87,9 @@ export const SignUp = (props: any) => {
 
       console.log(validateEmail(value))
     }
-    else setPassError(errorVal)
+    else if(name==='passError') setPassError(errorVal)
     //console.log(error)
+    else setUsernameError(errorVal)
 
   }
 
@@ -103,6 +106,7 @@ export const SignUp = (props: any) => {
 
     validate('passError', signup.password)
     validate('emailError', signup.email)
+    validate('usernameError', signup.username)
 
 
     if (!passError && !emailError.emptyEmail && !emailError.format) {
@@ -206,6 +210,9 @@ export const SignUp = (props: any) => {
                   autoComplete="Uname"
                   value={signup.username}
                   onChange={handleChange}
+                  error={usernameError}
+                  helperText={usernameError ? 'Please enter a valid password' : ' '}
+
                 />
               </Grid>
 
