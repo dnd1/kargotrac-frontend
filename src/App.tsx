@@ -5,19 +5,22 @@ import Homepage from './pages/Homepage';
 import {Login} from './pages/Login';
 import { SignUp } from './pages/SignUp';
 import NavBar from './pages/NavBar'
+import {Dashboard} from './pages/Dashboard'
 import userContext from './index'
+
 
 const App: React.FC = () => {
   const value = useContext(userContext);
   return (
     <Router>
-      <NavBar />
+      <NavBar/>
 
       <Route exact path="/" component={() => <Homepage name="Maria" />} />
       <Route exact path="/login:id" component={Login} />
       <Route exact path="/login" component={Login} />
       <Route exact path="/signup:id"  component={SignUp} />
       <Route exact path="/signup" component={SignUp} />
+      <Route exact path="/dashboard" component={Dashboard} />
     </Router>
   );
 }
