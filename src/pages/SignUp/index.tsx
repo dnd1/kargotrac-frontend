@@ -17,7 +17,7 @@ import DialogTitle from '@material-ui/core/DialogTitle';
 import useStyles from './styles';
 import { Link, withRouter } from "react-router-dom";
 import axios from 'axios'
-import {PopUp} from './popup'
+import { PopUp } from './popup'
 
 
 
@@ -27,23 +27,7 @@ import {PopUp} from './popup'
 
 // 
 
-const responseHandler = (res: any) => {
 
-  if (res.data.status === "success") {
-
-    window.sessionStorage.setItem("session", res.data.token);
-    window.alert(`
-          El usuario ${res.data.user.email} ha sido registrado
-          El token de sesion es ${res.data.token}
-          Con Status ${res.status}
-          `)
-  } else {
-    console.log("????????????????????????")
-
-
-  }
-
-}
 
 
 export const SignUp = (props: any) => {
@@ -59,13 +43,16 @@ export const SignUp = (props: any) => {
   })
 
   const [emailError, setEmailError] = React.useState({
-    emptyEmail : false,
+    emptyEmail: false,
     format: false
   })
 
   const [passError, setPassError] = React.useState(false)
 
-  const [resError, setResError] = React.useState(false)
+  const [resError, setResError] = React.useState({
+    error: false,
+    msg: ""
+  })
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
@@ -84,15 +71,15 @@ export const SignUp = (props: any) => {
   }
 
 
-  const validateEmail = (email : string) => {
+  const validateEmail = (email: string) => {
     var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     return re.test(email.toLowerCase());
-}
-  const validate = (name : string, value: string) => {
+  }
+  const validate = (name: string, value: string) => {
     let errorVal = false
-    if(value.length === 0) errorVal = true
-    if(name === 'emailError') {
-      setEmailError({...emailError, emptyEmail: errorVal})
+    if (value.length === 0) errorVal = true
+    if (name === 'emailError') {
+      setEmailError({ ...emailError, emptyEmail: errorVal })
 
       console.log(validateEmail(value))
     }
@@ -101,55 +88,74 @@ export const SignUp = (props: any) => {
 
   }
 
-  const handleBlur = (e : any) => {
-    setEmailError({...emailError, format: !validateEmail(e.target.value)})
+  const handleBlur = (e: any) => {
+    setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
   }
 
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
 
 
-    setResError(false)
+    setResError({ ...resError, error: false })
 
-    
+
     validate('passError', signup.password)
     validate('emailError', signup.email)
 
-    
-    
-    let user = {
-      email: signup.email,
-      username: signup.username,
-      password: signup.password,
-      companyID: props.match.params.id
+
+    if (!passError && !emailError.emptyEmail && !emailError.format) {
+      let user = {
+        email: signup.email,
+        username: signup.username,
+        password: signup.password,
+        companyID: props.match.params.id
+      }
+
+      axios.post(`http://localhost:8080/register`, user)
+        .then(res => {
+          console.log(res);
+          console.log(res.data);
+          // Hacer siwtch con los casos de errores y adentro del OK esto:
+          // Llamar response errors
+          // Cambiar esto a response handler
+          responseHandler(res)
+        })
     }
-
-    axios.post(`http://localhost:8080/register`, user)
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-        // Hacer siwtch con los casos de errores y adentro del OK esto:
-        // Llamar response errors
-        // Cambiar esto a response handler
-        if (res.statusText === "OK") {
-          console.log(res)
-          if(res.data.status === "failed"){
-            setResError(true)
-            console.log("? aqui")
-
-          }
-          
-        } else window.alert(res.data.msg)
-      })
   }
 
+  const responseHandler = (res: any) => {
+
+    if (res.statusText === "OK") {
+
+      switch (res.data.status) {
+        case 'success':
+          window.sessionStorage.setItem("session", res.data.token);
+          window.alert(`
+                  El usuario ${res.data.user.email} ha sido registrado
+                  El token de sesion es ${res.data.token}
+                  Con Status ${res.status}
+                  `)
+          break
+        case 'failed':
+          setResError({ ...resError, error: true, msg: res.data.msg })
+          break
+
+      }
+
+    } else {
+      console.log("????????????????????????")
+
+
+    }
+
+  }
   return (
     <div>
       {
         // Cuando reciba el response, de ahi establezco el error y el mensaje de error
-        resError === true ? <PopUp errorMessage="dsdf"></PopUp> : null
+        resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
       }
-      
+
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -173,7 +179,7 @@ export const SignUp = (props: any) => {
                   value={signup.email}
                   onChange={handleChange}
                   error={emailError.emptyEmail || emailError.format}
-                  helperText={emailError.emptyEmail || emailError.format ? 'Please enter a valid Email' : ' ' }
+                  helperText={emailError.emptyEmail || emailError.format ? 'Please enter a valid Email' : ' '}
                   onBlur={handleBlur}
                 />
               </Grid>

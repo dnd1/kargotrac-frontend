@@ -28,22 +28,13 @@ import useStyles from './styles';
 import Container from '@material-ui/core/Container';
 import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from 'axios';
+import { PopUp } from './popup'
 
-function MadeWithLove() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Built with love by the '}
-
-      {' team.'}
-    </Typography>
-  );
-}
 
 
 export const Login = (props: any) => {
 
-  //const id = props.match.params && (props.match.params as any).id
-  //console.log("CompanyId", id)
+  const id = props.match.params && (props.match.params as any).id
   const classes = useStyles();
 
   const [login, setLogin] = React.useState({
@@ -52,122 +43,177 @@ export const Login = (props: any) => {
 
   })
 
-  const [error, setError] = React.useState({
-    emailError : false,
-    passError: false
+  const [emailError, setEmailError] = React.useState({
+    emptyEmail: false,
+    format: false
+  })
+
+  const [passError, setPassError] = React.useState(false)
+
+  const [resError, setResError] = React.useState({
+    error: false,
+    msg: ""
   })
 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     setLogin({ ...login, [name]: value })
-    if(name === 'email'){
-      e.target.value === ""? setError({...error, emailError : true}): setError({...error, emailError : false})
-    }else if(name === 'password'){
-      e.target.value === ""? setError({...error, passError : true}): setError({...error, passError : false})
+    if (name === 'email') {
+      validate('emailError', e.target.value)
+    } else if (name === 'password') {
+      validate('passError', e.target.value)
     }
 
+  }
+
+  const validateEmail = (email: string) => {
+    var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(email.toLowerCase());
+  }
+  const validate = (name: string, value: string) => {
+    let errorVal = false
+    if (value.length === 0) errorVal = true
+    if (name === 'emailError') {
+      setEmailError({ ...emailError, emptyEmail: errorVal })
+
+      console.log(validateEmail(value))
+    }
+    else setPassError(errorVal)
+    //console.log(error)
+
+  }
+
+  const handleBlur = (e: any) => {
+    setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
   }
 
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
-    alert(`Submitting Name ${login.email}`)
+    setResError({ ...resError, error: false })
 
-    let user = {
-      email: login.email,
-      password: login.password,
-      companyID: props.match.params
+
+    validate('passError', login.password)
+    validate('emailError', login.email)
+
+    if (!passError && !emailError.emptyEmail && !emailError.format) {
+      let user = {
+        email: login.email,
+        password: login.password,
+        companyID: id
+      }
+      console.log(user)
+      axios.post(`http://localhost:8080/users`, user)
+        .then(res => {
+          responseHandler(res)
+          //
+        })
     }
-    console.log(user)
-    axios.post(`http://localhost:8080/users`, user)
-      .then(res => {
-        console.log('Este es el status')
-        console.log(res.status)
-        console.log(res);
-        console.log(res.data);
-        if(res.data.status == "success"){
+  }
+
+  const responseHandler = (res: any) => {
+    console.log(res.data.status)
+    if (res.statusText === "OK") {
+
+      switch (res.data.status) {
+        case 'success':
           window.sessionStorage.setItem("session", res.data.token);
           window.alert(`
-          El usuario ${res.data.user.email} inicio sesion 
-          El token de sesion es ${res.data.token}
-          Con Status ${res.status}
-          `)
-        }else window.alert(res.data.msg)
-        //
-      })
+                  El usuario ${res.data.user.email} ha sido registrado
+                  El token de sesion es ${res.data.token}
+                  Con Status ${res.status}
+                  `)
+          break
+        case 'failed':
+          setResError({ ...resError, error: true, msg: res.data.msg })
+          break
+
+      }
+
+    } else {
+      console.log("????????????????????????")
+
+
+    }
+
   }
 
 
-  
-
   return (
-    <Container component="main" maxWidth="xs">
-      <CssBaseline />
-      <div className={classes.paper}>
-        <Avatar className={classes.avatar}>
-          <LockOutlinedIcon />
-        </Avatar>
-        <Typography component="h1" variant="h5">
-          Sign in
+    <div>
+    {
+      // Cuando reciba el response, de ahi establezco el error y el mensaje de error
+      resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
+    }
+      <Container component="main" maxWidth="xs">
+        <CssBaseline />
+        <div className={classes.paper}>
+          <Avatar className={classes.avatar}>
+            <LockOutlinedIcon />
+          </Avatar>
+          <Typography component="h1" variant="h5">
+            Sign in
         </Typography>
-        <form className={classes.form} noValidate onSubmit={handleSubmit}>
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            id="email"
-            label="Email Address"
-            name="email"
-            autoComplete="email"
-            autoFocus
-            value={login.email}
-            onChange={handleChange}
-            error={error.emailError}
-            helperText={error.emailError ? 'Please enter a valid Email' : ' '}
-          />
-          <TextField
-            variant="outlined"
-            margin="normal"
-            required
-            fullWidth
-            name="password"
-            label="Password"
-            type="password"
-            id="password"
-            autoComplete="current-password"
-            value={login.password}
-            onChange={handleChange}
-            error={error.passError}
-            helperText={error.passError ? 'Please enter a valid Password' : ' '}
-          />
-          <FormControlLabel
-            control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
-          />
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            className={classes.submit}
-          >
-            Sign In
+          <form className={classes.form} noValidate onSubmit={handleSubmit}>
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              id="email"
+              label="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+              value={login.email}
+              onChange={handleChange}
+              error={emailError.emptyEmail || emailError.format}
+              helperText={emailError.emptyEmail || emailError.format ? 'Please enter a valid Email' : ' '}
+              onBlur={handleBlur}
+            />
+            <TextField
+              variant="outlined"
+              margin="normal"
+              required
+              fullWidth
+              name="password"
+              label="Password"
+              type="password"
+              id="password"
+              autoComplete="current-password"
+              value={login.password}
+              onChange={handleChange}
+              error={passError}
+              helperText={passError ? 'Please enter a valid password' : ' '}
+            />
+            <FormControlLabel
+              control={<Checkbox value="remember" color="primary" />}
+              label="Remember me"
+            />
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Sign In
           </Button>
-          <Grid container>
-            <Grid item>
-              {"Si olvidaste tu contraseña ve a "}
-              <Link to="/">
-                {'Recuperar contraseña'}
-              </Link>
+            <Grid container>
+              <Grid item>
+                {"Si olvidaste tu contraseña ve a "}
+                <Link to="/">
+                  {'Recuperar contraseña'}
+                </Link>
+              </Grid>
             </Grid>
-          </Grid>
-        </form>
-      </div>
-      <Box mt={5}>
-        <MadeWithLove />
-      </Box>
-    </Container>
+          </form>
+        </div>
+        <Box mt={5}>
+        </Box>
+      </Container>
+    </div>
+
   );
 }
 
