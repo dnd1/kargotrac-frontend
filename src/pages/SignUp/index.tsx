@@ -121,6 +121,10 @@ export const SignUp = (props: any) => {
           // Llamar response errors
           // Cambiar esto a response handler
           responseHandler(res)
+        }, (error) => {
+          //setResError({ ...resError, error: true, msg: error})
+          window.alert(error)
+          //setResError({ ...resError, error: true, msg: error})
         })
     }
   }
