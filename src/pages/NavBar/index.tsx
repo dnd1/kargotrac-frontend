@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ComponentType } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -11,50 +11,71 @@ import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { mergeClasses } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
 
-const ButtonAppBar = (props: any) => {
-    const classes = useStyles()
+// if(props.location.pathname === '/') 
 
+const AppBarHome = (props: any) => {
+    const classes = useStyles()
+    return (
+        
+            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+                <Button color="inherit" component={Link} to="/login">
+                    {' '}
+                    Login{' '}
+                </Button>
+                <Button color="inherit" component={Link} to="/signup">
+                    {' '}
+                    Sign Up
+            </Button>
+            </div>
+        )
+
+
+}
+
+const AppBarLogSign = (props: any) => {
+    const classes = useStyles()
+    return (
+
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+            <div style={{ justifyContent: 'flex-start' }}>
+                <Box flexGrow={1}></Box>
+                <Button color="inherit" component={Link} to="/">
+                    Home
+                </Button>
+            </div>
+            <Box flexGrow={1}></Box>
+            <div style={{ justifyContent: 'flex-end' }}>
+                <Button
+                    className={classes.button}
+                    color="inherit"
+                    component={Link}
+                    to={props.pathname === '/login' ? '/signup' : '/login'}>
+                    {props.pathname === '/login' ? 'Sign Up' : 'Login'}
+                </Button>
+            </div>
+
+
+        </div>)
+
+}
+
+const NavBar = (props : any) => {
+    const classes = useStyles()
+    const location = props.location
     return (
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    {props.location.pathname === '/' ? (
-                        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                            <Button color="inherit" component={Link} to="/login">
-                                {' '}
-                                Login{' '}
-                            </Button>
-                            <Button color="inherit" component={Link} to="/signup">
-                                {' '}
-                                Sign Up
-                            </Button>
-                        </div>
-                    ) : (
-                            <div style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
-                                <div style={{ justifyContent: 'flex-start' }}>
-                                    <Box flexGrow={1}></Box>
-                                    <Button color="inherit" component={Link} to="/">
-                                        Home
-                                </Button>
-                                </div>
-                                <Box flexGrow={1}></Box>
-                                <div style={{ justifyContent: 'flex-end' }}>
-                                    <Button
-                                        className={classes.button}
-                                        color="inherit"
-                                        component={Link}
-                                        to={props.location.pathname === '/login' ? '/signup' : '/login'}>
-                                        {props.location.pathname === '/login' ? 'Sign Up' : 'Login'}
-                                    </Button>
-                                </div>
-
-
-                            </div>
-                        )}
+                    {
+                        
+                       location.pathname === '/' ? <AppBarHome></AppBarHome> :
+                        <AppBarLogSign pathname={location.pathname}></AppBarLogSign>
+                        
+                    }
                 </Toolbar>
             </AppBar>
         </div>
     )
 }
 
-export default withRouter(ButtonAppBar)
+export default withRouter(NavBar);
