@@ -63,6 +63,8 @@ export const Login = (props: any) => {
     showPassword: false,
   });
 
+  const [submitting, setSubmit ] = React.useState(false)
+
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
   };
@@ -112,6 +114,7 @@ export const Login = (props: any) => {
     validate('emailError', login.email)
 
     if (!passError && !emailError.emptyEmail && !emailError.format) {
+      setSubmit(true)
       let user = {
         email: login.email,
         password: login.password,
@@ -159,6 +162,14 @@ export const Login = (props: any) => {
     {
       // Cuando reciba el response, de ahi establezco el error y el mensaje de error
       resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
+      
+      
+    }
+
+    {
+      // Cuando este todo bien hago submit y voy al dashboard
+      submitting === true ? <Redirect to='/dashboard'/> : null
+
     }
       <Container component="main" maxWidth="xs">
         <CssBaseline />

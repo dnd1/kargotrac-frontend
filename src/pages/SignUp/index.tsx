@@ -54,6 +54,8 @@ export const SignUp = (props: any) => {
     msg: ""
   })
 
+  const [submitting, setSubmit ] = React.useState(false)
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
     const { name, value } = e.target
@@ -104,6 +106,7 @@ export const SignUp = (props: any) => {
 
 
     if (!passError && !emailError.emptyEmail && !emailError.format) {
+      setSubmit(true)
       let user = {
         email: signup.email,
         username: signup.username,
