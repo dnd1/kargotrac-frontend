@@ -15,7 +15,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import useStyles from './styles';
-import { Link, withRouter } from "react-router-dom";
+import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from 'axios'
 import { PopUp } from './popup'
 
@@ -161,6 +161,11 @@ export const SignUp = (props: any) => {
       {
         // Cuando reciba el response, de ahi establezco el error y el mensaje de error
         resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
+      }
+      {
+        // Cuando este todo bien hago submit y voy al dashboard
+        submitting === true ? <Redirect to='/dashboard'/> : null
+  
       }
 
       <Container component="main" maxWidth="xs">
