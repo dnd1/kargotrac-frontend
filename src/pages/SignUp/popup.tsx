@@ -29,6 +29,8 @@ export const PopUp = (props: any) => {
                 onClose={handleClose}
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
+                fullWidth={true}
+                maxWidth = {'md'}
             >
                 <DialogTitle id="alert-dialog-title">{"Error"}</DialogTitle>
                 <DialogContent>

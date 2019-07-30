@@ -20,11 +20,11 @@ const AppBarHome = (props: any) => {
             <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
                 <Button color="inherit" component={Link} to="/login">
                     {' '}
-                    Login{' '}
+                    Ingresar{' '}
                 </Button>
                 <Button color="inherit" component={Link} to="/signup">
                     {' '}
-                    Sign Up
+                    Registrar
             </Button>
             </div>
         )
@@ -50,7 +50,7 @@ const AppBarLogSign = (props: any) => {
                     color="inherit"
                     component={Link}
                     to={props.pathname === '/login' ? '/signup' : '/login'}>
-                    {props.pathname === '/login' ? 'Sign Up' : 'Login'}
+                    {props.pathname === '/login' ? 'Registrar' : 'Ingresar'}
                 </Button>
             </div>
 

@@ -175,7 +175,7 @@ export const SignUp = (props: any) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            Sign up
+            
       </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2} className="container">
@@ -233,7 +233,7 @@ export const SignUp = (props: any) => {
               color="primary"
               className={classes.submit}
             >
-              Sign Up
+            Registrar
         </Button>
             <Grid container justify="flex-end">
               <Grid item>
