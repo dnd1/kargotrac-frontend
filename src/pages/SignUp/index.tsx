@@ -198,6 +198,7 @@ export const SignUp = (props: any) => {
               <Grid item xs={12}>
                 <TextField
                   variant="outlined"
+                  required
                   fullWidth
                   id="username"
                   label="Username"
