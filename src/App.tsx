@@ -6,7 +6,9 @@ import {Login} from './pages/Login';
 import { SignUp } from './pages/SignUp';
 import NavigationBar from './pages/NavBar'
 import {Dashboard} from './pages/Dashboard'
+import {UserProfile} from './pages/UserProfile'
 import userContext from './index'
+
 
 
 const App: React.FC = () => {
@@ -21,6 +23,7 @@ const App: React.FC = () => {
       <Route exact path="/signup:id"  component={SignUp} />
       <Route exact path="/signup" component={SignUp} />
       <Route exact path="/dashboard" component={Dashboard} />
+      <Route exact path="/users/me" component={UserProfile} />
     </Router>
   );
 }
