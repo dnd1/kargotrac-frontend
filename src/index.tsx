@@ -16,9 +16,8 @@ export default userContext;
 
 ReactDOM.render(
     // <ThemeProvider theme={theme}>
-    <userContext.Provider value={userResponse}>
         <App />
-    </userContext.Provider>
+
 
     // </ThemeProvider>, 
     , document.getElementById('root')
