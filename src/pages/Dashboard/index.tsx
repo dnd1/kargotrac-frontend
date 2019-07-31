@@ -25,7 +25,6 @@ import SideBar from '../SideBar'
 function createData(name : any, calories : any, fat : any, carbs : any, protein : any) {
     return { name, calories, fat, carbs, protein };
 }
-
 const rows = [
     createData('Cupcake', 305, 3.7, 67, 4.3),
     createData('Donut', 452, 25.0, 51, 4.9),
