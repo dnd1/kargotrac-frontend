@@ -16,18 +16,18 @@ import Box from '@material-ui/core/Box'
 const AppBarHome = (props: any) => {
     const classes = useStyles()
     return (
-        
-            <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
-                <Button color="inherit" component={Link} to="/login">
-                    {' '}
-                    Ingresar{' '}
-                </Button>
-                <Button color="inherit" component={Link} to="/signup">
-                    {' '}
-                    Registrar
+
+        <div style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}>
+            <Button color="inherit" component={Link} to="/login">
+                {' '}
+                Ingresar{' '}
             </Button>
-            </div>
-        )
+            <Button color="inherit" component={Link} to="/signup">
+                {' '}
+                Registrar
+            </Button>
+        </div>
+    )
 
 
 }
@@ -49,8 +49,8 @@ const AppBarLogSign = (props: any) => {
                     className={classes.button}
                     color="inherit"
                     component={Link}
-                    to={props.pathname === '/login' ? '/signup' : '/login'}>
-                    {props.pathname === '/login' ? 'Registrar' : 'Ingresar'}
+                    to={props.location === '/login' ? '/signup' : '/login'}>
+                    {props.location === '/login' ? 'Registrar' : 'Ingresar'}
                 </Button>
             </div>
 
@@ -59,23 +59,41 @@ const AppBarLogSign = (props: any) => {
 
 }
 
-const NavBar = (props : any) => {
+const AppBarDashboard = () => {
+    return <div>Perfil de usuario</div>
+}
+
+const NavBar = (WrappedComponent : any, location : any) => {
     const classes = useStyles()
-    const location = props.location
+    //const location = props.location
     return (
         <div className={classes.root}>
             <AppBar position="static">
                 <Toolbar>
-                    {
-                        
-                       location.pathname === '/' ? <AppBarHome></AppBarHome> :
-                        <AppBarLogSign pathname={location.pathname}></AppBarLogSign>
-                        
-                    }
+                    <WrappedComponent location={location}></WrappedComponent>
                 </Toolbar>
             </AppBar>
         </div>
     )
 }
 
-export default withRouter(NavBar);
+
+const NavigationBar = (props: any) =>{ 
+    console.log(props.location)
+    if(props.location.pathname === '/') return NavBar(AppBarHome, "")
+    else if(props.location.pathname === '/dashboard') return NavBar(AppBarDashboard, "")
+    else return NavBar(AppBarLogSign, props.location.pathname)
+    return <div></div>
+    //else if(props.location.pathname === '/dashboard') return NavBar(AppBarDashboard)
+    //else return NavBar(AppBarLogSign)
+}
+export default withRouter(NavigationBar);
+const appbarlogin = withRouter(AppBarLogSign);
+/*
+{
+
+                        location.pathname === '/' ? <AppBarHome></AppBarHome> :
+                            <AppBarLogSign pathname={location.pathname}></AppBarLogSign>
+
+                    }
+*/
