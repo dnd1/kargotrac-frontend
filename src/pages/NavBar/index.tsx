@@ -1,4 +1,4 @@
-import React, { ComponentType } from 'react'
+import React, { ComponentType, useContext } from 'react'
 import AppBar from '@material-ui/core/AppBar'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -10,6 +10,7 @@ import { Link, withRouter } from 'react-router-dom'
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { mergeClasses } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
+import userContext from '../../index'
 
 // if(props.location.pathname === '/') 
 
@@ -49,6 +50,7 @@ const AppBarLogSign = (props: any) => {
                     className={classes.button}
                     color="inherit"
                     component={Link}
+                    // Debo probar aqui que sea login y el id
                     to={props.location === '/login' ? '/signup' : '/login'}>
                     {props.location === '/login' ? 'Registrar' : 'Ingresar'}
                 </Button>
@@ -60,7 +62,11 @@ const AppBarLogSign = (props: any) => {
 }
 
 const AppBarDashboard = () => {
-    return <div>Perfil de usuario</div>
+    const value = useContext(userContext);
+    console.log('Esto essss')
+    console.log(value)
+    const user = window.sessionStorage.getItem("username");
+    return <div>{user}</div>
 }
 
 const NavBar = (WrappedComponent : any, location : any) => {
@@ -81,7 +87,7 @@ const NavBar = (WrappedComponent : any, location : any) => {
 const NavigationBar = (props: any) =>{ 
     console.log(props.location)
     if(props.location.pathname === '/') return NavBar(AppBarHome, "")
-    else if(props.location.pathname === '/dashboard') return NavBar(AppBarDashboard, "")
+    else if(props.location.pathname === '/dashboard' || props.location.pathname === '/users/me') return NavBar(AppBarDashboard, "")
     else return NavBar(AppBarLogSign, props.location.pathname)
     return <div></div>
     //else if(props.location.pathname === '/dashboard') return NavBar(AppBarDashboard)

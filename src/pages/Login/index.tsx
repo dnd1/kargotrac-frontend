@@ -133,13 +133,19 @@ export const Login = (props: any) => {
   }
 
   const responseHandler = (res: any) => {
+    console.log('>>>>>>>>>>>>>>>>>>>>>>>>')
     console.log(res.data.status)
     if (res.statusText === "OK") {
 
       switch (res.data.status) {
         case 'success':
           setSubmit(true)
-          window.sessionStorage.setItem("session", res.data.token);
+          window.sessionStorage.setItem("session", res.data);
+          window.sessionStorage.setItem("username", res.data.user.username)
+          //const element = window.sessionStorage.getItem("session")
+          //console.log(element)
+          console.log('aqui toy')
+          console.log(res.data.user)
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado
                   El token de sesion es ${res.data.token}
