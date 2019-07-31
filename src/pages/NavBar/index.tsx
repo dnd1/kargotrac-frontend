@@ -88,7 +88,7 @@ const NavigationBar = (props: any) =>{
     //else return NavBar(AppBarLogSign)
 }
 export default withRouter(NavigationBar);
-const appbarlogin = withRouter(AppBarLogSign);
+//const appbarlogin = withRouter(AppBarLogSign);
 /*
 {
 
