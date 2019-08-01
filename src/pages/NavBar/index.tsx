@@ -10,7 +10,7 @@ import { Link, withRouter } from 'react-router-dom'
 import SvgIcon, { SvgIconProps } from '@material-ui/core/SvgIcon'
 import { mergeClasses } from '@material-ui/styles'
 import Box from '@material-ui/core/Box'
-import userContext from '../../index'
+//import userContext from '../../index'
 
 // if(props.location.pathname === '/') 
 
@@ -62,9 +62,9 @@ const AppBarLogSign = (props: any) => {
 }
 
 const AppBarDashboard = () => {
-    const value = useContext(userContext);
+    //const value = useContext(userContext);
     console.log('Esto essss')
-    console.log(value)
+    //onsole.log(value)
     const user = window.sessionStorage.getItem("username");
     return <div>{user}</div>
 }
