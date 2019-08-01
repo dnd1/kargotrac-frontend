@@ -18,7 +18,7 @@ import useStyles from './styles';
 import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from 'axios'
 import { PopUp } from './popup'
-
+import {userContext} from '../../App'
 
 
 
@@ -57,6 +57,8 @@ export const SignUp = (props: any) => {
   })
 
   const [submitting, setSubmit ] = React.useState(false)
+  
+  const context = React.useContext(userContext)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
@@ -140,8 +142,12 @@ export const SignUp = (props: any) => {
       switch (res.data.status) {
         case 'success':
           setSubmit(true)
-          const user = JSON.parse(res.data)
-          window.sessionStorage.setItem("session", user);
+          //const user = JSON.parse(res.data)
+          if(context) context.setSession(res.data)
+          if(context) console.log(context.session)
+          //setSession(user)
+          // Aqui debo cargar el estado y manejarlo
+          window.sessionStorage.setItem("session", res.data);
           window.sessionStorage.setItem("user", res.data.user)
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado

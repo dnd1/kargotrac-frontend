@@ -33,7 +33,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-
+import {userContext} from '../../App'
 
 
 export const Login = (props: any) => {
@@ -64,6 +64,8 @@ export const Login = (props: any) => {
   });
 
   const [submitting, setSubmit ] = React.useState(false)
+
+  const context = React.useContext(userContext)
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -140,8 +142,13 @@ export const Login = (props: any) => {
       switch (res.data.status) {
         case 'success':
           setSubmit(true)
-          const user = JSON.parse(res.data)
-          window.sessionStorage.setItem("session", user);
+          //const user = JSON.parse(res.data)
+          if(context) context.setSession(res.data)
+          console.log('SESION')
+          //let user
+          //if(context && context.session) user = JSON.parse(context.session)
+          if(context) console.log(res.data.token)
+          window.sessionStorage.setItem("session", res.data);
           window.sessionStorage.setItem("username", res.data.user.username)
           //const element = window.sessionStorage.getItem("session")
           //console.log(element)
