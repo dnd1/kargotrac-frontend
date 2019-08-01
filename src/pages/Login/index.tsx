@@ -149,7 +149,7 @@ export const Login = (props: any) => {
             companyID: res.data.companyID,
             token: res.data.token
           }
-          if(context) context.setSession(res.data)
+          if(context) context.setSession(JSON.stringify(res.data))
           console.log('SESION')
           //let user
           //if(context && context.session) user = JSON.parse(context.session)
