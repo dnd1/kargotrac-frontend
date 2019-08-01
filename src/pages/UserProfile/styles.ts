@@ -13,6 +13,13 @@ const useStyles = makeStyles(theme => ({
   input: {
     margin: theme.spacing(2),
   },
+  form: {
+    width: '100%', // Fix IE 11 issue.
+    marginTop: theme.spacing(1),
+  },
+  submit: {
+    margin: theme.spacing(3, 2, 2),
+  },
 }));
 
 export default useStyles
