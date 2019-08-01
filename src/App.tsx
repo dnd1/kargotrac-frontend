@@ -11,6 +11,12 @@ import { any, string } from 'prop-types';
 
 // 
 
+type response = {
+  email: string,
+  username: string,
+  companyID: number,
+  token: any
+}
 type userSession = {
   session: string | null,
   setSession: (s: string) => any
@@ -20,12 +26,19 @@ export const userContext = React.createContext<userSession | null>(null);
 
 export const App: React.FC = () => {
   //const value = useContext(userContext);
+  let sesion = sessionStorage.getItem('session')
+  //if (sesion) sesion = JSON.parse(sessionStorage.getItem('session'))
+  //const sesion = JSON.parse(sessionStorage.getItem('session'))
+  let user
+  if(sesion) sesion = JSON.parse(sesion)
   
-  const sesion = window.sessionStorage.getItem('session')
+  console.log('SESION EN APP')
+  //if(user) console.log(user)
+  if(sesion) console.log(sesion)
   const [session, setSession] = React.useState(sesion)
   const context = React.useContext(userContext)
   return (
-    <userContext.Provider value={{session, setSession}}>
+    <userContext.Provider value={{ session, setSession }}>
       <Router>
         <NavigationBar />
 
