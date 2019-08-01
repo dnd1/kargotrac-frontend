@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import {App} from './App';
 import * as serviceWorker from './serviceWorker';
 
 
@@ -9,10 +9,8 @@ import * as serviceWorker from './serviceWorker';
 
 
 
-const userResponse = window.sessionStorage.getItem('session')
-console.log(`session ${userResponse}`)
-const userContext = React.createContext(userResponse);
-export default userContext;
+
+//export default userContext;
 
 ReactDOM.render(
     // <ThemeProvider theme={theme}>
