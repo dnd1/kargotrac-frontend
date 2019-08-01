@@ -143,12 +143,19 @@ export const Login = (props: any) => {
         case 'success':
           setSubmit(true)
           //const user = JSON.parse(res.data)
+          const user = {
+            email: res.data.email,
+            username: res.data.username,
+            companyID: res.data.companyID,
+            token: res.data.token
+          }
           if(context) context.setSession(res.data)
           console.log('SESION')
           //let user
           //if(context && context.session) user = JSON.parse(context.session)
-          if(context) console.log(res.data.token)
-          window.sessionStorage.setItem("session", res.data);
+          console.log(res.data)
+          if(context && context.session) console.log(JSON.stringify(context.session))
+          window.sessionStorage.setItem("session", JSON.stringify(res.data));
           window.sessionStorage.setItem("username", res.data.user.username)
           //const element = window.sessionStorage.getItem("session")
           //console.log(element)
