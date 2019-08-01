@@ -24,7 +24,7 @@ export default function ClippedDrawer() {
             <AppBar position="fixed" className={classes.appBar}>
                 <Toolbar>
                     <Typography variant="h6" noWrap>
-                        Clipped drawer
+                        Kargotrack
             </Typography>
                 </Toolbar>
             </AppBar>
@@ -36,23 +36,15 @@ export default function ClippedDrawer() {
                 }}
             >
                 <div className={classes.toolbar} />
-                <List>
-                    {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
+                <List className={classes.list}>
+                    {['Modificar perfil', 'Listado de artículos', 'Listado de paquetes', 'Listado de envíos'].map((text, index) => (
                         <ListItem button key={text}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
                     ))}
                 </List>
-                <Divider />
-                <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
-                        <ListItem button key={text}>
-                            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                            <ListItemText primary={text} />
-                        </ListItem>
-                    ))}
-                </List>
+                
             </Drawer>
         </div>
     );
