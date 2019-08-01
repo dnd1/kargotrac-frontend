@@ -140,7 +140,8 @@ export const Login = (props: any) => {
       switch (res.data.status) {
         case 'success':
           setSubmit(true)
-          window.sessionStorage.setItem("session", res.data);
+          const user = JSON.parse(res.data)
+          window.sessionStorage.setItem("session", user);
           window.sessionStorage.setItem("username", res.data.user.username)
           //const element = window.sessionStorage.getItem("session")
           //console.log(element)

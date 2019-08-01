@@ -140,7 +140,8 @@ export const SignUp = (props: any) => {
       switch (res.data.status) {
         case 'success':
           setSubmit(true)
-          window.sessionStorage.setItem("session", res.data);
+          const user = JSON.parse(res.data)
+          window.sessionStorage.setItem("session", user);
           window.sessionStorage.setItem("user", res.data.user)
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado
