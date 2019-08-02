@@ -19,9 +19,8 @@ import { UserProfile } from '../UserProfile';
 
 const ClippedDrawer = ({match} : any) => {
     const classes = useStyles();
-    console.log('aquiiiii')
+    //console.log(props)
     const routes = ['users/me','','', '' ]
-    console.log(`${match.url}/${routes[0]}`)
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -50,7 +49,7 @@ const ClippedDrawer = ({match} : any) => {
                 </List>
                 
             </Drawer>
-            <Route path={`${match.path}/:path`} component={UserProfile} />
+            <Route path={`${match.path}/users/me`} component={UserProfile} />
         </div>
     );
 }
