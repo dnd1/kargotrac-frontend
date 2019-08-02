@@ -13,11 +13,15 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import useStyles from './styles';
+import { Link, withRouter, Route } from 'react-router-dom';
+import { UserProfile } from '../UserProfile';
 
 
-export default function ClippedDrawer() {
+const ClippedDrawer = ({match} : any) => {
     const classes = useStyles();
-
+    console.log('aquiiiii')
+    const routes = ['users/me','','', '' ]
+    console.log(`${match.url}/${routes[0]}`)
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -38,7 +42,7 @@ export default function ClippedDrawer() {
                 <div className={classes.toolbar} />
                 <List className={classes.list}>
                     {['Modificar perfil', 'Listado de artículos', 'Listado de paquetes', 'Listado de envíos'].map((text, index) => (
-                        <ListItem button key={text}>
+                        <ListItem button key={text} component={Link} to={`${match.url}/${routes[index]}`}>
                             <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
                             <ListItemText primary={text} />
                         </ListItem>
@@ -46,6 +50,9 @@ export default function ClippedDrawer() {
                 </List>
                 
             </Drawer>
+            <Route path={`${match.path}/:path`} component={UserProfile} />
         </div>
     );
 }
+
+export default withRouter(ClippedDrawer)

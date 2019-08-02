@@ -47,7 +47,7 @@ export const App: React.FC = () => {
         <Route exact path="/signup:id" component={SignUp} />
         <Route exact path="/signup" component={SignUp} />
         <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/users/me" component={UserProfile} />
+        <Route exact path="/dashboard/users/me" component={UserProfile} />
       </Router>
     </userContext.Provider>
   );
