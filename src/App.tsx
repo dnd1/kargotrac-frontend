@@ -1,13 +1,13 @@
 import React, { useContext } from 'react';
 
-import { BrowserRouter as Router, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Route, Link, RouteComponentProps } from "react-router-dom";
 import Homepage from './pages/Homepage';
 import { Login } from './pages/Login';
 import { SignUp } from './pages/SignUp';
-import NavigationBar from './pages/NavBar'
+import {NavBar} from './pages/NavBar'
 import { Dashboard } from './pages/Dashboard'
 import { UserProfile } from './pages/UserProfile'
-import { any, string } from 'prop-types';
+import SideBar from './pages/SideBar';
 
 
 // 
@@ -34,34 +34,85 @@ export const App: React.FC = () => {
     token: null,
     usersCompanies: null
   }
-  if(sesion) sesion = JSON.parse(sesion)
+  if (sesion) sesion = JSON.parse(sesion)
 
   let obj: any = sesion
-  if(sesion) userSesion = {
+  if (sesion) userSesion = {
     user: obj.user,
     companyID: obj.companyID,
     token: obj.token,
     usersCompanies: obj.usersCompanies
   }
   console.log('sesioooooon')
-  
+
   console.log('SESION EN APP')
   //if(user) console.log(user)
-  if(sesion) console.log(userSesion)
+  if (sesion) console.log(userSesion)
   const [session, setSession] = React.useState(obj)
   const context = React.useContext(userContext)
   return (
     <userContext.Provider value={{ session, setSession }}>
       <Router>
-        <NavigationBar />
+        <Route
+          path="/"
+          render={(props: any) => {
+            return (
+              <div>
+                <NavBar {...props}>
 
-        <Route exact path="/" component={() => <Homepage name="Maria" />} />
-        <Route exact path="/login:id" component={Login} />
-        <Route exact path="/login" component={Login} />
-        <Route exact path="/signup:id" component={SignUp} />
-        <Route exact path="/signup" component={SignUp} />
-        <Route exact path="/dashboard" component={Dashboard} />
-        <Route exact path="/dashboard/users/me" component={UserProfile} />
+                  <Route
+                    path="/login:id?"
+                    render={(props: RouteComponentProps) => {
+                      const id = (props.match.params as any).id
+                      return <Login id={id}></Login>
+                    }}
+                  />
+
+                  <Route
+                    path="/signup:id?"
+                    render={(props: RouteComponentProps) => {
+                      return <SignUp></SignUp>
+                    }}
+                  />
+                  </NavBar>
+                </div>
+              
+
+            );
+          }}
+        />
+
+        <Route
+          path="/dashboard"
+          render={(props: any) => {
+            return (
+              
+                <SideBar {...props}>
+                
+                <Route
+                  exact
+                  path="/dashboard"
+                  render={(props: any) => {
+                    return (
+                      <Dashboard></Dashboard>
+                    );
+                  }}
+                />
+                <Route
+                  path="/dashboard/users/me"
+                  render={(props: any) => {
+                    return (
+                      <UserProfile></UserProfile>
+                    );
+                  }}
+                />
+                </SideBar>
+
+              
+
+            );
+          }}
+        />
       </Router>
     </userContext.Provider>
   );

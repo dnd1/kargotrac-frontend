@@ -32,7 +32,7 @@ import {userContext} from '../../App'
 
 export const SignUp = (props: any) => {
   const classes = useStyles();
-  const id = props.match.params && (props.match.params as any).id
+  //const id = props.match.params && (props.match.params as any).id
 
   // meter responsehandler aqui y que sea el el que cambie el estado de error
 
@@ -263,7 +263,7 @@ export const SignUp = (props: any) => {
             <Grid container justify="flex-end">
               <Grid item>
                 {'Si ya estás registrado con otra empresa de envíos ve al '}
-                <Link to={`/login${id}`}>
+                <Link to={`/login${props.params.id}`}>
                   login
             </Link>
               </Grid>

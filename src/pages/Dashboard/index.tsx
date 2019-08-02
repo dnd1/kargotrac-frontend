@@ -131,7 +131,6 @@ const useToolbarStyles = makeStyles(theme => ({
     root: {
         paddingLeft: theme.spacing(2),
         paddingRight: theme.spacing(1),
-        marginLeft: 240,
 
     },
     highlight:
@@ -204,16 +203,14 @@ EnhancedTableToolbar.propTypes = {
 const useStyles = makeStyles(theme => ({
     root: {
         width: '100%',
-        marginTop: theme.spacing(3),
 
     },
     paper: {
         width: '100%',
-        marginBottom: theme.spacing(2),
+        marginTop: 0
     },
     table: {
         minWidth: 750,
-        marginLeft: 240
     },
     tableWrapper: {
         overflowX: 'auto',
@@ -381,9 +378,7 @@ export default function EnhancedTable() {
 
 export const Dashboard = () => {
     return (
-        <div>
-            <SideBar></SideBar>
             <EnhancedTable></EnhancedTable>
-        </div>
+        
     )
 }

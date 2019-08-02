@@ -38,7 +38,7 @@ import {userContext} from '../../App'
 
 export const Login = (props: any) => {
 
-  const id = props.match.params && (props.match.params as any).id
+  const id = props.id
   const classes = useStyles();
 
   const [login, setLogin] = React.useState({
