@@ -23,10 +23,11 @@ export const UserProfile = () => {
     console.log(user)
 
     const userToken = user.token
+    const companyID = user.companyID
     const [edit, setEdit] = React.useState({
-        address: "",
-        phone1: "",
-        phone2: ""
+        address:  user ? user.user.address: "",
+        phone1: user ? user.user.phone1: "",
+        phone2: user ? user.user.phone2: ""
 
     })
 
@@ -49,7 +50,7 @@ export const UserProfile = () => {
             phone2: edit.phone2
         }
 
-        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken } })
+        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken , 'companyID': companyID } })
             .then(res => {
                 console.log('Respuesta de actualizacion')
                 console.log(res.data)
@@ -75,7 +76,7 @@ export const UserProfile = () => {
 
                     //if(res.data.updatedFields.address)
                     
-                    axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken } })
+                    axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken, 'companyID': companyID } })
                         .then(res => {
                             console.log('GET USER')
                             if (context) context.setSession(res.data)
@@ -152,7 +153,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Dirección"
                         className={classes.input}
-                        value={ user ? user.user.address: ''}
+                        value={ edit.address}
                         name="address"
                         inputProps={{
                             'aria-label': 'description',
@@ -163,7 +164,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #1"
                         className={classes.input}
-                        value={ user ? user.user.phone1: ''}
+                        value={  edit.phone1}
                         name="phone1"
                         inputProps={{
                             'aria-label': 'description',
@@ -174,7 +175,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #2"
                         className={classes.input}
-                        value={ user ? user.user.phone2: ''}
+                        value={  edit.phone2}
                         name="phone2"
                         inputProps={{
                             'aria-label': 'description',
