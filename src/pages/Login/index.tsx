@@ -149,14 +149,14 @@ export const Login = (props: any) => {
             companyID: res.data.companyID,
             token: res.data.token
           }
-          if(context) context.setSession(JSON.stringify(res.data))
+          if(context) context.setSession(res.data)
           console.log('SESION')
           //let user
           //if(context && context.session) user = JSON.parse(context.session)
           console.log(res.data)
-          if(context && context.session) console.log(JSON.stringify(context.session))
+          if(context && context.session) console.log(context.session)
           window.sessionStorage.setItem("session", JSON.stringify(res.data));
-          window.sessionStorage.setItem("username", res.data.user.username)
+          //window.sessionStorage.setItem("username", res.data.user.username)
           //const element = window.sessionStorage.getItem("session")
           //console.log(element)
           console.log('aqui toy')

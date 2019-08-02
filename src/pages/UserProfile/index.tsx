@@ -12,16 +12,27 @@ import axios from 'axios';
 export const UserProfile = () => {
     const classes = useStyles()
     const context = React.useContext(userContext)
+    console.log('CONTEXTO!')
+    if (context && context.session) console.log(context.session)
     let user = null
+    // COMO CARGAR EL CONTEXTO =======>>>>
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
+
+    console.log('este es el usuario')
     console.log(user)
+
     const userToken = user.token
     const [edit, setEdit] = React.useState({
         address: "",
         phone1: "",
         phone2: ""
 
+    })
+
+    const [resError, setResError] = React.useState({
+        error: false,
+        msg: ""
     })
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -38,9 +49,11 @@ export const UserProfile = () => {
             phone2: edit.phone2
         }
 
-        axios.patch(`http://localhost:8080/users/me`, update, {headers: {'userToken': userToken}})
+        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken } })
             .then(res => {
-                console.log(res)
+                console.log('Respuesta de actualizacion')
+                console.log(res.data)
+                responseHandler(res)
                 //
             }, (error) => {
                 //setResError({ ...resError, error: true, msg: error})
@@ -48,6 +61,59 @@ export const UserProfile = () => {
                 //setResError({ ...resError, error: true, msg: error})
             })
     }
+
+    const responseHandler = (res: any) => {
+        
+        if (res.statusText === "OK") {
+
+            switch (res.data.status) {
+                case 'success':
+
+                    // Probar que actualice la sesion y que la muestre al darle a guardar
+                    // Hago get para sustituir y ya
+                    // Hacer get request para actualizar los datos? ==> mientras si
+
+                    //if(res.data.updatedFields.address)
+                    
+                    axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken } })
+                        .then(res => {
+                            console.log('GET USER')
+                            if (context) context.setSession(res.data)
+                            if(context && context.session) console.log(context.session)
+
+                            //
+                        }, (error) => {
+                            //setResError({ ...resError, error: true, msg: error})
+                            window.alert(error)
+                            //setResError({ ...resError, error: true, msg: error})
+                        })
+                        if (context) context.setSession(res.data)
+                        
+
+                    
+
+                    
+
+                    window.alert(`
+                        El usuario ${res.data.user.email} ha sido actualizado
+                        El token de sesion es ${res.data.token}
+                        Con Status ${res.status}
+                        `)
+                    break
+                case 'failed':
+                    setResError({ ...resError, error: true, msg: res.data.msg })
+                    break
+
+            }
+
+        } else {
+            console.log("????????????????????????")
+
+
+        }
+
+    }
+
     return (
         <div>
             <SideBar></SideBar>
@@ -86,6 +152,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Dirección"
                         className={classes.input}
+                        value={ user ? user.user.address: ''}
                         name="address"
                         inputProps={{
                             'aria-label': 'description',
@@ -96,6 +163,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #1"
                         className={classes.input}
+                        value={ user ? user.user.phone1: ''}
                         name="phone1"
                         inputProps={{
                             'aria-label': 'description',
@@ -106,6 +174,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #2"
                         className={classes.input}
+                        value={ user ? user.user.phone2: ''}
                         name="phone2"
                         inputProps={{
                             'aria-label': 'description',

@@ -26,12 +26,10 @@ export const userContext = React.createContext<userSession | null>(null);
 
 
 export const App: React.FC = () => {
-  //const value = useContext(userContext);
   let sesion = sessionStorage.getItem('session')
-  //if (sesion) sesion = JSON.parse(sessionStorage.getItem('session'))
-  //const sesion = JSON.parse(sessionStorage.getItem('session'))
   let user
   if(sesion) sesion = JSON.parse(sesion)
+  console.log('sesioooooon')
   
   console.log('SESION EN APP')
   //if(user) console.log(user)
