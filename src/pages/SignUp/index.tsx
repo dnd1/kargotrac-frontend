@@ -143,19 +143,20 @@ export const SignUp = (props: any) => {
         case 'success':
           setSubmit(true)
           //const user = JSON.parse(res.data)
-          const user = {
-            email: res.data.email,
-            username: res.data.username,
+          const user:any = {
+            user: res.data.user,
             companyID: res.data.companyID,
-            token: res.data.token
+            token: res.data.token,
+            usersCompanies: res.data.usersCompanies
           }
-          if(context) context.setSession(res.data)
+
+          if(context) context.setSession(user)
           console.log('SESION')
          // if(context) context.setSession(res.data)
           if(context) console.log(context.session)
           //setSession(user)
           // Aqui debo cargar el estado y manejarlo
-          window.sessionStorage.setItem("session", JSON.stringify(res.data));
+          window.sessionStorage.setItem("session", JSON.stringify(user));
           //window.sessionStorage.setItem("user", res.data.user)
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado

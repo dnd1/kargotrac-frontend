@@ -25,9 +25,9 @@ export const UserProfile = () => {
     const userToken = user.token
     const companyID = user.companyID
     const [edit, setEdit] = React.useState({
-        address:  user ? user.user.address: "",
-        phone1: user ? user.user.phone1: "",
-        phone2: user ? user.user.phone2: ""
+        address: user ? user.user.address : "",
+        phone1: user ? user.user.phone1 : "",
+        phone2: user ? user.user.phone2 : ""
 
     })
 
@@ -50,7 +50,7 @@ export const UserProfile = () => {
             phone2: edit.phone2
         }
 
-        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken , 'companyID': companyID } })
+        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken, 'companyID': companyID } })
             .then(res => {
                 console.log('Respuesta de actualizacion')
                 console.log(res.data)
@@ -64,7 +64,7 @@ export const UserProfile = () => {
     }
 
     const responseHandler = (res: any) => {
-        
+
         if (res.statusText === "OK") {
 
             switch (res.data.status) {
@@ -75,12 +75,21 @@ export const UserProfile = () => {
                     // Hacer get request para actualizar los datos? ==> mientras si
 
                     //if(res.data.updatedFields.address)
-                    
+
                     axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken, 'companyID': companyID } })
                         .then(res => {
                             console.log('GET USER')
-                            if (context) context.setSession(res.data)
-                            if(context && context.session) console.log(context.session)
+                            const user: any = {
+                                user: res.data.user,
+                                companyID: res.data.companyID,
+                                token: res.data.token,
+                                usersCompanies: context && context.session ? context.session.usersCompanies : ''
+                            }
+
+                            if (context) context.setSession(user)
+                            //if (context) context.setSession(res.data)
+                            if (context && context.session) console.log(context.session)
+                            window.sessionStorage.setItem("session", JSON.stringify(user));
 
                             //
                         }, (error) => {
@@ -88,12 +97,12 @@ export const UserProfile = () => {
                             window.alert(error)
                             //setResError({ ...resError, error: true, msg: error})
                         })
-                        if (context) context.setSession(res.data)
-                        
+                    if (context) context.setSession(res.data)
 
-                    
 
-                    
+
+
+
 
                     window.alert(`
                         El usuario ${res.data.user.email} ha sido actualizado
@@ -153,7 +162,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Dirección"
                         className={classes.input}
-                        value={ edit.address}
+                        value={edit.address}
                         name="address"
                         inputProps={{
                             'aria-label': 'description',
@@ -164,7 +173,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #1"
                         className={classes.input}
-                        value={  edit.phone1}
+                        value={edit.phone1}
                         name="phone1"
                         inputProps={{
                             'aria-label': 'description',
@@ -175,7 +184,7 @@ export const UserProfile = () => {
                     <Input
                         placeholder="Número de teléfono #2"
                         className={classes.input}
-                        value={  edit.phone2}
+                        value={edit.phone2}
                         name="phone2"
                         inputProps={{
                             'aria-label': 'description',
