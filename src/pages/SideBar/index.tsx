@@ -16,48 +16,99 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import useStyles from "./styles";
 import { Link as RouterLink } from "react-router-dom";
-
+import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import Menu from '@material-ui/core/Menu';
+import ButtonGroup from '@material-ui/core/ButtonGroup';
+import ArrowDropDownIcon from '@material-ui/icons/ArrowDropDown';
+import ClickAwayListener from '@material-ui/core/ClickAwayListener';
+import Grow from '@material-ui/core/Grow';
+import Paper from '@material-ui/core/Paper';
+import Popper from '@material-ui/core/Popper';
 import MenuItem from '@material-ui/core/MenuItem';
-import { Box } from "@material-ui/core";
+import MenuList from '@material-ui/core/MenuList';
 import { userContext } from "../../App";
+import { Box } from "@material-ui/core";
 
 
-const SimpleMenu = (props : any) => {
-    const [anchorEl, setAnchorEl] = React.useState(null);
 
-    function handleClick(event : any) {
-        setAnchorEl(event.currentTarget);
+
+
+const SplitButton = (props: any) => {
+    const [open, setOpen] = React.useState(false);
+    const anchorRef = React.useRef(null);
+    const [selectedIndex, setSelectedIndex] = React.useState(0);
+
+    const options: any = props.companyIDs
+    // Falta: la actual debe ser la seleccionada (el index inicial)
+    console.log('Companies')
+    console.log(options)
+    function handleClick() {
+        alert(`You clicked ${options[selectedIndex].companyID}`);
     }
 
-    function handleClose() {
-        setAnchorEl(null);
+    function handleMenuItemClick(event: any, index: any) {
+        setSelectedIndex(index);
+        setOpen(false);
+    }
+
+    function handleToggle() {
+        if(options.length > 1) setOpen(prevOpen => !prevOpen);
+    }
+
+    function handleClose(event: any) {
+        if (anchorRef && anchorRef.current && (anchorRef as any).current.contains(event.target)) {
+            return;
+        }
+
+        setOpen(false);
     }
 
     return (
-        <div>
-            <Button aria-controls="simple-menu" aria-haspopup="true" onClick={handleClick} color="inherit">
-                {props.company}
-      </Button>
-            <Menu
-                id="simple-menu"
-                anchorEl={anchorEl}
-                keepMounted
-                open={Boolean(anchorEl)}
-                onClose={handleClose}
-                
-            >
-                console.log("companies ids")
-                console.log(props.companyIDs)
-                <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem>
-                <MenuItem onClick={handleClose}>Logout</MenuItem>
-            </Menu>
-        </div>
+        <Grid container>
+            <Grid item xs={12} alignContent="center">
+                <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
+                    <Button onClick={handleClick}>{options[selectedIndex].companyID}</Button>
+                    <Button
+                        color="primary"
+                        variant="contained"
+                        size="small"
+                        aria-owns={open ? 'menu-list-grow' : undefined}
+                        aria-haspopup="true"
+                        onClick={handleToggle}
+                    >
+                        <ArrowDropDownIcon />
+                    </Button>
+                </ButtonGroup>
+                <Popper open={open} anchorEl={anchorRef.current} transition disablePortal>
+                    {({ TransitionProps, placement }) => (
+                        <Grow
+                            {...TransitionProps}
+                            style={{
+                                transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom',
+                            }}
+                        >
+                            <Paper id="menu-list-grow">
+                                <ClickAwayListener onClickAway={handleClose}>
+                                    <MenuList>
+                                        {options.map((option: any, index: any) => (
+                                            <MenuItem
+                                                key={option}
+                                                selected={index === selectedIndex}
+                                                onClick={event => handleMenuItemClick(event, index)}
+                                            >
+                                                {option}
+                                            </MenuItem>
+                                        ))}
+                                    </MenuList>
+                                </ClickAwayListener>
+                            </Paper>
+                        </Grow>
+                    )}
+                </Popper>
+            </Grid>
+        </Grid>
     );
 }
-
 
 export default function PersistentDrawerLeft(props: { children?: any }) {
     const classes = useStyles();
@@ -70,8 +121,9 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
-    console.log('este es el usuario')
-    console.log(user)
+    console.log('estas son las companias')
+    if (user) console.log(user.usersCompanies)
+    //console.log(user)
 
     function handleDrawerOpen() {
         setOpen(true);
@@ -103,14 +155,20 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                     <Typography variant="h6" noWrap>
                         Kargotrack
                     </Typography>
-                    
+
+                    <Box flexGrow={1}></Box>
+                    <div style={{ justifyContent: 'flex-end', marginRight: theme.spacing(5) }} >
+                        <Typography variant="body2" noWrap>
+                            Nombre de usuario:{' '}{user ? user.user.username : ''}
+                        </Typography>
+
                         <Box flexGrow={1}></Box>
-                        <div style={{ justifyContent: 'flex-end' }} >
-                            {' '}
-                            {user ? user.user.username : ''}
-                            <SimpleMenu companyIDs={user ? user.usersCompanies: ''} company={user ? user.companyID : ''}></SimpleMenu>
-                        </div>
-                    
+                        <SplitButton companyIDs={user ? user.usersCompanies : ''} company={user ? user.companyID : ''}></SplitButton>
+
+
+
+                    </div>
+
                 </Toolbar>
             </AppBar>
             <Drawer

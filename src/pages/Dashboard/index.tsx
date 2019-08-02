@@ -22,6 +22,10 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import SideBar from '../SideBar'
 import { Button, Box } from '@material-ui/core';
+import Edit from '@material-ui/icons/Edit';
+import Fab from '@material-ui/core/Fab';
+import Icon from '@material-ui/core/Icon';
+
 
 function createData(name: any, packNumber: any, packStatus: any, envStatus: any) {
     return { name, packNumber, packStatus, envStatus };
@@ -155,7 +159,7 @@ const useToolbarStyles = makeStyles(theme => ({
         flex: '0 0 auto',
     },
     button: {
-        margin: theme.spacing(1),
+        marginRight: theme.spacing(1),
     },
 }));
 
@@ -207,7 +211,6 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         width: '100%',
-        marginTop: 0
     },
     table: {
         minWidth: 750,
@@ -227,6 +230,9 @@ const useStyles = makeStyles(theme => ({
         width: 1,
     },
     button: {
+        margin: theme.spacing(1),
+    },
+    fab: {
         margin: theme.spacing(1),
     },
 }));
@@ -297,6 +303,7 @@ export default function EnhancedTable() {
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
+
                     <Table
                         className={classes.table}
                         aria-labelledby="tableTitle"
@@ -340,6 +347,12 @@ export default function EnhancedTable() {
                                             <TableCell align="right">{row.packNumber}</TableCell>
                                             <TableCell align="right">{row.packStatus}</TableCell>
                                             <TableCell align="right">{row.envStatus}</TableCell>
+                                            <TableCell align="right">
+                                                <IconButton className={classes.button} aria-label="edit">
+                                                    <Edit></Edit>
+                                                </IconButton>
+                                            </TableCell>
+
                                         </TableRow>
                                     );
                                 })}
@@ -378,7 +391,7 @@ export default function EnhancedTable() {
 
 export const Dashboard = () => {
     return (
-            <EnhancedTable></EnhancedTable>
-        
+        <EnhancedTable></EnhancedTable>
+
     )
 }

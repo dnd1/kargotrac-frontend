@@ -58,7 +58,7 @@ export const App: React.FC = () => {
           render={(props: any) => {
             return (
               <div>
-                <NavBar {...props}>
+                <NavBar {...props}></NavBar>
 
                   <Route
                     path="/login:id?"
@@ -74,7 +74,7 @@ export const App: React.FC = () => {
                       return <SignUp></SignUp>
                     }}
                   />
-                  </NavBar>
+                  
                 </div>
               
 
