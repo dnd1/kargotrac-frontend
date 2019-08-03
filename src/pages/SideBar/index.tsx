@@ -70,7 +70,7 @@ const SplitButton = (props: any) => {
         <Grid container alignContent="center">
             <Grid item xs={12}>
                 <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options ? options[selectedIndex].companyID : ''}</Button>
+                    <Button onClick={handleClick}>{typeof(options) !== "number" ? options[selectedIndex].companyID : options}</Button>
                     <Button
                         color="primary"
                         variant="contained"
