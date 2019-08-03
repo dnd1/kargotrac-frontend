@@ -38,12 +38,15 @@ const SplitButton = (props: any) => {
     const anchorRef = React.useRef(null);
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
-    const options: any = props.companyIDs
+    let options: any
+    if(options) options = props.companyIDs
+    else options = props.company
     // Falta: la actual debe ser la seleccionada (el index inicial)
     console.log('Companies')
     console.log(options)
     function handleClick() {
-        alert(`You clicked ${options[selectedIndex].companyID}`);
+        
+        alert(`You clicked`);
     }
 
     function handleMenuItemClick(event: any, index: any) {
