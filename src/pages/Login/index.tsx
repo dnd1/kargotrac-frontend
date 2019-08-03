@@ -122,7 +122,7 @@ export const Login = (props: any) => {
         companyID: id
       }
       console.log(user)
-      axios.post(`http://localhost:8080/users`, user)
+      axios.post(`https://kargotrack.herokuapp.com/users`, user)
         .then(res => {
           responseHandler(res)
           //

@@ -56,6 +56,9 @@ export default makeStyles((theme: Theme) =>
         duration: theme.transitions.duration.enteringScreen
       }),
       marginLeft: 0
+    },
+    button: {
+      margin: theme.spacing(1),
     }
   })
 );

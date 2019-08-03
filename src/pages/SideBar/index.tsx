@@ -52,7 +52,7 @@ const SplitButton = (props: any) => {
     }
 
     function handleToggle() {
-        if(options.length > 1) setOpen(prevOpen => !prevOpen);
+        if (options.length > 1) setOpen(prevOpen => !prevOpen);
     }
 
     function handleClose(event: any) {
@@ -64,10 +64,10 @@ const SplitButton = (props: any) => {
     }
 
     return (
-        <Grid container>
-            <Grid item xs={12} alignContent="center">
+        <Grid container alignContent="center">
+            <Grid item xs={12}>
                 <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options[selectedIndex].companyID}</Button>
+                    <Button onClick={handleClick}>{options ? options[selectedIndex].companyID : ''}</Button>
                     <Button
                         color="primary"
                         variant="contained"
@@ -152,9 +152,12 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap>
-                        Kargotrack
-                    </Typography>
+                    <Button color="inherit" className={classes.button} component={RouterLink} to="/dashboard">
+                        <Typography variant="body1" noWrap>
+                            Kargotrack
+                        </Typography>
+                    </Button>
+
 
                     <Box flexGrow={1}></Box>
                     <div style={{ justifyContent: 'flex-end', marginRight: theme.spacing(5) }} >
@@ -195,6 +198,9 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                         <ListItemText primary="Modificar perfil" />
                     </ListItem>
                     <ListItem component={RouterLink} to="" button>
+                        <ListItemText primary="Articulos" />
+                    </ListItem>
+                    <ListItem component={RouterLink} to="" button>
                         <ListItemText primary="Paquetes" />
                     </ListItem>
                     <ListItem component={RouterLink} to="" button>
@@ -203,7 +209,7 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                 </List>
                 <Divider />
                 <List>
-                    <ListItem component={RouterLink} to="/admin/logout" button>
+                    <ListItem component={RouterLink} to="/" button>
                         <ListItemText primary="Salir" />
                     </ListItem>
                 </List>

@@ -61,6 +61,7 @@ export const NavBar = (props: RouteComponentProps & { children?: any }) => {
                     }
                 </Toolbar>
             </AppBar>
+            {props.children}
         </div>
     )
 }

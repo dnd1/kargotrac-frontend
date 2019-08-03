@@ -35,7 +35,7 @@ export const SignUp = (props: any) => {
   //const id = props.match.params && (props.match.params as any).id
 
   // meter responsehandler aqui y que sea el el que cambie el estado de error
-
+  const id = props.id
   const [signup, setSignup] = React.useState({
     email: "",
     username: "",
@@ -116,10 +116,10 @@ export const SignUp = (props: any) => {
         email: signup.email,
         username: signup.username,
         password: signup.password,
-        companyID: props.match.params.id
+        companyID: id
       }
       
-      axios.post(`http://localhost:8080/register`, user)
+      axios.post(`https://kargotrack.herokuapp.com/register`, user)
         .then(res => {
           console.log(res);
           console.log(res.data);
@@ -263,7 +263,7 @@ export const SignUp = (props: any) => {
             <Grid container justify="flex-end">
               <Grid item>
                 {'Si ya estás registrado con otra empresa de envíos ve al '}
-                <Link to={`/login${props.params.id}`}>
+                <Link to={`/login${props.id}`}>
                   login
             </Link>
               </Grid>
