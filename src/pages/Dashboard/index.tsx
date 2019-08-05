@@ -211,6 +211,7 @@ const useStyles = makeStyles(theme => ({
     },
     paper: {
         width: '100%',
+        marginTop: theme.spacing(-5)
     },
     table: {
         minWidth: 750,
@@ -324,7 +325,10 @@ export default function EnhancedTable() {
                                 .map((row: any, index: any) => {
                                     const isItemSelected = isSelected(row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-
+                                    // Aqui paso la informacion de que voy a mostrar segun donde estoy
+                                    // Cambiar el nombre de packnumber y eso a algo generico
+                                    // Recordar que solo muestro los botones de agregar articulo y crear envio en
+                                    // Listado de articulos
                                     return (
                                         <TableRow
                                             hover
