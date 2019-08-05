@@ -19,6 +19,10 @@ import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-do
 import axios from 'axios'
 import { PopUp } from './popup'
 import {userContext} from '../../App'
+import Visibility from '@material-ui/icons/Visibility';
+import VisibilityOff from '@material-ui/icons/VisibilityOff';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import IconButton from '@material-ui/core/IconButton';
 
 
 
@@ -59,6 +63,19 @@ export const SignUp = (props: any) => {
   const [submitting, setSubmit ] = React.useState(false)
   
   const context = React.useContext(userContext)
+
+  const [values, setValues] = React.useState({
+    showPassword: false,
+  });
+
+  const handleClickShowPassword = () => {
+    setValues({ ...values, showPassword: !values.showPassword });
+  };
+
+  const handleMouseDownPassword = (event: any) => {
+    event.preventDefault();
+  };
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.persist();
@@ -240,13 +257,27 @@ export const SignUp = (props: any) => {
                   fullWidth
                   name="password"
                   label="Password"
-                  type="password"
                   id="password"
+                  type={values.showPassword ? 'text' : 'password'}
                   autoComplete="current-password"
                   value={signup.password}
                   onChange={handleChange}
                   error={passError}
                   helperText={passError ? 'Please enter a valid password' : ' '}
+                  InputProps={{
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton
+                          edge="end"
+                          aria-label="toggle password visibility"
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                        >
+                          {values.showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
                 />
               </Grid>
 
