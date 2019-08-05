@@ -61,7 +61,7 @@ export const App: React.FC = () => {
                 <NavBar {...props}></NavBar>
 
                   <Route
-                    path="/login:id?"
+                    path="/login/:id?"
                     render={(props: RouteComponentProps) => {
                       const id = (props.match.params as any).id
                       return <Login id={id}></Login>
@@ -69,7 +69,7 @@ export const App: React.FC = () => {
                   />
 
                   <Route
-                    path="/signup:id?"
+                    path="/signup/:id?"
                     render={(props: RouteComponentProps) => {
                       const id = (props.match.params as any).id
                       return <SignUp id={id}></SignUp>
