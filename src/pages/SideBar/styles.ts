@@ -59,6 +59,14 @@ export default makeStyles((theme: Theme) =>
     },
     button: {
       margin: theme.spacing(1),
+    },
+    margin: {
+      margin: theme.spacing(1),
+    },
+    div: {
+      ...theme.typography.button,
+      backgroundColor: theme.palette.common.white,
+      padding: theme.spacing(1),
     }
   })
 );

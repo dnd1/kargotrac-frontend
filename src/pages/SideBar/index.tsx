@@ -28,6 +28,7 @@ import MenuItem from '@material-ui/core/MenuItem';
 import MenuList from '@material-ui/core/MenuList';
 import { userContext } from "../../App";
 import { Box } from "@material-ui/core";
+import AccountCircle from '@material-ui/icons/AccountCircle';
 
 
 
@@ -163,9 +164,10 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
 
 
                     <Box flexGrow={1}></Box>
-                    <div style={{ justifyContent: 'flex-end', marginRight: theme.spacing(5) }} >
+                    <div style={{ justifyContent: 'flex-end', marginRight: theme.spacing(6) }} >
+                        
                         <Typography variant="body2" noWrap>
-                            Nombre de usuario:{' '}{user ? user.user.username : ''}
+                            <AccountCircle></AccountCircle>{' '}{user ? user.user.username : ''}
                         </Typography>
 
                         <Box flexGrow={1}></Box>
