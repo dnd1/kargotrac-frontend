@@ -113,7 +113,9 @@ export const SignUp = (props: any) => {
   }
 
   const handleBlur = (e: any) => {
-    setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    if(e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    else if (e.target.name === "password") setPassError(e.target.value.length === 0)
+    else setUsernameError(e.target.value.length === 0)
   }
 
   const handleSubmit = (evt: any) => {
@@ -245,7 +247,8 @@ export const SignUp = (props: any) => {
                   value={signup.username}
                   onChange={handleChange}
                   error={usernameError}
-                  helperText={usernameError ? 'Please enter a valid password' : ' '}
+                  helperText={usernameError ? 'Please enter a valid username' : ' '}
+                  onBlur={handleBlur}
 
                 />
               </Grid>
@@ -278,6 +281,7 @@ export const SignUp = (props: any) => {
                       </InputAdornment>
                     ),
                   }}
+                  onBlur={handleBlur}
                 />
               </Grid>
 

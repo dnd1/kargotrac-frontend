@@ -104,7 +104,9 @@ export const Login = (props: any) => {
   }
 
   const handleBlur = (e: any) => {
-    setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    if(e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    else setPassError(e.target.value.length === 0)
+    
   }
 
   const handleSubmit = (evt: any) => {
@@ -251,6 +253,7 @@ export const Login = (props: any) => {
                   </InputAdornment>
                 ),
               }}
+              onBlur={handleBlur}
             />
             
             <Button
