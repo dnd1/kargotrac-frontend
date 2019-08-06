@@ -8,6 +8,7 @@ import {NavBar} from './pages/NavBar'
 import { Dashboard } from './pages/Dashboard'
 import { UserProfile } from './pages/UserProfile'
 import SideBar from './pages/SideBar';
+import ItemsPage from './pages/protected/ItemsPage';
 
 
 // 
@@ -99,6 +100,17 @@ export const App: React.FC = () => {
                     );
                   }}
                 />
+
+                <Route
+                exact
+                path="/dashboard/items"
+                render={(props: any) => {
+                  return (
+                    <ItemsPage></ItemsPage>
+                  );
+                }}
+              />
+                
                 <Route
                   path="/dashboard/users/me"
                   render={(props: any) => {
