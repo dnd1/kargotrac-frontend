@@ -138,7 +138,7 @@ export const SignUp = (props: any) => {
         companyID: id
       }
       
-      axios.post(`https://kargotrack.herokuapp.com/register`, user)
+      axios.post(`http://localhost:8080/register`, user)
         .then(res => {
           console.log(res);
           console.log(res.data);
