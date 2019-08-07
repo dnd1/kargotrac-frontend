@@ -370,6 +370,14 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
+type response = {
+    tracking_id: string,
+    status: string | null,
+    name: string,
+    qty: number,
+    item_id: number,
+    package_id: number
+}
 
 export default function ItemsPage() {
     const classes = useStyles();
@@ -379,6 +387,10 @@ export default function ItemsPage() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+    // Items para el ItemsPage 
+
+    const [items, setItems] = React.useState<response[]>([])
     // Para el popup de editar
     const [open, setOpen] = React.useState(false);
     function handleClickOpen() {
@@ -388,6 +400,10 @@ export default function ItemsPage() {
     function handleClose() {
         setOpen(false);
     }
+    const addItem = (item : response) => {
+        setItems([...items, item])
+        console.log(item)
+    } 
 
     // Handle request for items, save in row
     // Cargo el contexto para sacar el user.id y el companyid
@@ -402,6 +418,19 @@ export default function ItemsPage() {
         axios.get(`http://localhost:8080/items`, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } }).then((res : any) => {
             console.log("GET ITEMS")
             console.log(res)
+            let itemsList : response[] = res.data 
+            //setItems({...items, [items]: res})
+            
+            for (let index = 0; index < itemsList.length; index++) {
+                console.log('index')
+                console.log(itemsList[index])
+                addItem(itemsList[index] as response)
+                //setItems(items.push(itemsList[index]))
+                
+            }
+            //setItems(itemsList)
+            console.log('ESTO ES SET ITEMS')
+            console.log(items)
         }, (error) => {
             window.alert(error)
 

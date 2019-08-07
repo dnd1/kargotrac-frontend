@@ -54,7 +54,7 @@ export default function PopUp(props: any) {
                         <Button onClick={props.handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button color="primary" type="submit">
+                        <Button color="primary" type="submit" onClick={props.handleClose}>
                             Agregar
                         </Button>
                     </DialogActions>
