@@ -6,10 +6,10 @@ import { Button, Box, Dialog, DialogTitle, DialogContent, DialogContentText, Tex
 export default function PopUp(props: any) {
     return (
         <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title" >
-            <DialogTitle id="form-dialog-title">Agregar artículo</DialogTitle>
+            <DialogTitle id="form-dialog-title">{props.action}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
-                    Para agregar un artículo, debe ingresar el nombre, la cantidad y el tracking id del paquete
+                    {props.msg}
             </DialogContentText>
                 <form noValidate onSubmit={props.onSubmit}>
                     <TextField

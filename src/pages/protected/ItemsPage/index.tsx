@@ -22,11 +22,14 @@ import Edit from '@material-ui/icons/Edit';
 import PopUp from './popup';
 import axios from 'axios';
 import { userContext } from '../../../App';
+import {useToolbarStyles} from './stylesToolBar'
+import {useStyles} from './styles'
 
 
 
-function createData(name: any, packNumber: any, packStatus: any, envStatus: any) {
-    return { name, packNumber, packStatus, envStatus };
+
+function createData(name: any, qty: any, tracking_id: any, status: any) {
+    return { name, qty, tracking_id, status };
 }
 const rows = [
     createData('Cupcake', 305, 3.7, 67),
@@ -43,6 +46,7 @@ const rows = [
     createData('Nougat', 360, 19.0, 9),
     createData('Oreo', 437, 18.0, 63),
 ];
+
 
 function desc(a: any, b: any, orderBy: any) {
     if (b[orderBy] < a[orderBy]) {
@@ -70,9 +74,9 @@ function getSorting(order: any, orderBy: any) {
 
 const headRows = [
     { id: 'name', numeric: false, disablePadding: true, label: 'Nombre del artículo' },
-    { id: 'packNumber', numeric: true, disablePadding: false, label: '# Paquete' },
-    { id: 'packStatus', numeric: true, disablePadding: false, label: 'Estatus del paquete' },
-    { id: 'envStatus', numeric: true, disablePadding: false, label: 'Estatus del envío' },
+    { id: 'qty', numeric: true, disablePadding: false, label: 'Cantidad' },
+    { id: 'tracking_id', numeric: true, disablePadding: false, label: '# Paquete' },
+    { id: 'status', numeric: true, disablePadding: false, label: 'Estatus del paquete' },
 
 ];
 
@@ -129,44 +133,11 @@ EnhancedTableHead.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-const useToolbarStyles = makeStyles(theme => ({
-    root: {
-        paddingLeft: theme.spacing(2),
-        paddingRight: theme.spacing(1),
 
-    },
-    highlight:
-        theme.palette.type === 'light'
-            ? {
-                color: theme.palette.secondary.main,
-                backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-            }
-            : {
-                color: theme.palette.text.primary,
-                backgroundColor: theme.palette.secondary.dark,
-            },
-    spacer: {
-        flex: '0 1 100%',
-    },
-    actions: {
-        color: theme.palette.text.secondary,
-        display: 'flex',
-        justifyContent: 'flex-end'
-    },
-    title: {
-        flex: '0 0 auto',
-    },
-    button: {
-        marginRight: theme.spacing(1),
-    },
-    submit: {
-        margin: theme.spacing(3, 0, 2),
-    },
-}));
 
-const EnhancedTableToolbar = (props: any) => {
-    const classes = useToolbarStyles();
-    const { numSelected } = props;
+/* ********************* FORM PARA CREAR UN ITEM ************************/
+
+const FormCreateItem = (props: any) => {
 
     const context = React.useContext(userContext)
     console.log("Contexto en Items page")
@@ -174,15 +145,6 @@ const EnhancedTableToolbar = (props: any) => {
     let user: any = null
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
-    const [open, setOpen] = React.useState(false);
-
-    function handleClickOpen() {
-        setOpen(true);
-    }
-
-    function handleClose() {
-        setOpen(false);
-    }
 
     const [item, setItem] = React.useState(
         {
@@ -208,24 +170,19 @@ const EnhancedTableToolbar = (props: any) => {
     const validate = (name: any, value: any) => {
         let notValid = false
         if (value.length === 0 || value === 0) notValid = true
-        
-        if(name==="name") setNameError(notValid)
+
+        if (name === "name") setNameError(notValid)
         else setQtyError(notValid)
 
-        
+
     }
-
-
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log("este es el item:")
-        console.log(item)
 
         // Validaciones
         validate("name", item.name)
         validate("quantity", item.quantity)
-        console.log(nameError)
-        console.log(qtyError)
+
 
         if (!nameError && !qtyError) {
             const req = {
@@ -235,9 +192,8 @@ const EnhancedTableToolbar = (props: any) => {
                 userID: (user as any).user.id,
                 companyID: (user as any).companyID
             }
-            console.log("Este es el request")
-            console.log(req)
-            axios.post(`http://localhost:8080/items`, req)
+
+            axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
                 .then(res => {
                     console.log("este es el item:")
                     console.log(item)
@@ -248,11 +204,130 @@ const EnhancedTableToolbar = (props: any) => {
                     window.alert(error)
 
                 })
-        }else{
+        } else {
             console.log("Request no enviado!")
         }
+    }
+
+    return (
+        <PopUp
+            action={"Agregar artículo"}  
+            open={props.open}
+            handleClose={props.handleClose}
+            onSubmit={handleSubmit}
+            handleChange={handleChange}
+            handleNameError={setNameError}
+            handleQtyError={setQtyError}
+            nameError={nameError}
+            qtyError={qtyError}
+            msg=""
+        >
+        </PopUp>
+    )
+}
+
+/****************** FORM PARA EDITAR EL ITEM *******************/
+const FormEditItem = (props: any) => {
+
+    const context = React.useContext(userContext)
+    console.log("Contexto en Items page")
+    if (context && context.session) console.log(context.session)
+    let user: any = null
+    if (context && context.session) user = JSON.stringify(context.session)
+    if (user) user = JSON.parse(user)
+
+    const [item, setItem] = React.useState(
+        {
+            name: "",
+            quantity: 0,
+            tracking_id: ""
+        }
+    )
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log(item)
+        const { name, value } = e.target
+        setItem({ ...item, [name]: value })
+        if (e.target.name === "name") setNameError(e.target.value.length === 0)
+        else setQtyError(e.target.value.length === 0)
+    }
+
+    // ERROR HANDLER
+
+    const [nameError, setNameError] = React.useState(false)
+    const [qtyError, setQtyError] = React.useState(false)
+
+    const validate = (name: any, value: any) => {
+        let notValid = false
+        if (value.length === 0 || value === 0) notValid = true
+
+        if (name === "name") setNameError(notValid)
+        else setQtyError(notValid)
 
 
+    }
+    const handleSubmit = (e: any) => {
+        e.preventDefault();
+
+        // Validaciones
+        validate("name", item.name)
+        validate("quantity", item.quantity)
+
+
+        if (!nameError && !qtyError) {
+            const req = {
+                name: item.name,
+                quantity: item.quantity,
+                tracking_id: item.tracking_id,
+                userID: (user as any).user.id,
+                companyID: (user as any).companyID
+            }
+
+            axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+                .then(res => {
+                    console.log("este es el item:")
+                    console.log(item)
+                    console.log("Este es el response")
+                    console.log(res)
+                    //
+                }, (error) => {
+                    window.alert(error)
+
+                })
+        } else {
+            console.log("Request no enviado!")
+        }
+    }
+
+    return (
+        <PopUp
+            action={"Editar artículo"}
+            open={props.open}
+            handleClose={props.handleClose}
+            onSubmit={handleSubmit}
+            handleChange={handleChange}
+            handleNameError={setNameError}
+            handleQtyError={setQtyError}
+            nameError={nameError}
+            qtyError={qtyError}
+            msg=""
+        >
+        </PopUp>
+    )
+}
+
+
+
+const EnhancedTableToolbar = (props: any) => {
+    const classes = useToolbarStyles();
+    const { numSelected } = props;
+    const [open, setOpen] = React.useState(false);
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
     }
     // Aqui debo manejar hacer la funcion del onSubmit
     return (
@@ -284,18 +359,8 @@ const EnhancedTableToolbar = (props: any) => {
                     </Button>
                 </div>
             </Toolbar>
+            <FormCreateItem open={open} handleClose={handleClose}></FormCreateItem>
 
-            <PopUp
-                open={open}
-                handleClose={handleClose}
-                onSubmit={handleSubmit}
-                handleChange={handleChange}
-                handleNameError={setNameError}
-                handleQtyError={setQtyError}
-                nameError={nameError}
-                qtyError={qtyError}
-                >
-            </PopUp>
 
         </div>
     );
@@ -305,39 +370,6 @@ EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
 };
 
-const useStyles = makeStyles(theme => ({
-    root: {
-        width: '100%',
-
-    },
-    paper: {
-        width: '100%',
-        marginTop: theme.spacing(-5)
-    },
-    table: {
-        minWidth: 750,
-    },
-    tableWrapper: {
-        overflowX: 'auto',
-    },
-    visuallyHidden: {
-        border: 0,
-        clip: 'rect(0 0 0 0)',
-        height: 1,
-        margin: -1,
-        overflow: 'hidden',
-        padding: 0,
-        position: 'absolute',
-        top: 20,
-        width: 1,
-    },
-    button: {
-        margin: theme.spacing(1),
-    },
-    fab: {
-        margin: theme.spacing(1),
-    },
-}));
 
 export default function ItemsPage() {
     const classes = useStyles();
@@ -347,6 +379,36 @@ export default function ItemsPage() {
     const [page, setPage] = React.useState(0);
     const [dense, setDense] = React.useState(false);
     const [rowsPerPage, setRowsPerPage] = React.useState(10);
+    // Para el popup de editar
+    const [open, setOpen] = React.useState(false);
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
+
+    // Handle request for items, save in row
+    // Cargo el contexto para sacar el user.id y el companyid
+    const context = React.useContext(userContext)
+    const fetchItems = () => {
+        
+        console.log("Contexto en Items page")
+        if (context && context.session) console.log(context.session)
+        let user: any = null
+        if (context && context.session) user = JSON.stringify(context.session)
+        if (user) user = JSON.parse(user)
+        axios.get(`http://localhost:8080/items`, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } }).then((res : any) => {
+            console.log("GET ITEMS")
+            console.log(res)
+        }, (error) => {
+            window.alert(error)
+
+        })
+    }
+
+    React.useEffect( () => { fetchItems() }, [] );
 
     function handleRequestSort(event: any, property: any) {
         const isDesc = orderBy === property && order === 'desc';
@@ -402,6 +464,7 @@ export default function ItemsPage() {
 
     return (
         <div className={classes.root}>
+            <FormEditItem open={open} handleClose={handleClose}></FormEditItem>
             <Paper className={classes.paper}>
                 <EnhancedTableToolbar numSelected={selected.length} />
                 <div className={classes.tableWrapper}>
@@ -426,10 +489,7 @@ export default function ItemsPage() {
                                 .map((row: any, index: any) => {
                                     const isItemSelected = isSelected(row.name);
                                     const labelId = `enhanced-table-checkbox-${index}`;
-                                    // Aqui paso la informacion de que voy a mostrar segun donde estoy
-                                    // Cambiar el nombre de packnumber y eso a algo generico
-                                    // Recordar que solo muestro los botones de agregar articulo y crear envio en
-                                    // Listado de articulos
+
                                     return (
                                         <TableRow
                                             hover
@@ -453,9 +513,10 @@ export default function ItemsPage() {
                                             <TableCell align="right">{row.packStatus}</TableCell>
                                             <TableCell align="right">{row.envStatus}</TableCell>
                                             <TableCell align="right">
-                                                <IconButton className={classes.button} aria-label="edit">
+                                                <IconButton className={classes.button} aria-label="edit" onClick={handleClickOpen}>
                                                     <Edit></Edit>
                                                 </IconButton>
+
                                             </TableCell>
 
                                         </TableRow>
@@ -489,6 +550,7 @@ export default function ItemsPage() {
                 control={<Switch checked={dense} onChange={handleChangeDense} />}
                 label="Dense padding"
             />
+
         </div>
     );
 }
