@@ -22,6 +22,7 @@ export default function PopUp(props: any) {
                         id="name"
                         name="name"
                         label="Nombre del artículo"
+                        value={props.item.name}
                         type="text"
                         fullWidth
                         onChange={props.handleChange}
@@ -36,6 +37,7 @@ export default function PopUp(props: any) {
                         id="quantity"
                         name="quantity"
                         label="Cantidad"
+                        value={props.item.quantity}
                         type="number"
                         fullWidth
                         onChange={props.handleChange}
@@ -48,6 +50,7 @@ export default function PopUp(props: any) {
                         name="tracking_id"
                         margin="dense"
                         id="package"
+                        value={props.item.tracking_id}
                         label="# Paquete"
                         type="text"
                         fullWidth
@@ -58,7 +61,7 @@ export default function PopUp(props: any) {
                             Cancelar
                         </Button>
                         <Button color="primary" type="submit" onClick={props.name.length > 0 && props.qty > 0 ? props.handleClose : closeError}>
-                            Agregar
+                            {props.action==="Editar artículo" ? 'Guardar' : 'Agregar'}
                         </Button>
                     </DialogActions>
 

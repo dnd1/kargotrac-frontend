@@ -1,6 +1,6 @@
 
 import React from 'react';
-import PropTypes from 'prop-types';
+import PropTypes, { number } from 'prop-types';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
@@ -27,161 +27,6 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 
 
-const headRows = [
-    { id: 'name', numeric: false, disablePadding: true, label: 'Nombre del artículo' },
-    { id: 'qty', numeric: true, disablePadding: false, label: 'Cantidad' },
-    { id: 'tracking_id', numeric: true, disablePadding: false, label: '# Paquete' },
-    { id: 'status', numeric: true, disablePadding: false, label: 'Estatus del paquete' },
-
-];
-
-function EnhancedTableHead(props: any) {
-    const { classes, onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } = props;
-    const createSortHandler = (property: any) => (event: any) => {
-        onRequestSort(event, property);
-    };
-
-    return (
-        <TableHead>
-            <TableRow>
-                <TableCell padding="checkbox">
-                    <Checkbox
-                        indeterminate={numSelected > 0 && numSelected < rowCount}
-                        checked={numSelected === rowCount}
-                        onChange={onSelectAllClick}
-                        inputProps={{ 'aria-label': 'select all desserts' }}
-                    />
-                </TableCell>
-                {headRows.map(row => (
-                    <TableCell
-                        key={row.id}
-                        align={row.numeric ? 'right' : 'left'}
-                        padding={row.disablePadding ? 'none' : 'default'}
-                        sortDirection={orderBy === row.id ? order : false}
-                    >
-                        <TableSortLabel
-                            active={orderBy === row.id}
-                            direction={order}
-                            onClick={createSortHandler(row.id)}
-                        >
-                            {row.label}
-                            {orderBy === row.id ? (
-                                <span className={classes.visuallyHidden}>
-                                    {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                                </span>
-                            ) : null}
-                        </TableSortLabel>
-                    </TableCell>
-                ))}
-            </TableRow>
-        </TableHead>
-    );
-}
-
-EnhancedTableHead.propTypes = {
-    classes: PropTypes.object.isRequired,
-    numSelected: PropTypes.number.isRequired,
-    onRequestSort: PropTypes.func.isRequired,
-    onSelectAllClick: PropTypes.func.isRequired,
-    order: PropTypes.oneOf(['asc', 'desc']).isRequired,
-    orderBy: PropTypes.string.isRequired,
-    rowCount: PropTypes.number.isRequired,
-};
-
-
-
-/* ********************* FORM PARA CREAR UN ITEM ************************/
-
-const FormCreateItem = (props: any) => {
-
-    const context = React.useContext(userContext)
-    console.log("Contexto en Items page")
-    if (context && context.session) console.log(context.session)
-    let user: any = null
-    if (context && context.session) user = JSON.stringify(context.session)
-    if (user) user = JSON.parse(user)
-
-    const [item, setItem] = React.useState(
-        {
-            name: "",
-            quantity: 0,
-            tracking_id: ""
-        }
-    )
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(item)
-        const { name, value } = e.target
-        setItem({ ...item, [name]: value })
-        if (e.target.name === "name") setNameError(e.target.value.length === 0)
-        else setQtyError(e.target.value.length === 0)
-    }
-
-    // ERROR HANDLER
-
-    const [nameError, setNameError] = React.useState(false)
-    const [qtyError, setQtyError] = React.useState(false)
-
-    const validate = (name: any, value: any) => {
-        let notValid = false
-        if (value.length === 0 || value === 0) notValid = true
-
-        if (name === "name") setNameError(notValid)
-        else setQtyError(notValid)
-
-
-    }
-    const handleSubmit = (e: any) => {
-        e.preventDefault();
-
-        // Validaciones
-        validate("name", item.name)
-        validate("quantity", item.quantity)
-
-
-        if (!nameError && !qtyError) {
-            const req = {
-                name: item.name,
-                quantity: item.quantity,
-                tracking_id: item.tracking_id,
-                userID: (user as any).user.id,
-                companyID: (user as any).companyID
-            }
-
-            axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
-                .then(res => {
-                    console.log("este es el item:")
-                    console.log(item)
-                    console.log("Este es el response")
-                    console.log(res)
-                    //
-                }, (error) => {
-                    window.alert(error)
-
-                })
-        } else {
-            console.log("Request no enviado!")
-        }
-    }
-
-    return (
-        <PopUp
-            setOpen={props.setOpen}
-            action={"Agregar artículo"}
-            open={props.open}
-            handleClose={props.handleClose}
-            onSubmit={handleSubmit}
-            handleChange={handleChange}
-            handleNameError={setNameError}
-            handleQtyError={setQtyError}
-            nameError={nameError}
-            qtyError={qtyError}
-            msg=""
-        >
-        </PopUp>
-    )
-}
-
 
 
 type response = {
@@ -195,7 +40,7 @@ type response = {
 
 export default function ItemsPage() {
     const classes = useStyles();
-
+    let index = -1
 
     const context = React.useContext(userContext)
     console.log("Contexto en Items page")
@@ -212,6 +57,7 @@ export default function ItemsPage() {
         }
     )
 
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(item)
         const { name, value } = e.target
@@ -219,11 +65,12 @@ export default function ItemsPage() {
         if (e.target.name === "name") setNameError(e.target.value.length === 0)
         else setQtyError(e.target.value.length === 0)
     }
-
     // ERROR HANDLER
+
 
     const [nameError, setNameError] = React.useState(false)
     const [qtyError, setQtyError] = React.useState(false)
+
 
     const validate = (name: any, value: any) => {
         let notValid = false
@@ -234,6 +81,29 @@ export default function ItemsPage() {
 
 
     }
+
+    const postReq = (req : any) => {
+        axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        .then(res => {
+            setItems(res.data)
+            //
+        }, (error) => {
+            window.alert(error)
+
+        })
+    }
+
+    const patchReq = (req : any) => {
+        axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        .then(res => {
+            setItems(res.data)
+            //
+        }, (error) => {
+            window.alert(error)
+
+        })
+    }
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
 
@@ -250,18 +120,9 @@ export default function ItemsPage() {
                 userID: (user as any).user.id,
                 companyID: (user as any).companyID
             }
+            if(action === "add") postReq(req)
+            else if(action === "edit") console.log("Entre en edit")
 
-            axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
-                .then(res => {
-                    console.log("este es el item:")
-                    console.log(item)
-                    console.log("Este es el response")
-                    console.log(res)
-                    //
-                }, (error) => {
-                    window.alert(error)
-
-                })
         } else {
             console.log("Request no enviado!")
         }
@@ -272,9 +133,22 @@ export default function ItemsPage() {
 
     const [items, setItems] = React.useState<response[]>([])
 
-    // Para el popup de editar
+    const [action, setAction] = React.useState("")
+
+
     const [open, setOpen] = React.useState(false);
-    function handleClickOpen() {
+    function handleClickOpen(event: any, i: number, action: string) {
+        //setEditableItem(items[index])
+        console.log("Estos son los items")
+        console.log(items)
+        if (i > -1) {
+            setItem({
+                name: items[i].name,
+                quantity: items[i].qty,
+                tracking_id: items[i].tracking_id
+            })
+        }
+        setAction(action)
         setOpen(true);
     }
 
@@ -309,24 +183,11 @@ export default function ItemsPage() {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    // Hare dos setOpen y handleClick uno para add y otro para edit
 
-    // PARA MANEJAR LA LISTA
-
-    const [checked, setChecked] = React.useState([1]);
-
-    const handleToggle = (value: number) => () => {
-        const currentIndex = checked.indexOf(value);
-        const newChecked = [...checked];
-
-        if (currentIndex === -1) {
-            newChecked.push(value);
-        } else {
-            newChecked.splice(currentIndex, 1);
-        }
-
-        setChecked(newChecked);
-    };
+    // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
+    // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 
+    // Al igual con los handlers. 
+    // Probar si sirve con un solo hanldeSubmit 
 
     return (
         <div className={classes.paper}>
@@ -343,7 +204,7 @@ export default function ItemsPage() {
                 </div>
                 <Box flexGrow={1}></Box>
                 <div className={classes.actions}>
-                    <Button variant="outlined" color="primary" className={classes.button} onClick={handleClickOpen}>
+                    <Button variant="outlined" color="primary" className={classes.button} onClick={(event: any) => handleClickOpen(event, -1, "add")}>
                         Agregar artículo{' '}
                     </Button>
                     <Button variant="outlined" color="primary" className={classes.button} >
@@ -353,7 +214,8 @@ export default function ItemsPage() {
             </Toolbar>
             <PopUp
                 setOpen={setOpen}
-                action={"Agregar artículo"}
+                item={item}
+                action={action === "edit" ? "Editar artículo" : "Agregar artículo"}
                 open={open}
                 handleClose={handleClose}
                 onSubmit={handleSubmit}
@@ -384,12 +246,12 @@ export default function ItemsPage() {
                             {items.map((item, index) => (
                                 <TableRow key={item.item_id} hover>
                                     <TableCell padding="checkbox">
-                                        <IconButton onClick={(e:any) => console.log(item.item_id, "edit")}>
+                                        <IconButton onClick={(event: any) => handleClickOpen(event, index, "edit")}>
                                             <Edit></Edit>
                                         </IconButton>
                                     </TableCell>
                                     <TableCell padding="checkbox">
-                                        <IconButton onClick={(e:any) => console.log(item.item_id, "delete")}>
+                                        <IconButton onClick={(e: any) => console.log(item.item_id, "delete")}>
                                             <DeleteIcon></DeleteIcon>
                                         </IconButton>
                                     </TableCell>
@@ -400,7 +262,7 @@ export default function ItemsPage() {
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
                                     <TableCell padding="checkbox">
-                                        <Checkbox onClick={(e:any) => console.log(index)}/>
+                                        <Checkbox onClick={(e: any) => console.log(index)} />
                                     </TableCell>
                                 </TableRow>
                             ))}
