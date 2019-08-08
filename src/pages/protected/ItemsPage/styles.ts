@@ -5,6 +5,9 @@ export const useStyles = makeStyles(theme => ({
         width: '100%',
 
     },
+    rootList: {
+        width: '100%',
+    },
     paper: {
         width: '100%',
         marginTop: theme.spacing(-5)
@@ -32,4 +35,22 @@ export const useStyles = makeStyles(theme => ({
     fab: {
         margin: theme.spacing(1),
     },
+    actions: {
+        color: theme.palette.text.secondary,
+        display: 'flex',
+        justifyContent: 'flex-end'
+    },
+    title: {
+        flex: '0 0 auto',
+    },
+    submit: {
+        margin: theme.spacing(3, 0, 2),
+    },
+    container: {
+        display: 'flex',
+        flexWrap: 'wrap',
+        flexDirection: 'column',
+        alignItems: 'center',
+    },
+
 }));

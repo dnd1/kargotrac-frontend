@@ -4,6 +4,9 @@ import React from 'react';
 import { Button, Box, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions } from '@material-ui/core';
 
 export default function PopUp(props: any) {
+    const closeError = () => {
+        props.setOpen(true)
+    }
     return (
         <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title" >
             <DialogTitle id="form-dialog-title">{props.action}</DialogTitle>
@@ -54,7 +57,7 @@ export default function PopUp(props: any) {
                         <Button onClick={props.handleClose} color="primary">
                             Cancelar
                         </Button>
-                        <Button color="primary" type="submit" onClick={props.handleClose}>
+                        <Button color="primary" type="submit" onClick={props.name.length > 0 && props.qty > 0 ? props.handleClose : closeError}>
                             Agregar
                         </Button>
                     </DialogActions>
