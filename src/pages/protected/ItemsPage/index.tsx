@@ -73,7 +73,9 @@ export default function ItemsPage() {
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(item)
         const { name, value } = e.target
+        console.log(`name: ${name} and value: ${value} `)
         setItem({ ...item, [name]: value })
+
         if (e.target.name === "name") setNameError(e.target.value.length === 0)
         else setQtyError(e.target.value.length === 0)
     }
@@ -138,13 +140,18 @@ export default function ItemsPage() {
                 companyID: (user as any).companyID
             }
             if (action === "add") postReq(req)
-            else if (action === "edit") patchReq({
-                name: item.name,
-                quantity: item.quantity,
-                tracking_id: item.tracking_id,
-                item_id: items[index].item_id,
-                package_id: items[index].package_id
-            })
+            else if (action === "edit") {
+                // Debo cambiar en items el  item que cambie
+                const editItem: response = {
+                    tracking_id: item.tracking_id,
+                    status: items[index].status,
+                    name: item.name,
+                    qty: item.quantity,
+                    item_id: items[index].item_id,
+                    package_id: items[index].package_id
+                }
+                setItems([...items.slice(0, index),( editItem as response),...items.slice(index + 1, items.length)])
+                patchReq(editItem)}
 
         } else {
             console.log("Request no enviado!")
@@ -157,6 +164,7 @@ export default function ItemsPage() {
     const [items, setItems] = React.useState<response[]>([])
 
     const [action, setAction] = React.useState("")
+    const [trackings, setTrackings] = React.useState<string[]>([])
 
 
     const [open, setOpen] = React.useState(false);
@@ -171,6 +179,11 @@ export default function ItemsPage() {
                 tracking_id: items[i].tracking_id
             })
         }
+        if(action === "add") setItem({
+            name: "",
+            quantity: 0,
+            tracking_id: ""
+        })
         setIndex(i)
         setAction(action)
         //setCurrent({items[i]})
@@ -200,7 +213,7 @@ export default function ItemsPage() {
                 //setItems(res.data)
                 //
                 console.log(`ITEM DELETED ${id}`)
-                setItems([...items.slice(0, index),...items.slice(index+1, items.length)])
+                setItems([...items.slice(0, index), ...items.slice(index + 1, items.length)])
             }, (error: any) => {
                 window.alert(error)
 
@@ -233,7 +246,6 @@ export default function ItemsPage() {
     }
 
     React.useEffect(() => { fetchItems() }, []);
-
 
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 
@@ -278,6 +290,7 @@ export default function ItemsPage() {
                 nameError={nameError}
                 qtyError={qtyError}
                 msg=""
+                suggestions={items}
             >
             </PopUp>
             <Container className={classes.container}>
