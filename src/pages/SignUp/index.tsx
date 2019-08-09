@@ -160,7 +160,7 @@ export const SignUp = (props: any) => {
 
       switch (res.data.status) {
         case 'success':
-          setSubmit(true)
+          
           //const user = JSON.parse(res.data)
           const user:any = {
             user: res.data.user,
@@ -182,6 +182,7 @@ export const SignUp = (props: any) => {
                   El token de sesion es ${res.data.token}
                   Con Status ${res.status}
                   `)
+          setSubmit(true)
           break
         case 'failed':
           setResError({ ...resError, error: true, msg: res.data.msg })
