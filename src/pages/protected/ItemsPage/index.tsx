@@ -141,7 +141,7 @@ export default function ItemsPage() {
             }
             if (action === "add") postReq(req)
             else if (action === "edit") {
-                // Debo cambiar en items el  item que cambie
+                // Deberia editsrlo despues de saber que todo esta bien
                 const editItem: response = {
                     tracking_id: item.tracking_id,
                     status: items[index].status,
@@ -150,7 +150,7 @@ export default function ItemsPage() {
                     item_id: items[index].item_id,
                     package_id: items[index].package_id
                 }
-                setItems([...items.slice(0, index),( editItem as response),...items.slice(index + 1, items.length)])
+                //setItems([...items.slice(0, index),( editItem as response),...items.slice(index + 1, items.length)])
                 patchReq(editItem)}
 
         } else {
