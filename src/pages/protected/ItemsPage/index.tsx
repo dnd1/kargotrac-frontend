@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Container, ListItemIcon, ListSubheader, Table, Paper, TableBody } from '@material-ui/core';
+import { Button, Box, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Container, ListItemIcon, ListSubheader, Table, Paper, TableBody, Link } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import PopUp from './popup';
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
@@ -94,31 +94,31 @@ export default function ItemsPage() {
 
     }
 
-    const postReq = (req : any) => {
+    const postReq = (req: any) => {
         axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
-        .then(res => {
-            setItems([...items, res.data])
-            //
-        }, (error) => {
-            window.alert(error)
+            .then(res => {
+                setItems([...items, res.data])
+                //
+            }, (error) => {
+                window.alert(error)
 
-        })
+            })
     }
 
-    const patchReq = (req : any) => {
+    const patchReq = (req: any) => {
         axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
-        .then(res => {
-            //setItems(res.data)
-            //
-            console.log(res.data)
-            console.log("ESTO ES ITEMS")
-            console.log(items.slice(0,index))
-            console.log(items.slice(index+1,items.length-1))
-            setItems([...items.slice(0,index),res.data, ...items.slice(index+1, items.length)] )
-        }, (error) => {
-            window.alert(error)
+            .then(res => {
+                //setItems(res.data)
+                //
+                console.log(res.data)
+                console.log("ESTO ES ITEMS")
+                console.log(items.slice(0, index))
+                console.log(items.slice(index + 1, items.length - 1))
+                setItems([...items.slice(0, index), res.data, ...items.slice(index + 1, items.length)])
+            }, (error) => {
+                window.alert(error)
 
-        })
+            })
     }
 
     const handleSubmit = (e: any) => {
@@ -137,8 +137,8 @@ export default function ItemsPage() {
                 userID: (user as any).user.id,
                 companyID: (user as any).companyID
             }
-            if(action === "add") postReq(req)
-            else if(action === "edit") patchReq({
+            if (action === "add") postReq(req)
+            else if (action === "edit") patchReq({
                 name: item.name,
                 quantity: item.quantity,
                 tracking_id: item.tracking_id,
@@ -179,6 +179,32 @@ export default function ItemsPage() {
 
     function handleClose() {
         setOpen(false);
+    }
+
+    // DELETE
+
+    const handleDelete = (id: any, index: number) => {
+        const req = {
+            item_id: id,
+            package_id: items[index].package_id
+        }
+        axios.delete(`http://localhost:8080/items`,
+            {
+                headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID }, data: {
+                    item_id: id,
+                    package_id: items[index].package_id
+                }
+            },
+        )
+            .then((res: any) => {
+                //setItems(res.data)
+                //
+                console.log(`ITEM DELETED ${id}`)
+                setItems([...items.slice(0, index),...items.slice(index+1, items.length)])
+            }, (error: any) => {
+                window.alert(error)
+
+            })
     }
 
     // Handle request for items, save in row
@@ -276,7 +302,7 @@ export default function ItemsPage() {
                                         </IconButton>
                                     </TableCell>
                                     <TableCell padding="checkbox">
-                                        <IconButton onClick={(e: any) => console.log(item.item_id, "delete")}>
+                                        <IconButton onClick={(e: any) => handleDelete(item.item_id, index)}>
                                             <DeleteIcon></DeleteIcon>
                                         </IconButton>
                                     </TableCell>
