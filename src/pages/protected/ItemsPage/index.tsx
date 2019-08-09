@@ -40,7 +40,7 @@ type response = {
 
 export default function ItemsPage() {
     const classes = useStyles();
-    let index = -1
+    //let index = -1
 
     const context = React.useContext(userContext)
     console.log("Contexto en Items page")
@@ -49,6 +49,8 @@ export default function ItemsPage() {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
+    console.log("QUE CONOOOOO")
+    console.log(user)
     const [item, setItem] = React.useState(
         {
             name: "",
@@ -57,6 +59,16 @@ export default function ItemsPage() {
         }
     )
 
+    const [current, setCurrent] = React.useState<response>({
+        tracking_id: "",
+        status: "",
+        name: "",
+        qty: 0,
+        item_id: 0,
+        package_id: 0
+    })
+
+    const [index, setIndex] = React.useState(-1)
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(item)
@@ -85,7 +97,7 @@ export default function ItemsPage() {
     const postReq = (req : any) => {
         axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
         .then(res => {
-            setItems(res.data)
+            setItems([...items, res.data])
             //
         }, (error) => {
             window.alert(error)
@@ -96,8 +108,13 @@ export default function ItemsPage() {
     const patchReq = (req : any) => {
         axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
         .then(res => {
-            setItems(res.data)
+            //setItems(res.data)
             //
+            console.log(res.data)
+            console.log("ESTO ES ITEMS")
+            console.log(items.slice(0,index))
+            console.log(items.slice(index+1,items.length-1))
+            setItems([...items.slice(0,index),res.data, ...items.slice(index+1, items.length)] )
         }, (error) => {
             window.alert(error)
 
@@ -121,7 +138,13 @@ export default function ItemsPage() {
                 companyID: (user as any).companyID
             }
             if(action === "add") postReq(req)
-            else if(action === "edit") console.log("Entre en edit")
+            else if(action === "edit") patchReq({
+                name: item.name,
+                quantity: item.quantity,
+                tracking_id: item.tracking_id,
+                item_id: items[index].item_id,
+                package_id: items[index].package_id
+            })
 
         } else {
             console.log("Request no enviado!")
@@ -148,7 +171,9 @@ export default function ItemsPage() {
                 tracking_id: items[i].tracking_id
             })
         }
+        setIndex(i)
         setAction(action)
+        //setCurrent({items[i]})
         setOpen(true);
     }
 
