@@ -34,6 +34,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import {userContext} from '../../App'
+import Snackbars from './snackbar';
 
 
 export const Login = (props: any) => {
@@ -58,6 +59,8 @@ export const Login = (props: any) => {
     error: false,
     msg: ""
   })
+
+  const [showInfo, setShowInfo] = React.useState(false)
 
   const [values, setValues] = React.useState({
     showPassword: false,
@@ -111,6 +114,7 @@ export const Login = (props: any) => {
 
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
+    setShowInfo(true)
     setResError({ ...resError, error: false })
 
 
@@ -124,7 +128,7 @@ export const Login = (props: any) => {
         companyID: id
       }
       console.log(user)
-      axios.post(`http://localhost:8080/users`, user)
+      axios.post(`https://kargotrack.herokuapp.com/users`, user)
         .then(res => {
           responseHandler(res)
           //
@@ -140,7 +144,7 @@ export const Login = (props: any) => {
     console.log('>>>>>>>>>>>>>>>>>>>>>>>>')
     console.log(res.data.status)
     if (res.statusText === "OK") {
-
+      setShowInfo(false)
       switch (res.data.status) {
         case 'success':
           
@@ -200,6 +204,7 @@ export const Login = (props: any) => {
       submitting === true ? <Redirect to='/dashboard'/> : null
 
     }
+    <Snackbars showInfo={showInfo}></Snackbars>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>

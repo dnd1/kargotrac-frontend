@@ -18,12 +18,12 @@ import useStyles from './styles';
 import { Link, Redirect, withRouter, RouteComponentProps } from "react-router-dom";
 import axios from 'axios'
 import { PopUp } from './popup'
-import {userContext} from '../../App'
+import { userContext } from '../../App'
 import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-
+import Snackbars from './snackbar'
 
 
 
@@ -60,13 +60,15 @@ export const SignUp = (props: any) => {
     msg: ""
   })
 
-  const [submitting, setSubmit ] = React.useState(false)
-  
+  const [submitting, setSubmit] = React.useState(false)
+
   const context = React.useContext(userContext)
 
   const [values, setValues] = React.useState({
     showPassword: false,
   });
+
+  const [showInfo, setShowInfo] = React.useState(false)
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -106,14 +108,14 @@ export const SignUp = (props: any) => {
 
       console.log(validateEmail(value))
     }
-    else if(name==='passError') setPassError(errorVal)
+    else if (name === 'passError') setPassError(errorVal)
     //console.log(error)
     else setUsernameError(errorVal)
 
   }
 
   const handleBlur = (e: any) => {
-    if(e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    if (e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
     else if (e.target.name === "password") setPassError(e.target.value.length === 0)
     else setUsernameError(e.target.value.length === 0)
   }
@@ -121,7 +123,7 @@ export const SignUp = (props: any) => {
   const handleSubmit = (evt: any) => {
     evt.preventDefault();
 
-
+    setShowInfo(true)
     setResError({ ...resError, error: false })
 
 
@@ -137,10 +139,11 @@ export const SignUp = (props: any) => {
         password: signup.password,
         companyID: id
       }
-      
-      axios.post(`http://localhost:8080/register`, user)
+
+      axios.post(`https://kargotrack.herokuapp.com/register`, user)
         .then(res => {
           console.log(res);
+          
           console.log(res.data);
           // Hacer siwtch con los casos de errores y adentro del OK esto:
           // Llamar response errors
@@ -157,22 +160,22 @@ export const SignUp = (props: any) => {
   const responseHandler = (res: any) => {
     console.log(res)
     if (res.statusText === "OK") {
-
+      setShowInfo(false)
       switch (res.data.status) {
         case 'success':
-          
+
           //const user = JSON.parse(res.data)
-          const user:any = {
+          const user: any = {
             user: res.data.user,
             companyID: res.data.companyID,
             token: res.data.token,
             usersCompanies: res.data.usersCompanies
           }
 
-          if(context) context.setSession(user)
+          if (context) context.setSession(user)
           console.log('SESION')
-         // if(context) context.setSession(res.data)
-          if(context) console.log(context.session)
+          // if(context) context.setSession(res.data)
+          if (context) console.log(context.session)
           //setSession(user)
           // Aqui debo cargar el estado y manejarlo
           window.sessionStorage.setItem("session", JSON.stringify(user));
@@ -182,6 +185,7 @@ export const SignUp = (props: any) => {
                   El token de sesion es ${res.data.token}
                   Con Status ${res.status}
                   `)
+          
           setSubmit(true)
           break
         case 'failed':
@@ -205,9 +209,10 @@ export const SignUp = (props: any) => {
       }
       {
         // Cuando este todo bien hago submit y voy al dashboard
-        submitting === true ? <Redirect to='/dashboard'/> : null
-  
+        submitting === true ? <Redirect to='/dashboard' /> : null
+
       }
+      <Snackbars showInfo={showInfo}></Snackbars>
 
       <Container component="main" maxWidth="xs">
         <CssBaseline />
@@ -216,8 +221,8 @@ export const SignUp = (props: any) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            
-      </Typography>
+
+          </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <Grid container spacing={2} className="container">
               <Grid item xs={12} >
@@ -293,8 +298,9 @@ export const SignUp = (props: any) => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={showInfo ? true : false}
             >
-            Registrar
+              Registrar
         </Button>
             <Grid container justify="flex-end">
               <Grid item>
