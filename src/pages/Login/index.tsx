@@ -268,6 +268,7 @@ export const Login = (props: any) => {
               variant="contained"
               color="primary"
               className={classes.submit}
+              disabled={showInfo ? true : false}
             >
               Ingresar
           </Button>
