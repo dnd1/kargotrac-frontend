@@ -59,25 +59,25 @@ export default function ItemsPage() {
         }
     )
 
-    const [current, setCurrent] = React.useState<response>({
-        tracking_id: "",
-        status: "",
-        name: "",
-        qty: 0,
-        item_id: 0,
-        package_id: 0
-    })
 
     const [index, setIndex] = React.useState(-1)
+
+
+    function handleChangeSelect(value: any) {
+        console.log("ESTE ES EL VALUE!!!!!!!!!!")
+        console.log(value)
+        setItem({...item, tracking_id: value})
+    }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         console.log(item)
         const { name, value } = e.target
+        console.log("Entre a handle change")
         console.log(`name: ${name} and value: ${value} `)
         setItem({ ...item, [name]: value })
 
         if (e.target.name === "name") setNameError(e.target.value.length === 0)
-        else setQtyError(e.target.value.length === 0)
+        else if (e.target.name === "quantity") setQtyError(parseInt(e.target.value) === 0)
     }
     // ERROR HANDLER
 
@@ -164,7 +164,6 @@ export default function ItemsPage() {
     const [items, setItems] = React.useState<response[]>([])
 
     const [action, setAction] = React.useState("")
-    const [trackings, setTrackings] = React.useState<string[]>([])
 
 
     const [open, setOpen] = React.useState(false);
@@ -204,6 +203,10 @@ export default function ItemsPage() {
         axios.delete(`http://localhost:8080/items`,
             {
                 headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID }, data: {
+                    tracking_id: items[index].tracking_id,
+                    status: items[index].status,
+                    name: items[index].name,
+                    qty: items[index].qty,
                     item_id: id,
                     package_id: items[index].package_id
                 }
@@ -291,6 +294,8 @@ export default function ItemsPage() {
                 qtyError={qtyError}
                 msg=""
                 suggestions={items}
+                setItem={setItem}
+                handleChangeSelect = {handleChangeSelect}
             >
             </PopUp>
             <Container className={classes.container}>
@@ -310,12 +315,12 @@ export default function ItemsPage() {
                             {items.map((item, index) => (
                                 <TableRow key={item.item_id} hover>
                                     <TableCell padding="checkbox">
-                                        <IconButton onClick={(event: any) => handleClickOpen(event, index, "edit")}>
+                                        <IconButton disabled={items[index].status !== "PENDING" ? false : true} onClick={(event: any) => handleClickOpen(event, index, "edit")}>
                                             <Edit></Edit>
                                         </IconButton>
                                     </TableCell>
                                     <TableCell padding="checkbox">
-                                        <IconButton onClick={(e: any) => handleDelete(item.item_id, index)}>
+                                        <IconButton disabled={items[index].status !== "PENDING" ? false : true} onClick={(e: any) => handleDelete(item.item_id, index)}>
                                             <DeleteIcon></DeleteIcon>
                                         </IconButton>
                                     </TableCell>
