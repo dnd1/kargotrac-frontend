@@ -64,7 +64,7 @@ export const App: React.FC = () => {
                   <Route
                     path="/login/:id?"
                     render={(props: RouteComponentProps) => {
-                      const id = (props.match.params as any).id
+                      const id = props.match.params ? (props.match.params as any).id : null
                       return <Login id={id}></Login>
                     }}
                   />
