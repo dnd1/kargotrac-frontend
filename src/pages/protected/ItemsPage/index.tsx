@@ -97,7 +97,7 @@ export default function ItemsPage() {
     }
 
     const postReq = (req: any) => {
-        axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.post(`https://kargotrack.herokuapp.com/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
             .then(res => {
                 setItems([...items, res.data])
                 //
@@ -108,7 +108,7 @@ export default function ItemsPage() {
     }
 
     const patchReq = (req: any) => {
-        axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.patch(`https://kargotrack.herokuapp.com/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
             .then(res => {
                 //setItems(res.data)
                 //
@@ -200,7 +200,7 @@ export default function ItemsPage() {
             item_id: id,
             package_id: items[index].package_id
         }
-        axios.delete(`http://localhost:8080/items`,
+        axios.delete(`https://kargotrack.herokuapp.com/items`,
             {
                 headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID }, data: {
                     tracking_id: items[index].tracking_id,
@@ -228,7 +228,7 @@ export default function ItemsPage() {
     const fetchItems = () => {
 
         axios
-            .get(`http://localhost:8080/items`, {
+            .get(`https://kargotrack.herokuapp.com/items`, {
 
                 headers: { userToken: (user as any).token, companyID: (user as any).companyID },
 
@@ -249,6 +249,8 @@ export default function ItemsPage() {
     }
 
     React.useEffect(() => { fetchItems() }, []);
+
+    React.useEffect(() => { fetchItems() }, [(user as any).companyID]);
 
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 

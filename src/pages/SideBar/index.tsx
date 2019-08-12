@@ -29,7 +29,7 @@ import MenuList from '@material-ui/core/MenuList';
 import { userContext } from "../../App";
 import { Box } from "@material-ui/core";
 import AccountCircle from '@material-ui/icons/AccountCircle';
-
+import Control from "react-select/src/components/Control";
 
 
 
@@ -37,22 +37,51 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 const SplitButton = (props: any) => {
     const [open, setOpen] = React.useState(false);
     const anchorRef = React.useRef(null);
-    const [selectedIndex, setSelectedIndex] = React.useState(0);
-
-    let options: any
-    if(options) options = props.companyIDs
+    let options: any = []
+    if (props.companyIDs) options = props.companyIDs
     else options = props.company
+    const index = options.findIndex(isActualCompany)
+    console.log(`indice ${index}`)
+    const [selectedIndex, setSelectedIndex] = React.useState(index);
+
+    const context = React.useContext(userContext)
+
+    console.log("USERS COMPANIES")
+    console.log(props.companyIDs)
+    console.log("COMPANY ID")
+    console.log(props.company)
     // Falta: la actual debe ser la seleccionada (el index inicial)
-    console.log('Companies')
-    console.log(options)
+    // selectedIndex es el companyIDs que matchee con company (si hay mas de una compania)
+
+
+    // Find index of the actual company
+
+    function isActualCompany(element: any) {
+        return parseInt(element.companyID) === parseInt(props.company)
+    }
     function handleClick() {
-        
+
         alert(`You clicked`);
     }
 
     function handleMenuItemClick(event: any, index: any) {
         setSelectedIndex(index);
+        changeCompanyContext(options[index].companyID)
         setOpen(false);
+    }
+
+    function changeCompanyContext(companyId: any) {
+        const user: any = {
+            user: ((context as any).session as any).user,
+            companyID: companyId,
+            token: ((context as any).session as any).token,
+            usersCompanies: ((context as any).session as any).usersCompanies
+        }
+
+        if (context) context.setSession(user)
+        window.sessionStorage.setItem("session", JSON.stringify(user));
+
+        
     }
 
     function handleToggle() {
@@ -71,7 +100,7 @@ const SplitButton = (props: any) => {
         <Grid container alignContent="center">
             <Grid item xs={12}>
                 <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options ? options[selectedIndex].companyID || options: ''}</Button>
+                    <Button onClick={handleClick}>{options[selectedIndex] ? options[selectedIndex].companyID || options[selectedIndex] : options.companyID}</Button>
                     <Button
                         color="primary"
                         variant="contained"
@@ -93,14 +122,15 @@ const SplitButton = (props: any) => {
                         >
                             <Paper id="menu-list-grow">
                                 <ClickAwayListener onClickAway={handleClose}>
+
                                     <MenuList>
                                         {options.map((option: any, index: any) => (
                                             <MenuItem
-                                                key={option}
+                                                key={index}
                                                 selected={index === selectedIndex}
                                                 onClick={event => handleMenuItemClick(event, index)}
                                             >
-                                                {option}
+                                                {option.companyID || option}
                                             </MenuItem>
                                         ))}
                                     </MenuList>
@@ -165,7 +195,7 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
 
                     <Box flexGrow={1}></Box>
                     <div style={{ justifyContent: 'flex-end', marginRight: theme.spacing(6) }} >
-                        
+
                         <Typography variant="body2" noWrap>
                             <AccountCircle></AccountCircle>{' '}{user ? user.user.username : ''}
                         </Typography>

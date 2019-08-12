@@ -153,7 +153,7 @@ export const Login = (props: any) => {
             user: res.data.user,
             companyID: res.data.companyID,
             token: res.data.token,
-            usersCompanies: res.data.usersCompanies
+            usersCompanies: res.data.usersCompanies 
           }
 
           if(context) context.setSession(user)

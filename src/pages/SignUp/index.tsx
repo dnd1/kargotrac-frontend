@@ -171,7 +171,6 @@ export const SignUp = (props: any) => {
             token: res.data.token,
             usersCompanies: res.data.usersCompanies
           }
-
           if (context) context.setSession(user)
           console.log('SESION')
           // if(context) context.setSession(res.data)
