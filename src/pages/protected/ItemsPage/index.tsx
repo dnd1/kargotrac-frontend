@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Container,  Table, Paper, TableBody, Link } from '@material-ui/core';
+import { Button, Box, Container, Table, Paper, TableBody, Link } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import PopUp from './popup';
 import axios, { AxiosResponse } from 'axios';
@@ -56,30 +56,22 @@ export default function ItemsPage() {
     const [index, setIndex] = React.useState(-1)
     const [selectedItems, setSelectedItems] = React.useState<response[]>([])
 
-    function findItem(element: any, item: any) {
-        return element.tracking_id === item.tracking_id
 
-    }
     function handleSelectedItem(index: number) {
         const itemSelected = items[index]
-
+        const newSelected = [...selectedItems]
         const i = selectedItems.findIndex((item) => {
             return item.item_id === itemSelected.item_id
         })
 
         if (i > 0) {
-            setSelectedItems([
-                ...selectedItems.slice(0, index),
-                ...selectedItems.slice(index + 1, selectedItems.length)
-            ])
+            newSelected.splice(i, 1);
         }
         else
-            setSelectedItems([
-                ...selectedItems, items[index]
-            ])
-
+            newSelected.push(itemSelected)
         console.log(selectedItems)
         console.log("ITEM SELECTED")
+        setSelectedItems(newSelected)
         console.log(items[index])
     }
 
@@ -113,26 +105,31 @@ export default function ItemsPage() {
         setSelectedValue(event.target.value);
         console.log(`nameeee ${event.target.name}`)
     }
-
     const handleShipmentWay = (e: any) => {
         e.preventDefault()
+
         // Post request a agregar envio
         console.log(selectedItems)
         const req = {
             items: selectedItems,
             shippingWay: selectedValue
         }
-
+        const emptyItems: response[] = []
+        setSelectedItems(emptyItems)
         axios.post(`http://localhost:8080/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
             .then(res => {
-                console.log(`This is the answerrrr >> ${res}`)
+                console.log("AQUIIII")
+                console.log(res)
                 //
+                const emptyItems: response[] = []
+                setSelectedItems(emptyItems)
+
             }, (error) => {
                 window.alert(error)
 
             })
-    }    
-    
+    }
+
     const validate = (name: any, value: any) => {
         let notValid = false
         if (value.length === 0 || value === 0) notValid = true
@@ -368,7 +365,7 @@ export default function ItemsPage() {
                 selectedValue={selectedValue}
                 handleChangeShipWay={handleChangeShipWay}
                 handleShipmentWay={handleShipmentWay}
-                >
+            >
             </CreateShipmentForm>
             <Container className={classes.container}>
                 <Paper className={classes.root}>
@@ -403,7 +400,9 @@ export default function ItemsPage() {
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
                                     <TableCell padding="checkbox">
-                                        <Checkbox onClick={(e: any) => handleSelectedItem(index)} />
+                                        <Checkbox checked={selectedItems.findIndex((itemSelected)=> {
+                                            return itemSelected.item_id === item.item_id
+                                        }) !== -1}onClick={(e: any) => handleSelectedItem(index)} />
                                     </TableCell>
                                 </TableRow>
                             ))}
