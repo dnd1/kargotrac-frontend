@@ -10,7 +10,7 @@ import { UserProfile } from './pages/UserProfile'
 import SideBar from './pages/SideBar';
 import ItemsPage from './pages/protected/ItemsPage';
 import ShipmentsPage from './pages/protected/ShipmentsPage';
-
+import PackagesPage from './pages/protected/PackagesPage';
 // 
 
 type user = {
@@ -116,6 +116,16 @@ export const App: React.FC = () => {
                   render={(props: any) => {
                     return (
                       <ShipmentsPage></ShipmentsPage>
+                    );
+                  }}
+                />
+
+                <Route
+                  exact
+                  path="/dashboard/packages"
+                  render={(props: any) => {
+                    return (
+                      <PackagesPage></PackagesPage>
                     );
                   }}
                 />
