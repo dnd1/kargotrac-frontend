@@ -151,6 +151,7 @@ export const SignUp = (props: any) => {
           responseHandler(res)
         }, (error) => {
           //setResError({ ...resError, error: true, msg: error})
+          setShowInfo(false)
           window.alert(error)
           //setResError({ ...resError, error: true, msg: error})
         })
