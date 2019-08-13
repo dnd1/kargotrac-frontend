@@ -235,7 +235,7 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                     <ListItem component={RouterLink} to="/dashboard/items" button>
                         <ListItemText primary="Articulos" />
                     </ListItem>
-                    <ListItem component={RouterLink} to="" button>
+                    <ListItem component={RouterLink} to="/dashboard/packages" button>
                         <ListItemText primary="Paquetes" />
                     </ListItem>
                     <ListItem component={RouterLink} to="/dashboard/shipments" button>
