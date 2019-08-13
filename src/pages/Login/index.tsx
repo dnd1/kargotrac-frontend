@@ -130,6 +130,7 @@ export const Login = (props: any) => {
           responseHandler(res)
         }, (error) => {
           // Snackbar con error
+          setShowInfo(false)
           window.alert(error)
         })
     }
@@ -168,6 +169,7 @@ export const Login = (props: any) => {
       }
 
     } else {
+      setShowInfo(false)
       console.log("????????????????????????")
 
 
