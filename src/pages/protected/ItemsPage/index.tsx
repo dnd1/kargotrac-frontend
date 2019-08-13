@@ -197,6 +197,8 @@ export default function ItemsPage() {
                     item_id: items[index].item_id,
                     package_id: items[index].package_id
                 }
+                console.log("ITEM EDITADO")
+                console.log(editItem)
                 //setItems([...items.slice(0, index),( editItem as response),...items.slice(index + 1, items.length)])
                 patchReq(editItem)
             }
