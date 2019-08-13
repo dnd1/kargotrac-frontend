@@ -4,12 +4,12 @@ import { BrowserRouter as Router, Route, Link, RouteComponentProps } from "react
 import Homepage from './pages/Homepage';
 import { Login } from './pages/Login';
 import { SignUp } from './pages/SignUp';
-import {NavBar} from './pages/NavBar'
+import { NavBar } from './pages/NavBar'
 import { Dashboard } from './pages/Dashboard'
 import { UserProfile } from './pages/UserProfile'
 import SideBar from './pages/SideBar';
 import ItemsPage from './pages/protected/ItemsPage';
-
+import ShipmentsPage from './pages/protected/ShipmentsPage';
 
 // 
 
@@ -61,24 +61,24 @@ export const App: React.FC = () => {
               <div>
                 <NavBar {...props}></NavBar>
 
-                  <Route
-                    path="/login/:id?"
-                    render={(props: RouteComponentProps) => {
-                      const id = props.match.params ? (props.match.params as any).id : null
-                      return <Login id={id}></Login>
-                    }}
-                  />
+                <Route
+                  path="/login/:id?"
+                  render={(props: RouteComponentProps) => {
+                    const id = props.match.params ? (props.match.params as any).id : null
+                    return <Login id={id}></Login>
+                  }}
+                />
 
-                  <Route
-                    path="/signup/:id?"
-                    render={(props: RouteComponentProps) => {
-                      const id = (props.match.params as any).id
-                      return <SignUp id={id}></SignUp>
-                    }}
-                  />
-                  
-                </div>
-              
+                <Route
+                  path="/signup/:id?"
+                  render={(props: RouteComponentProps) => {
+                    const id = (props.match.params as any).id
+                    return <SignUp id={id}></SignUp>
+                  }}
+                />
+
+              </div>
+
 
             );
           }}
@@ -88,9 +88,9 @@ export const App: React.FC = () => {
           path="/dashboard"
           render={(props: any) => {
             return (
-              
-                <SideBar {...props}>
-                
+
+              <SideBar {...props}>
+
                 <Route
                   exact
                   path="/dashboard"
@@ -102,15 +102,24 @@ export const App: React.FC = () => {
                 />
 
                 <Route
-                exact
-                path="/dashboard/items"
-                render={(props: any) => {
-                  return (
-                    <ItemsPage></ItemsPage>
-                  );
-                }}
-              />
-                
+                  exact
+                  path="/dashboard/items"
+                  render={(props: any) => {
+                    return (
+                      <ItemsPage></ItemsPage>
+                    );
+                  }}
+                />
+                <Route
+                  exact
+                  path="/dashboard/shipments"
+                  render={(props: any) => {
+                    return (
+                      <ShipmentsPage></ShipmentsPage>
+                    );
+                  }}
+                />
+
                 <Route
                   path="/dashboard/users/me"
                   render={(props: any) => {
@@ -119,9 +128,9 @@ export const App: React.FC = () => {
                     );
                   }}
                 />
-                </SideBar>
+              </SideBar>
 
-              
+
 
             );
           }}
