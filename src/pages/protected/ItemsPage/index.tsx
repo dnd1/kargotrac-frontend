@@ -375,7 +375,6 @@ export default function ItemsPage() {
                                 <TableCell></TableCell>
                                 <TableCell></TableCell>
                                 <TableCell>Nombre</TableCell>
-                                <TableCell align="right">Cantidad</TableCell>
                                 <TableCell align="right">Número del paquete</TableCell>
                                 <TableCell align="right">Estatus del paquete</TableCell>
                             </TableRow>
@@ -394,15 +393,16 @@ export default function ItemsPage() {
                                         </IconButton>
                                     </TableCell>
                                     <TableCell component="th" scope="row" padding="checkbox">
-                                        {item.name}
+                                        {`${item.name}
+                                          Cantidad: ${item.qty}
+                                        `}
                                     </TableCell>
-                                    <TableCell align="right">{item.qty}</TableCell>
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
                                     <TableCell padding="checkbox">
-                                        <Checkbox checked={selectedItems.findIndex((itemSelected)=> {
+                                        <Checkbox checked={selectedItems.findIndex((itemSelected) => {
                                             return itemSelected.item_id === item.item_id
-                                        }) !== -1}onClick={(e: any) => handleSelectedItem(index)} />
+                                        }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
                                     </TableCell>
                                 </TableRow>
                             ))}
