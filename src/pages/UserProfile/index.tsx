@@ -50,7 +50,7 @@ export const UserProfile = () => {
             phone2: edit.phone2
         }
 
-        axios.patch(`https://kargotrack.herokuapp.com/users/me`, update, { headers: { 'userToken': userToken, 'companyID': companyID } })
+        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken, 'companyID': companyID } })
             .then(res => {
                 console.log('Respuesta de actualizacion')
                 console.log(res.data)
@@ -76,7 +76,7 @@ export const UserProfile = () => {
 
                     //if(res.data.updatedFields.address)
 
-                    axios.get(`https://kargotrack.herokuapp.com/users/me`, { headers: { 'userToken': userToken, 'companyID': companyID } })
+                    axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken, 'companyID': companyID } })
                         .then(res => {
                             console.log('GET USER')
                             const user: any = {

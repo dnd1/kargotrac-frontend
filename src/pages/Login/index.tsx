@@ -17,9 +17,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
-//import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -102,7 +99,7 @@ export const Login = (props: any) => {
       console.log(validateEmail(value))
     }
     else setPassError(errorVal)
-    //console.log(error)
+
 
   }
 
@@ -128,14 +125,12 @@ export const Login = (props: any) => {
         companyID: id
       }
       console.log(user)
-      axios.post(`https://kargotrack.herokuapp.com/users`, user)
+      axios.post(`http://localhost:8080/users`, user)
         .then(res => {
           responseHandler(res)
-          //
         }, (error) => {
-          //setResError({ ...resError, error: true, msg: error})
+          // Snackbar con error
           window.alert(error)
-          //setResError({ ...resError, error: true, msg: error})
         })
     }
   }
@@ -147,8 +142,7 @@ export const Login = (props: any) => {
       setShowInfo(false)
       switch (res.data.status) {
         case 'success':
-          
-          //const user = JSON.parse(res.data)
+
           const user:any = {
             user: res.data.user,
             companyID: res.data.companyID,
@@ -157,17 +151,9 @@ export const Login = (props: any) => {
           }
 
           if(context) context.setSession(user)
-          console.log('SESION EN LOGIN')
-          //let user
-          //if(context && context.session) user = JSON.parse(context.session)
-          //console.log(res.data)
+
           if(context && context.session) console.log(context.session)
           window.sessionStorage.setItem("session", JSON.stringify(user));
-          //window.sessionStorage.setItem("username", res.data.user.username)
-          //const element = window.sessionStorage.getItem("session")
-          //console.log(element)
-          console.log('aqui toy')
-          console.log(res.data.user)
           window.alert(`
                   El usuario ${res.data.user.email} ha sido registrado
                   El token de sesion es ${res.data.token}

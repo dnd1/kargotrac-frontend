@@ -9,21 +9,14 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Dialog, DialogTitle, DialogContent, DialogContentText, TextField, DialogActions, Container, ListItemIcon, ListSubheader, Table, Paper, TableBody, Link } from '@material-ui/core';
+import { Button, Box, Container,  Table, Paper, TableBody, Link } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import PopUp from './popup';
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
-import ListItemText from '@material-ui/core/ListItemText';
-import ListItemAvatar from '@material-ui/core/ListItemAvatar';
-import Avatar from '@material-ui/core/Avatar';
 import axios, { AxiosResponse } from 'axios';
 import { userContext } from '../../../App';
 import { useStyles } from './styles'
 import DeleteIcon from '@material-ui/icons/Delete';
-
+import CreateShipmentForm from "../ShipmentsPage/createShipment"
 
 
 
@@ -61,12 +54,39 @@ export default function ItemsPage() {
 
 
     const [index, setIndex] = React.useState(-1)
+    const [selectedItems, setSelectedItems] = React.useState<response[]>([])
 
+    function findItem(element: any, item: any) {
+        return element.tracking_id === item.tracking_id
+
+    }
+    function handleSelectedItem(index: number) {
+        const itemSelected = items[index]
+
+        const i = selectedItems.findIndex((item) => {
+            return item.item_id === itemSelected.item_id
+        })
+
+        if (i > 0) {
+            setSelectedItems([
+                ...selectedItems.slice(0, index),
+                ...selectedItems.slice(index + 1, selectedItems.length)
+            ])
+        }
+        else
+            setSelectedItems([
+                ...selectedItems, items[index]
+            ])
+
+        console.log(selectedItems)
+        console.log("ITEM SELECTED")
+        console.log(items[index])
+    }
 
     function handleChangeSelect(value: any) {
         console.log("ESTE ES EL VALUE!!!!!!!!!!")
         console.log(value)
-        setItem({...item, tracking_id: value})
+        setItem({ ...item, tracking_id: value })
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +105,34 @@ export default function ItemsPage() {
     const [nameError, setNameError] = React.useState(false)
     const [qtyError, setQtyError] = React.useState(false)
 
+    const [selectedValue, setSelectedValue] = React.useState('Aéreo');
 
+    function handleChangeShipWay(event: React.ChangeEvent<HTMLInputElement>) {
+        // Los seleccionados son los que llevaran este tipo de envio, luego debo eliminarlos de selectedItems y agregarlos
+        // a selectedShiypmentWay
+        setSelectedValue(event.target.value);
+        console.log(`nameeee ${event.target.name}`)
+    }
+
+    const handleShipmentWay = (e: any) => {
+        e.preventDefault()
+        // Post request a agregar envio
+        console.log(selectedItems)
+        const req = {
+            items: selectedItems,
+            shippingWay: selectedValue
+        }
+
+        axios.post(`http://localhost:8080/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+            .then(res => {
+                console.log(`This is the answerrrr >> ${res}`)
+                //
+            }, (error) => {
+                window.alert(error)
+
+            })
+    }    
+    
     const validate = (name: any, value: any) => {
         let notValid = false
         if (value.length === 0 || value === 0) notValid = true
@@ -97,7 +144,7 @@ export default function ItemsPage() {
     }
 
     const postReq = (req: any) => {
-        axios.post(`https://kargotrack.herokuapp.com/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
             .then(res => {
                 setItems([...items, res.data])
                 //
@@ -108,7 +155,7 @@ export default function ItemsPage() {
     }
 
     const patchReq = (req: any) => {
-        axios.patch(`https://kargotrack.herokuapp.com/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
             .then(res => {
                 //setItems(res.data)
                 //
@@ -151,7 +198,8 @@ export default function ItemsPage() {
                     package_id: items[index].package_id
                 }
                 //setItems([...items.slice(0, index),( editItem as response),...items.slice(index + 1, items.length)])
-                patchReq(editItem)}
+                patchReq(editItem)
+            }
 
         } else {
             console.log("Request no enviado!")
@@ -178,7 +226,7 @@ export default function ItemsPage() {
                 tracking_id: items[i].tracking_id
             })
         }
-        if(action === "add") setItem({
+        if (action === "add") setItem({
             name: "",
             quantity: 0,
             tracking_id: ""
@@ -200,7 +248,7 @@ export default function ItemsPage() {
             item_id: id,
             package_id: items[index].package_id
         }
-        axios.delete(`https://kargotrack.herokuapp.com/items`,
+        axios.delete(`http://localhost:8080/items`,
             {
                 headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID }, data: {
                     tracking_id: items[index].tracking_id,
@@ -223,12 +271,22 @@ export default function ItemsPage() {
             })
     }
 
+    const [openShipment, setOpenShipment] = React.useState(false)
+    const handleOpenShipment = (e: any) => {
+        // Set open el popup de create shipment
+        setOpenShipment(true)
+        console.log("Open shipment")
+    }
+
+    function handleCloseShipment() {
+        setOpenShipment(false);
+    }
     // Handle request for items, save in row
     // Cargo el contexto para sacar el user.id y el companyid
     const fetchItems = () => {
 
         axios
-            .get(`https://kargotrack.herokuapp.com/items`, {
+            .get(`http://localhost:8080/items`, {
 
                 headers: { userToken: (user as any).token, companyID: (user as any).companyID },
 
@@ -275,7 +333,7 @@ export default function ItemsPage() {
                     <Button variant="outlined" color="primary" className={classes.button} onClick={(event: any) => handleClickOpen(event, -1, "add")}>
                         Agregar artículo{' '}
                     </Button>
-                    <Button variant="outlined" color="primary" className={classes.button} >
+                    <Button variant="outlined" color="primary" className={classes.button} onClick={(event: any) => handleOpenShipment(event)} >
                         Crear envío
             </Button>
                 </div>
@@ -297,9 +355,19 @@ export default function ItemsPage() {
                 msg=""
                 suggestions={items}
                 setItem={setItem}
-                handleChangeSelect = {handleChangeSelect}
+                handleChangeSelect={handleChangeSelect}
             >
             </PopUp>
+            <CreateShipmentForm
+                open={openShipment}
+                action={"Crear envío"}
+                handleClose={handleCloseShipment}
+                selectedItems={selectedItems}
+                selectedValue={selectedValue}
+                handleChangeShipWay={handleChangeShipWay}
+                handleShipmentWay={handleShipmentWay}
+                >
+            </CreateShipmentForm>
             <Container className={classes.container}>
                 <Paper className={classes.root}>
                     <Table className={classes.table}>
@@ -333,7 +401,7 @@ export default function ItemsPage() {
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
                                     <TableCell padding="checkbox">
-                                        <Checkbox onClick={(e: any) => console.log(index)} />
+                                        <Checkbox onClick={(e: any) => handleSelectedItem(index)} />
                                     </TableCell>
                                 </TableRow>
                             ))}
