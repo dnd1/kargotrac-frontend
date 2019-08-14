@@ -39,8 +39,10 @@ const SplitButton = (props: any) => {
     const anchorRef = React.useRef(null);
     let options: any = []
     if (props.companyIDs) options = props.companyIDs
-    else options = props.company
-    const index = options.findIndex(isActualCompany)
+    else options = [props.company]
+    console.log("Opciones")
+    console.log(options.length)
+    const index = options.length > 1 ? options.findIndex(isActualCompany) : 0
     console.log(`indice ${index}`)
     const [selectedIndex, setSelectedIndex] = React.useState(index);
 
@@ -100,7 +102,7 @@ const SplitButton = (props: any) => {
         <Grid container alignContent="center">
             <Grid item xs={12}>
                 <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options[selectedIndex] ? options[selectedIndex].companyID || options[selectedIndex] : options.companyID}</Button>
+                    <Button onClick={handleClick}>{options.length > 1 ? options[selectedIndex].companyID || options[selectedIndex] : options[0].companyID}</Button>
                     <Button
                         color="primary"
                         variant="contained"
