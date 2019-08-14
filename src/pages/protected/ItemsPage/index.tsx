@@ -28,7 +28,8 @@ type response = {
     name: string,
     qty: number,
     item_id: number,
-    package_id: number
+    package_id: number,
+    ShipmentId: number
 }
 
 export default function ItemsPage() {
@@ -192,7 +193,8 @@ export default function ItemsPage() {
                     name: item.name,
                     qty: item.quantity,
                     item_id: items[index].item_id,
-                    package_id: items[index].package_id
+                    package_id: items[index].package_id,
+                    ShipmentId: items[index].ShipmentId
                 }
                 console.log("ITEM EDITADO")
                 console.log(editItem)
