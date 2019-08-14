@@ -3,7 +3,7 @@ const useStyles = makeStyles((theme: Theme) =>
     createStyles({
         root: {
             width: '100%',
-    
+
         },
         rootList: {
             width: '100%',
@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         title: {
             flex: '0 0 auto',
+            marginLeft: theme.spacing(2),
         },
         submit: {
             margin: theme.spacing(3, 0, 2),
@@ -54,7 +55,11 @@ const useStyles = makeStyles((theme: Theme) =>
         },
         divider: {
             height: theme.spacing(2),
-        }
+        },
+        appBar: {
+            position: 'relative',
+        },
+
     }),
 );
 

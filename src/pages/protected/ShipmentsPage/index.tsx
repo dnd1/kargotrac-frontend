@@ -5,15 +5,15 @@ import Edit from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { userContext } from '../../../App';
 import axios, { AxiosResponse } from 'axios';
+import { Redirect, Link } from 'react-router-dom';
+import EditShipment from './editShipment';
 
 type response = {
     id: number,
-    lbs_weight: number,
-    pvl_weight: number,
-    cubic_feet_volume: number,
-    number_of_boxes: number,
-    shipping_way: string,
-    status: string
+    creation_date: Date,
+    qty: number,
+    status: string,
+    shipping_way: string
 }
 export default function Shipments() {
 
@@ -25,6 +25,17 @@ export default function Shipments() {
     if (user) user = JSON.parse(user)
 
     const [shipments, setShipments] = React.useState<response[]>([])
+
+
+    const [open, setOpen] = React.useState(false);
+
+    function handleClickOpen() {
+        setOpen(true);
+    }
+
+    function handleClose() {
+        setOpen(false);
+    }
 
     const fetchShipments = () => {
 
@@ -49,42 +60,46 @@ export default function Shipments() {
 
     }
 
+
     React.useEffect(() => { fetchShipments() }, []);
 
     React.useEffect(() => { fetchShipments() }, [(user as any).companyID]);
     // Aqui uso el use effect para cargar los shipments
     const classes = useStyles();
     return (
+
         <Container className={classes.container}>
             <Paper className={classes.root}>
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow hover>
                             <TableCell></TableCell>
-                            <TableCell></TableCell>
-                            <TableCell># Envío</TableCell>
-                            <TableCell align="right">Tipo de envío</TableCell>
+                            <TableCell>Envíos</TableCell>
                             <TableCell align="right">Estatus del envío</TableCell>
+                            <TableCell align="right">Tipo de envío</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {shipments.map((ship, index) => (
                             <TableRow key={ship.id} hover>
                                 <TableCell padding="checkbox">
-                                    <IconButton disabled={shipments[index].status !== "PENDING" ? false : true} onClick={(event: any) => console.log("EDIT")}>
+                                    <IconButton disabled={shipments[index].status !== "PENDING" ? false : true} component={Link} to={`shipments/edit/${ship.id}`}>
                                         <Edit></Edit>
                                     </IconButton>
                                 </TableCell>
-                                <TableCell padding="checkbox">
-                                    <IconButton disabled={shipments[index].status !== "PENDING" ? false : true} onClick={(e: any) => console.log("DELETE")}>
-                                        <DeleteIcon></DeleteIcon>
-                                    </IconButton>
-                                </TableCell>
                                 <TableCell component="th" scope="row" padding="checkbox">
-                                    {`${ship.id}`}
+                                    {
+                                        `${ship.creation_date}
+                                        
+                                         Artículos: ${ship.qty}
+
+                                        ${ship.id}
+                                        `
+
+                                    }
                                 </TableCell>
-                                <TableCell align="right">{ship.shipping_way}</TableCell>
                                 <TableCell align="right">{ship.status}</TableCell>
+                                <TableCell align="right">{ship.shipping_way}</TableCell>
                             </TableRow>
                         ))}
                     </TableBody>
