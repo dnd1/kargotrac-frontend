@@ -9,13 +9,12 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Container, Table, Paper, TableBody, Link } from '@material-ui/core';
+import { Button, Box, Container, Table, Paper, TableBody, Link, TextField } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import axios, { AxiosResponse } from 'axios';
 import { userContext } from '../../../App';
 import useStyles from './styles'
 import DeleteIcon from '@material-ui/icons/Delete';
-import CreateShipmentForm from "../ShipmentsPage/createShipment"
 import { Redirect } from 'react-router';
 
 
@@ -32,7 +31,8 @@ type response = {
     ShipmentId: number
 }
 
-export default function EditShipment(props : any) {
+
+export default function EditPackage(props: any) {
     const classes = useStyles();
     //let index = -1
 
@@ -43,80 +43,52 @@ export default function EditShipment(props : any) {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
-    console.log("QUE CONOOOOO")
-    console.log(user)
-    const [item, setItem] = React.useState(
-        {
-            name: "",
-            quantity: 0,
-            tracking_id: ""
-        }
-    )
 
-
-    const [index, setIndex] = React.useState(-1)
-    const [selectedItems, setSelectedItems] = React.useState<response[]>([])
-    const [deselectedItems, setDeselectedItems] = React.useState<response[]>([])
-
-    function handleSelectedItem(index: number) {
-        const itemSelected = items[index]
-        const newSelected = [...selectedItems]
-        const i = selectedItems.findIndex((item) => {
-            return item.item_id === itemSelected.item_id
-        })
-
-        if (i > 0) {
-            newSelected.splice(i, 1);
-            setDeselectedItems([...deselectedItems, itemSelected])
-        }
-        else
-            newSelected.push(itemSelected)
-        console.log(selectedItems)
-        console.log("ITEM SELECTED")
-        setSelectedItems(newSelected)
-        console.log(items[index])
-    }
     // Items para el ItemsPage 
 
-    const set = (itemsList: response[]) => {
-        // Ordeno los checked primero que coinciden en shipmentId con el id que paso como parametro
-        // Al final setItems 
-        // selectedItems son los elegidos, si lo deschequeo entonces lo elimino de ahi
-        // si chequeo entonces lo agrego
-        console.log("INICIO")
-        console.log(itemsList)
-        let list : response [] = [...itemsList]
 
-        const itemsFirst = list.filter(item => item.ShipmentId === parseInt(props.id))
-        setSelectedItems(itemsFirst)
-        const itemsLast = list.filter(item => item.ShipmentId !== parseInt(props.id))
-
-        setItems([...itemsFirst, ...itemsLast])
-        //setItems(list)
-    }
 
     const [items, setItems] = React.useState<response[]>([])
-
-    const [action, setAction] = React.useState("")
+    const [oldPackage, setOldPackage] = React.useState(
+        {
+            tracking_id: "",
+            seller: ""
+        }
+    )
+    const [packageEdit, setPackage] = React.useState({
+        tracking_id: null,
+        seller: null
+    })
 
     const [redirect, setRedirect] = React.useState(false)
-
 
     // Handle request for items, save in row
     // Cargo el contexto para sacar el user.id y el companyid
     const fetchItems = () => {
-
+        console.log("?????????????????//")
+        console.log(props.id)
         axios
-            .get(`http://localhost:8080/items`, {
+            .get(`http://localhost:8080/packages/items`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).companyID },
+                headers: { userToken: (user as any).token, companyID: (user as any).companyID, trackingid: props.id },
+
 
             })
 
-            .then((res: AxiosResponse<response[]>) => {
+            .then((res: any) => {
 
                 //setItems(res.data)
-                set(res.data)
+                // Debo devolver info del package
+                setItems(res.data.items)
+                setOldPackage({
+                    tracking_id: res.data.package.tracking_id,
+                    seller: res.data.package.seller
+                })
+                setPackage({
+                    tracking_id: res.data.package.tracking_id,
+                    seller: res.data.package.seller
+                })
+                console.log(res.data)
 
             })
 
@@ -133,31 +105,35 @@ export default function EditShipment(props : any) {
     React.useEffect(() => { fetchItems() }, [(user as any).companyID]);
 
     const handleSave = () => {
-        console.log("SELECTED ITEMS SAVED")
-        console.log(selectedItems)
-        console.log("DESELECTED ITEMS SAVED")
-        console.log(deselectedItems)
+
         const req = {
-            selectedItems: selectedItems,
-            deselectedItems: deselectedItems,
-            ShipmentId: props.id
+            old_tracking_id: oldPackage.tracking_id,
+            new_tracking_id: packageEdit.tracking_id,
+            old_seller: oldPackage.seller,
+            new_seller: packageEdit.seller
         }
         axios
-        .patch(`http://localhost:8080/shipments/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+            .patch(`http://localhost:8080/packages/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
 
-        .then((res: any) => {
+            .then((res: any) => {
 
-            //setItems(res.data)
-            setRedirect(true)
-            console.log(res)
+                //setItems(res.data)
+                setRedirect(true)
+                console.log(res)
 
-        })
+            })
 
-        .catch((error: any) => {
+            .catch((error: any) => {
 
-            window.alert(error)
+                window.alert(error)
 
-        })
+            })
+    }
+
+    const handleChange = (e: any) => {
+        const { name, value } = e.target
+        console.log(name,value)
+        setPackage({ ...packageEdit, [name]: value })
     }
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 
@@ -166,10 +142,36 @@ export default function EditShipment(props : any) {
 
     return (
         <div className={classes.paper}>
-        {
-            redirect ? <Redirect to="/dashboard/shipments"></Redirect> : null
-        }
+            {
+                redirect ? <Redirect to="/dashboard/packages"></Redirect> : null
+            }
             <Container className={classes.container}>
+                <form className={classes.container} noValidate autoComplete="off">
+                    <TextField
+                        id="tracking"
+                        name="tracking_id"
+                        label="Número de paquete"
+                        className={classes.textField}
+                        value={packageEdit.tracking_id}
+                        onChange={handleChange}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                          }}
+                    />
+                    <TextField
+                        id="seller"
+                        name="seller"
+                        label="Vendedor"
+                        className={classes.textField}
+                        value={packageEdit.seller}
+                        onChange={handleChange}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                          }}
+                    />
+                </form>
                 <Paper className={classes.root}>
                     <Table className={classes.table}>
                         <TableHead>
@@ -189,11 +191,6 @@ export default function EditShipment(props : any) {
                                     </TableCell>
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox checked={selectedItems.findIndex((itemSelected) => {
-                                            return itemSelected.item_id === item.item_id
-                                        }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
-                                    </TableCell>
                                 </TableRow>
                             ))}
                         </TableBody>

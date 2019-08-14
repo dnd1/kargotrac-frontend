@@ -5,6 +5,7 @@ import Edit from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { userContext } from '../../../App';
 import axios, { AxiosResponse } from 'axios';
+import { Link } from 'react-router-dom';
 
 type response = {
     tracking_id: string,
@@ -64,6 +65,7 @@ export default function Packages() {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow hover>
+                            <TableCell></TableCell>
                             <TableCell>Paquete</TableCell>
                             <TableCell align="right">Número de artículos</TableCell>
                             <TableCell align="right">Estatus del paquete</TableCell>
@@ -73,6 +75,11 @@ export default function Packages() {
                         {
                             packages.map((pck, index) => (
                                 <TableRow key={pck.tracking_id} hover>
+                                    <TableCell padding="checkbox">
+                                        <IconButton disabled={packages[index].status !== "PENDING" ? false : true} component={Link} to={`packages/edit/${pck.tracking_id}`}>
+                                            <Edit></Edit>
+                                        </IconButton>
+                                    </TableCell>
                                     <TableCell component="th" scope="row" padding="checkbox">
                                         {`${pck.tracking_id}`}
                                     </TableCell>

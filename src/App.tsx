@@ -11,6 +11,8 @@ import SideBar from './pages/SideBar';
 import ItemsPage from './pages/protected/ItemsPage';
 import ShipmentsPage from './pages/protected/ShipmentsPage';
 import PackagesPage from './pages/protected/PackagesPage';
+import EditShipment from './pages/protected/ShipmentsPage/editShipment';
+import EditPackage from './pages/protected/PackagesPage/editPackage';
 // 
 
 type user = {
@@ -121,6 +123,19 @@ export const App: React.FC = () => {
                 />
 
                 <Route
+                exact
+                path="/dashboard/shipments/edit/:id?"
+                render={(props: any) => {
+                  const id = (props.match.params as any).id
+                  
+                  return (
+                    <EditShipment id={id}></EditShipment>
+                  );
+                }}
+              />
+
+
+                <Route
                   exact
                   path="/dashboard/packages"
                   render={(props: any) => {
@@ -129,6 +144,18 @@ export const App: React.FC = () => {
                     );
                   }}
                 />
+
+                <Route
+                exact
+                path="/dashboard/packages/edit/:id?"
+                render={(props: any) => {
+                  const id = (props.match.params as any).id
+                  
+                  return (
+                    <EditPackage id={id}></EditPackage>
+                  );
+                }}
+              />
 
                 <Route
                   path="/dashboard/users/me"

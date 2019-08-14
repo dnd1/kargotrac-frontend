@@ -59,6 +59,15 @@ const useStyles = makeStyles((theme: Theme) =>
         appBar: {
             position: 'relative',
         },
+        containerForm: {
+            display: 'flex',
+            flexWrap: 'wrap',
+          },
+          textField: {
+            marginLeft: theme.spacing(1),
+            marginRight: theme.spacing(1),
+            width: 400,
+          }
 
     }),
 );
