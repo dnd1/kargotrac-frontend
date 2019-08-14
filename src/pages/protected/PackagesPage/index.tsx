@@ -1,6 +1,6 @@
 import React from 'react';
 import useStyles from "./styles"
-import { Container, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Checkbox } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Checkbox, Button } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { userContext } from '../../../App';
@@ -21,6 +21,12 @@ export default function Packages() {
     if (user) user = JSON.parse(user)
 
     const [packages, setPackages] = React.useState<response[]>([])
+    const [selectedPackage, setSelectedPackage] = React.useState<response>({
+        tracking_id: "",
+        status: "",
+        qty: 0
+    })
+
 
     const fetchPackages = () => {
 
@@ -58,8 +64,6 @@ export default function Packages() {
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow hover>
-                            <TableCell></TableCell>
-                            <TableCell></TableCell>
                             <TableCell>Paquete</TableCell>
                             <TableCell align="right">Número de artículos</TableCell>
                             <TableCell align="right">Estatus del paquete</TableCell>
@@ -68,25 +72,14 @@ export default function Packages() {
                     <TableBody>
                         {
                             packages.map((pck, index) => (
-                            <TableRow key={pck.tracking_id} hover>
-                                <TableCell padding="checkbox">
-                                    <IconButton disabled={packages[index].status !== "PENDING" ? false : true} onClick={(event: any) => console.log("EDIT")}>
-                                        <Edit></Edit>
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell padding="checkbox">
-                                    <IconButton disabled={packages[index].status !== "PENDING" ? false : true} onClick={(e: any) => console.log("DELETE")}>
-                                        <DeleteIcon></DeleteIcon>
-                                    </IconButton>
-                                </TableCell>
-                                <TableCell component="th" scope="row" padding="checkbox">
-                                    {`${pck.tracking_id}`}
-                                </TableCell>
-                                <TableCell align="right">{pck.qty}</TableCell>
-                                <TableCell align="right">{pck.status}</TableCell>
-                            </TableRow>
-                        ))}
-                        
+                                <TableRow key={pck.tracking_id} hover>
+                                    <TableCell component="th" scope="row" padding="checkbox">
+                                        {`${pck.tracking_id}`}
+                                    </TableCell>
+                                    <TableCell align="right">{pck.qty}</TableCell>
+                                    <TableCell align="right">{pck.status}</TableCell>
+                                </TableRow>
+                            ))}
                     </TableBody>
                 </Table>
             </Paper>
