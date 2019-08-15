@@ -42,7 +42,9 @@ export default function Shipments() {
         axios
             .get(`http://localhost:8080/shipments`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).companyID },
+                headers: { userToken: (user as any).token, 
+                        companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).companyID, 
+                        iscompany: (context as any).session.isCompany },
 
             })
 

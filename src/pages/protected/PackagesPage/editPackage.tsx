@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Container, Table, Paper, TableBody, Link, TextField } from '@material-ui/core';
+import { Button, Box, Container, Table, Paper, TableBody, Link, TextField, Menu, MenuItem, List, ListItem, ListItemText, FormControlLabel } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import axios, { AxiosResponse } from 'axios';
 import { userContext } from '../../../App';
@@ -60,6 +60,8 @@ export default function EditPackage(props: any) {
         seller: null
     })
 
+    const [status, setStatus] = React.useState('PENDIENTE')
+
     const [redirect, setRedirect] = React.useState(false)
 
     // Handle request for items, save in row
@@ -88,6 +90,7 @@ export default function EditPackage(props: any) {
                     tracking_id: res.data.package.tracking_id,
                     seller: res.data.package.seller
                 })
+                setStatus(res.data.package.status)
                 console.log(res.data)
 
             })
@@ -110,10 +113,11 @@ export default function EditPackage(props: any) {
             old_tracking_id: oldPackage.tracking_id,
             new_tracking_id: packageEdit.tracking_id,
             old_seller: oldPackage.seller,
-            new_seller: packageEdit.seller
+            new_seller: packageEdit.seller,
+            status: status
         }
         axios
-            .patch(`http://localhost:8080/packages/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+            .patch(`http://localhost:8080/packages/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID , iscompany: (context as any).session.isCompany} })
 
             .then((res: any) => {
 
@@ -130,10 +134,31 @@ export default function EditPackage(props: any) {
             })
     }
 
+    const options = [
+        'Pendiente',
+        'En almacen',
+    ];
     const handleChange = (e: any) => {
         const { name, value } = e.target
-        console.log(name,value)
+        console.log(name, value)
         setPackage({ ...packageEdit, [name]: value })
+    }
+
+    const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+    const [selectedIndex, setSelectedIndex] = React.useState(1);
+
+    function handleClickListItem(event: React.MouseEvent<HTMLElement>) {
+        setAnchorEl(event.currentTarget);
+    }
+
+    function handleMenuItemClick(event: React.MouseEvent<HTMLElement>, index: number) {
+        setSelectedIndex(index);
+        setStatus(options[index])
+        setAnchorEl(null);
+    }
+
+    function handleClose() {
+        setAnchorEl(null);
     }
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 
@@ -155,9 +180,10 @@ export default function EditPackage(props: any) {
                         value={packageEdit.tracking_id}
                         onChange={handleChange}
                         margin="normal"
+                        disabled={(context as any).session.isCompany}
                         InputLabelProps={{
                             shrink: true,
-                          }}
+                        }}
                     />
                     <TextField
                         id="seller"
@@ -167,10 +193,48 @@ export default function EditPackage(props: any) {
                         value={packageEdit.seller}
                         onChange={handleChange}
                         margin="normal"
+                        disabled={(context as any).session.isCompany}
                         InputLabelProps={{
                             shrink: true,
-                          }}
+                        }}
                     />
+                    {
+                        ((context as any).session as any).isCompany ?
+                            <div className={classes.rootMenu}>
+                                <Typography variant="subtitle1">
+                                    Estado del paquete
+                                </Typography>
+                                <List component="nav" aria-label="Device settings">
+                                    <ListItem
+                                        button
+                                        aria-haspopup="true"
+                                        aria-controls="lock-menu"
+                                        aria-label="when device is locked"
+                                        onClick={handleClickListItem}
+                                    >
+                                        <ListItemText primary={status} />
+                                    </ListItem>
+                                </List>
+                                <Menu
+                                    id="lock-menu"
+                                    anchorEl={anchorEl}
+                                    keepMounted
+                                    open={Boolean(anchorEl)}
+                                    onClose={handleClose}
+                                >
+                                    {options.map((option, index) => (
+                                        <MenuItem
+                                            key={option}
+                                            selected={index === selectedIndex}
+                                            onClick={event => handleMenuItemClick(event, index)}
+                                        >
+                                            {option}
+                                        </MenuItem>
+                                    ))}
+                                </Menu>
+                            </div> :
+                            null
+                    }
                 </form>
                 <Paper className={classes.root}>
                     <Table className={classes.table}>

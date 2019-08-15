@@ -14,10 +14,11 @@ export const UserProfile = () => {
     const context = React.useContext(userContext)
     console.log('CONTEXTO!')
     if (context && context.session) console.log(context.session)
-    let user = null
+    let user: any = null
     // COMO CARGAR EL CONTEXTO =======>>>>
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
+
 
     console.log('este es el usuario')
     console.log(user)
@@ -31,6 +32,15 @@ export const UserProfile = () => {
 
     })
 
+    const [companyInfo, setCompanyInfo] = React.useState({
+        logo: user ? user.user.logo : "",
+        primary_color: user ? user.user.primary_color : "",
+        secondary_color: user ? user.user.secondary_color : "",
+        pvl_factor: user ? user.user.pvl_factor : 0.0,
+        maritime_cubic_feet_price: user ? user.user.maritime_cubic_feet_price : 0.0,
+        air_pound_price: user ? user.user.air_pound_price : 0.0
+    })
+
     const [resError, setResError] = React.useState({
         error: false,
         msg: ""
@@ -41,16 +51,42 @@ export const UserProfile = () => {
         console.log(edit)
     }
 
+    const handleChangeExtended = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setCompanyInfo({ ...companyInfo, [e.target.name]: e.target.value })
+        console.log(edit)
+    }
+
     const handleSubmit = (e: any) => {
         e.preventDefault();
         window.alert(`Submitting ${edit.address}`)
-        let update = {
-            address: edit.address,
-            phone1: edit.phone1,
-            phone2: edit.phone2
+        let update: any = {}
+        if ((context as any).session.isCompany) {
+            update = {
+                address: edit.address,
+                phone1: edit.phone1,
+                logo: companyInfo.logo,
+                primary_color: companyInfo.primary_color,
+                secondary_color: companyInfo.secondary_color,
+                pvl_factor: companyInfo.pvl_factor,
+                maritime_cubic_feet_price: companyInfo.maritime_cubic_feet_price,
+                air_pound_price: companyInfo.air_pound_price
+
+            }
+        } else {
+            update = {
+                address: edit.address,
+                phone1: edit.phone1,
+                phone2: edit.phone2
+            }
         }
 
-        axios.patch(`http://localhost:8080/users/me`, update, { headers: { 'userToken': userToken, 'companyID': companyID } })
+        axios.patch(`http://localhost:8080/users/me`, update, {
+            headers: {
+                userToken: (user as any).token,
+                companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                iscompany: (context as any).session.isCompany
+            }
+        })
             .then(res => {
                 console.log('Respuesta de actualizacion')
                 console.log(res.data)
@@ -70,33 +106,46 @@ export const UserProfile = () => {
             switch (res.data.status) {
                 case 'success':
 
-                    // Probar que actualice la sesion y que la muestre al darle a guardar
-                    // Hago get para sustituir y ya
-                    // Hacer get request para actualizar los datos? ==> mientras si
-
-                    //if(res.data.updatedFields.address)
-
-                    axios.get(`http://localhost:8080/users/me`, { headers: { 'userToken': userToken, 'companyID': companyID } })
+                    axios.get(`http://localhost:8080/users/me`, {
+                        headers: {
+                            userToken: (user as any).token,
+                            companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                            iscompany: (context as any).session.isCompany
+                        }
+                    })
                         .then(res => {
                             console.log('GET USER')
-                            const user: any = {
-                                user: res.data.user,
-                                companyID: res.data.companyID,
-                                token: res.data.token,
-                                usersCompanies: context && context.session ? context.session.usersCompanies : ''
+                            if (!(context as any).session.isCompany) {
+                                const user: any = {
+                                    user: res.data.user,
+                                    companyID: res.data.companyID,
+                                    token: res.data.token,
+                                    usersCompanies: context && context.session ? context.session.usersCompanies : '',
+                                    isCompany: false
+                                }
+
+
+                                if (context) context.setSession(user)
+                                //if (context && context.session) console.log(context.session)
+                                window.sessionStorage.setItem("session", JSON.stringify(user));
+                            } else {
+                                const user: any = {
+                                    user: res.data.user,
+                                    isCompany: true,
+                                    token: res.data.token
+                                }
+                                if (context) context.setSession(user)
+                                //if (context && context.session) console.log(context.session)
+                                window.sessionStorage.setItem("session", JSON.stringify(user));
                             }
 
-                            if (context) context.setSession(user)
-                            //if (context) context.setSession(res.data)
-                            if (context && context.session) console.log(context.session)
-                            window.sessionStorage.setItem("session", JSON.stringify(user));
 
-                            //
+
                         }, (error) => {
-                            //setResError({ ...resError, error: true, msg: error})
                             window.alert(error)
-                            //setResError({ ...resError, error: true, msg: error})
                         })
+
+                    console.log(res.data)
                     if (context) context.setSession(res.data)
 
 
@@ -181,17 +230,95 @@ export const UserProfile = () => {
                         fullWidth
                         onChange={handleChange}
                     />
-                    <Input
-                        placeholder="Número de teléfono #2"
-                        className={classes.input}
-                        value={edit.phone2}
-                        name="phone2"
-                        inputProps={{
-                            'aria-label': 'description',
-                        }}
-                        fullWidth
-                        onChange={handleChange}
-                    />
+                    {
+                        !((context as any).session as any).isCompany ?
+                            <Input
+                                placeholder="Número de teléfono #2"
+                                className={classes.input}
+                                value={edit.phone2}
+                                name="phone2"
+                                inputProps={{
+                                    'aria-label': 'description',
+                                }}
+                                fullWidth
+                                onChange={handleChange}
+                            /> :
+                            null
+                    }
+                    {
+                        ((context as any).session as any).isCompany ?
+                            <div>
+                                <Input
+                                    placeholder="Logo"
+                                    className={classes.input}
+                                    value={companyInfo.logo}
+                                    name="logo"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                                <Input
+                                    placeholder="Color primario"
+                                    className={classes.input}
+                                    value={companyInfo.primary_color}
+                                    name="primary_color"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                                <Input
+                                    placeholder="Color secundario"
+                                    className={classes.input}
+                                    value={companyInfo.secondary_color}
+                                    name="secondary_color"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                                <Input
+                                    placeholder="Factor PVL"
+                                    className={classes.input}
+                                    value={companyInfo.pvl_factor}
+                                    name="pvl_factor"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                                <Input
+                                    placeholder="Precio de pie cúbico marítimo"
+                                    className={classes.input}
+                                    value={companyInfo.maritime_cubic_feet_price}
+                                    name="maritime_cubic_feet_price"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                                <Input
+                                    placeholder="Precio de libra aérea"
+                                    className={classes.input}
+                                    value={companyInfo.air_pound_price}
+                                    name="air_pound_price"
+                                    inputProps={{
+                                        'aria-label': 'description',
+                                    }}
+                                    fullWidth
+                                    onChange={handleChangeExtended}
+                                />
+                            </div>
+                            :
+                            null
+                    }
+
                     <Button
                         type="submit"
                         fullWidth

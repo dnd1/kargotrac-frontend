@@ -83,7 +83,7 @@ const SplitButton = (props: any) => {
         if (context) context.setSession(user)
         window.sessionStorage.setItem("session", JSON.stringify(user));
 
-        
+
     }
 
     function handleToggle() {
@@ -169,6 +169,8 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
         setOpen(false);
     }
 
+    console.log(user)
+
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -203,7 +205,11 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                         </Typography>
 
                         <Box flexGrow={1}></Box>
-                        <SplitButton companyIDs={user ? user.usersCompanies : ''} company={user ? user.companyID : ''}></SplitButton>
+
+                        {   !((context as any).session as any).isCompany ?
+                            <SplitButton companyIDs={user ? user.usersCompanies : ''} company={user ? user.companyID : ''}></SplitButton> :
+                            null
+                        }
 
 
 
@@ -234,9 +240,13 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                     <ListItem component={RouterLink} to="/dashboard/users/me" button>
                         <ListItemText primary="Modificar perfil" />
                     </ListItem>
+                    {
+                        !((context as any).session as any).isCompany ?
                     <ListItem component={RouterLink} to="/dashboard/items" button>
                         <ListItemText primary="Articulos" />
-                    </ListItem>
+                    </ListItem> :
+                    null
+                    }
                     <ListItem component={RouterLink} to="/dashboard/packages" button>
                         <ListItemText primary="Paquetes" />
                     </ListItem>

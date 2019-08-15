@@ -67,6 +67,11 @@ const useStyles = makeStyles((theme: Theme) =>
             marginLeft: theme.spacing(1),
             marginRight: theme.spacing(1),
             width: 400,
+          },
+          rootMenu: {
+            width: '100%',
+            maxWidth: 400,
+            backgroundColor: theme.palette.background.paper,
           }
 
     }),

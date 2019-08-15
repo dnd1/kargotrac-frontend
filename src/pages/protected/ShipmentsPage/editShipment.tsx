@@ -9,7 +9,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
 import Checkbox from '@material-ui/core/Checkbox';
 import IconButton from '@material-ui/core/IconButton';
-import { Button, Box, Container, Table, Paper, TableBody, Link } from '@material-ui/core';
+import { Button, Box, Container, Table, Paper, TableBody, Link, TextField } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import axios, { AxiosResponse } from 'axios';
 import { userContext } from '../../../App';
@@ -32,7 +32,7 @@ type response = {
     ShipmentId: number
 }
 
-export default function EditShipment(props : any) {
+export default function EditShipment(props: any) {
     const classes = useStyles();
     //let index = -1
 
@@ -85,7 +85,7 @@ export default function EditShipment(props : any) {
         // si chequeo entonces lo agrego
         console.log("INICIO")
         console.log(itemsList)
-        let list : response [] = [...itemsList]
+        let list: response[] = [...itemsList]
 
         const itemsFirst = list.filter(item => item.ShipmentId === parseInt(props.id))
         setSelectedItems(itemsFirst)
@@ -109,13 +109,26 @@ export default function EditShipment(props : any) {
         axios
             .get(`http://localhost:8080/items`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).companyID },
+                headers: { userToken: (user as any).token, 
+                    companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).companyID, 
+                    iscompany: (context as any).session.isCompany},
 
             })
 
             .then((res: AxiosResponse<response[]>) => {
-
+                if((context as any).session.isCompany){
+                    axios.get(`http://localhost:8080/getShipment`, {headers: {userToken: (user as any).token, id: props.id}})
+                    .then((res) => {
+                        setValues({
+                            lbs_weight: res.data.shipment.lbs_weight,
+                            pvl_weight: res.data.shipment.pvl_weight,
+                            cubic_feet_volume: res.data.shipment.cubic_feet_volume,
+                            number_of_boxes: res.data.shipment.number_of_boxes
+                        })
+                    })
+                }
                 //setItems(res.data)
+
                 set(res.data)
 
             })
@@ -140,25 +153,39 @@ export default function EditShipment(props : any) {
         const req = {
             selectedItems: selectedItems,
             deselectedItems: deselectedItems,
-            ShipmentId: props.id
+            ShipmentId: props.id,
+            companyEdits: values
         }
         axios
-        .patch(`http://localhost:8080/shipments/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+            .patch(`http://localhost:8080/shipments/edit`, req,
+            { headers: { 'userToken': (user as any).token, 
+            'companyID': (user as any).companyID, 
+            iscompany: (context as any).session.isCompany}})
 
-        .then((res: any) => {
+            .then((res: any) => {
 
-            //setItems(res.data)
-            setRedirect(true)
-            console.log(res)
+                //setItems(res.data)
+                setRedirect(true)
+                console.log(res)
 
-        })
+            })
 
-        .catch((error: any) => {
+            .catch((error: any) => {
 
-            window.alert(error)
+                window.alert(error)
 
-        })
+            })
     }
+    const [values, setValues] = React.useState({
+        lbs_weight: 0.0,
+        pvl_weight: 0.0,
+        cubic_feet_volume: 0.0,
+        number_of_boxes: 0
+    });
+
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setValues({ ...values, [event.target.name]: event.target.value });
+    };
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 
     // Al igual con los handlers. 
@@ -166,10 +193,61 @@ export default function EditShipment(props : any) {
 
     return (
         <div className={classes.paper}>
-        {
-            redirect ? <Redirect to="/dashboard/shipments"></Redirect> : null
-        }
+            {
+                redirect ? <Redirect to="/dashboard/shipments"></Redirect> : null
+            }
             <Container className={classes.container}>
+                <form className={classes.container} noValidate autoComplete="off">
+                    <TextField
+                        id="lbs_weight"
+                        label="Peso LBS"
+                        name="lbs_weight"
+                        className={classes.textField}
+                        value={values.lbs_weight}
+                        onChange={handleChange}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <TextField
+                        id="pvl_weight"
+                        label="Peso PVL"
+                        name="pvl_weight"
+                        className={classes.textField}
+                        value={values.pvl_weight}
+                        onChange={handleChange}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <TextField
+                        id="cubic_feet_volume"
+                        label="Volumen pie cúbico"
+                        name="cubic_feet_volume"
+                        className={classes.textField}
+                        value={values.cubic_feet_volume}
+                        onChange={handleChange}
+                        margin="normal"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                    <TextField
+                        id="standard-name"
+                        label="Número de cajas"
+                        name="number_of_boxes"
+                        className={classes.textField}
+                        value={values.number_of_boxes}
+                        onChange={handleChange}
+                        margin="normal"
+                        type="number"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                    />
+                </form>
                 <Paper className={classes.root}>
                     <Table className={classes.table}>
                         <TableHead>
@@ -180,7 +258,7 @@ export default function EditShipment(props : any) {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {items.map((item, index) => (
+                            {((context as any).session.isCompany ? selectedItems : items).map((item, index) => (
                                 <TableRow key={item.item_id} hover>
                                     <TableCell component="th" scope="row" padding="checkbox">
                                         {`${item.name}
@@ -189,11 +267,18 @@ export default function EditShipment(props : any) {
                                     </TableCell>
                                     <TableCell align="right">{item.tracking_id}</TableCell>
                                     <TableCell align="right">{item.status}</TableCell>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox checked={selectedItems.findIndex((itemSelected) => {
-                                            return itemSelected.item_id === item.item_id
-                                        }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
-                                    </TableCell>
+                                    {
+                                        !((context as any).session as any).isCompany ?
+                                            <TableCell padding="checkbox">
+                                                <Checkbox checked={selectedItems.findIndex((itemSelected) => {
+                                                    return itemSelected.item_id === item.item_id
+                                                }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
+                                            </TableCell>
+                                            :
+                                            null
+
+                                    }
+
                                 </TableRow>
                             ))}
                         </TableBody>

@@ -30,7 +30,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import {userContext} from '../../App'
+import { userContext } from '../../App'
 import Snackbars from './snackbar';
 
 
@@ -63,7 +63,7 @@ export const Login = (props: any) => {
     showPassword: false,
   });
 
-  const [submitting, setSubmit ] = React.useState(false)
+  const [submitting, setSubmit] = React.useState(false)
 
   const context = React.useContext(userContext)
 
@@ -104,9 +104,9 @@ export const Login = (props: any) => {
   }
 
   const handleBlur = (e: any) => {
-    if(e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
+    if (e.target.name === "email") setEmailError({ ...emailError, format: !validateEmail(e.target.value) })
     else setPassError(e.target.value.length === 0)
-    
+
   }
 
   const handleSubmit = (evt: any) => {
@@ -124,8 +124,20 @@ export const Login = (props: any) => {
         password: login.password,
         companyID: id
       }
-      console.log(user)
-      axios.post(`http://localhost:8080/users`, user)
+      console.log("COMPANY ID")
+      console.log(props.companyID)
+      if (props.isCompany) {
+        axios.post(`http://localhost:8080/companies`, user, {headers: {id: props.companyID}})
+          .then(res => {
+            responseHandler(res)
+          }, (error) => {
+            // Snackbar con error
+            setShowInfo(false)
+            window.alert(error)
+          })
+
+      } else {
+        axios.post(`http://localhost:8080/users`, user)
         .then(res => {
           responseHandler(res)
         }, (error) => {
@@ -133,6 +145,7 @@ export const Login = (props: any) => {
           setShowInfo(false)
           window.alert(error)
         })
+      }
     }
   }
 
@@ -144,22 +157,44 @@ export const Login = (props: any) => {
       switch (res.data.status) {
         case 'success':
 
-          const user:any = {
-            user: res.data.user,
-            companyID: res.data.companyID,
-            token: res.data.token,
-            usersCompanies: res.data.usersCompanies 
-          }
+          // Debo chequear si es compania 
+          if(res.data.isCompany){
+            const company: any = {
+              user : res.data.company,
+              isCompany: true,
+              token: res.data.token
+            }
 
-          if(context) context.setSession(user)
 
-          if(context && context.session) console.log(context.session)
-          window.sessionStorage.setItem("session", JSON.stringify(user));
-          window.alert(`
-                  El usuario ${res.data.user.email} ha sido registrado
-                  El token de sesion es ${res.data.token}
-                  Con Status ${res.status}
-                  `)
+            if (context) context.setSession(company)
+
+            if (context && context.session) console.log(context.session)
+            window.sessionStorage.setItem("session", JSON.stringify(company));
+            window.alert(`
+                    El usuario ${res.data.company.email} ha sido registrado
+                    El token de sesion es ${res.data.token}
+                    Con Status ${res.status}
+                    `)
+
+          }else
+          {  
+            const user: any = {
+              user: res.data.user,
+              companyID: res.data.companyID,
+              token: res.data.token,
+              usersCompanies: res.data.usersCompanies,
+              isCompany: false
+            }
+
+            if (context) context.setSession(user)
+
+            if (context && context.session) console.log(context.session)
+            window.sessionStorage.setItem("session", JSON.stringify(user));
+            window.alert(`
+                    El usuario ${res.data.user.email} ha sido registrado
+                    El token de sesion es ${res.data.token}
+                    Con Status ${res.status}
+                    `)}
           setSubmit(true)
           break
         case 'failed':
@@ -180,19 +215,24 @@ export const Login = (props: any) => {
 
   return (
     <div>
-    {
-      // Cuando reciba el response, de ahi establezco el error y el mensaje de error
-      resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
-      
-      
-    }
+      {
+        // Cuando reciba el response, de ahi establezco el error y el mensaje de error
+        resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
 
-    {
-      // Cuando este todo bien hago submit y voy al dashboard
-      submitting === true ? <Redirect to='/dashboard'/> : null
 
-    }
-    <Snackbars showInfo={showInfo}></Snackbars>
+      }
+
+      {
+        // Cuando este todo bien hago submit y voy al dashboard
+        submitting === true && !(context as any).session.isCompany? <Redirect to='/dashboard' /> : null
+
+      }
+      {
+        // Cuando este todo bien hago submit y voy al dashboard
+        submitting === true && (context as any).session.isCompany? <Redirect to='/dashboard/packages' /> : null
+
+      }
+      <Snackbars showInfo={showInfo}></Snackbars>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>
@@ -200,8 +240,8 @@ export const Login = (props: any) => {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5">
-            
-        </Typography>
+
+          </Typography>
           <form className={classes.form} noValidate onSubmit={handleSubmit}>
             <TextField
               variant="outlined"
@@ -249,7 +289,7 @@ export const Login = (props: any) => {
               }}
               onBlur={handleBlur}
             />
-            
+
             <Button
               type="submit"
               fullWidth
