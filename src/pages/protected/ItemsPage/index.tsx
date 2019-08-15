@@ -43,7 +43,7 @@ export default function ItemsPage() {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
-    console.log("QUE CONOOOOO")
+    console.log("USER")
     console.log(user)
     const [item, setItem] = React.useState(
         {
@@ -289,7 +289,11 @@ export default function ItemsPage() {
         axios
             .get(`http://localhost:8080/items`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).companyID },
+                headers: {
+                    userToken: (user as any).token,
+                    companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                    iscompany: (context as any).session.isCompany
+                },
 
             })
 

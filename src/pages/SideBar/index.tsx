@@ -77,7 +77,8 @@ const SplitButton = (props: any) => {
             user: ((context as any).session as any).user,
             companyID: companyId,
             token: ((context as any).session as any).token,
-            usersCompanies: ((context as any).session as any).usersCompanies
+            usersCompanies: ((context as any).session as any).usersCompanies,
+            isCompany: ((context as any).session as any).isCompany
         }
 
         if (context) context.setSession(user)

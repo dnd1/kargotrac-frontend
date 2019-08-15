@@ -38,7 +38,8 @@ export default function Shipments() {
     }
 
     const fetchShipments = () => {
-
+        console.log("FETCH SHIPMENTS ")
+        console.log((context as any).session)
         axios
             .get(`http://localhost:8080/shipments`, {
 

@@ -120,7 +120,7 @@ export const UserProfile = () => {
                                     user: res.data.user,
                                     companyID: res.data.companyID,
                                     token: res.data.token,
-                                    usersCompanies: context && context.session ? context.session.usersCompanies : '',
+                                    usersCompanies: context && context.session ? (context.session as any).usersCompanies : '',
                                     isCompany: false
                                 }
 
