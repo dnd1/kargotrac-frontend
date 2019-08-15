@@ -17,6 +17,7 @@ import { userContext } from '../../../App';
 import { useStyles } from './styles'
 import DeleteIcon from '@material-ui/icons/Delete';
 import CreateShipmentForm from "../ShipmentsPage/createShipment"
+import Snackbars from '../../Snackbar/snackbar';
 
 
 
@@ -297,8 +298,8 @@ export default function ItemsPage() {
 
             })
 
-            .then((res: AxiosResponse<response[]>) => {
-
+            .then((res: any) => {
+                
                 setItems(res.data)
 
             })
@@ -375,45 +376,55 @@ export default function ItemsPage() {
             </CreateShipmentForm>
             <Container className={classes.container}>
                 <Paper className={classes.root}>
+                {
+                    items.length > 0 ?
                     <Table className={classes.table}>
-                        <TableHead>
-                            <TableRow hover>
-                                <TableCell></TableCell>
-                                <TableCell></TableCell>
-                                <TableCell>Nombre</TableCell>
-                                <TableCell align="right">Número del paquete</TableCell>
-                                <TableCell align="right">Estatus del paquete</TableCell>
+                    <TableHead>
+                        <TableRow hover>
+                            <TableCell></TableCell>
+                            <TableCell></TableCell>
+                            <TableCell>Nombre</TableCell>
+                            <TableCell align="right">Número del paquete</TableCell>
+                            <TableCell align="right">Estatus del paquete</TableCell>
+                        </TableRow>
+                    </TableHead>
+
+                            <TableBody>
+                        {items.map((item, index) => (
+                            <TableRow key={item.item_id} hover>
+                                <TableCell padding="checkbox">
+                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? false : true} onClick={(event: any) => handleClickOpen(event, index, "edit")}>
+                                        <Edit></Edit>
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell padding="checkbox">
+                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? false : true} onClick={(e: any) => handleDelete(item.item_id, index)}>
+                                        <DeleteIcon></DeleteIcon>
+                                    </IconButton>
+                                </TableCell>
+                                <TableCell component="th" scope="row" padding="checkbox">
+                                    {`${item.name}
+                                      Cantidad: ${item.qty}
+                                    `}
+                                </TableCell>
+                                <TableCell align="right">{item.tracking_id}</TableCell>
+                                <TableCell align="right">{item.status}</TableCell>
+                                <TableCell padding="checkbox">
+                                    <Checkbox checked={selectedItems.findIndex((itemSelected) => {
+                                        return itemSelected.item_id === item.item_id
+                                    }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
+                                </TableCell>
                             </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {items.map((item, index) => (
-                                <TableRow key={item.item_id} hover>
-                                    <TableCell padding="checkbox">
-                                        <IconButton disabled={items[index].status !== "PENDING" ? false : true} onClick={(event: any) => handleClickOpen(event, index, "edit")}>
-                                            <Edit></Edit>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell padding="checkbox">
-                                        <IconButton disabled={items[index].status !== "PENDING" ? false : true} onClick={(e: any) => handleDelete(item.item_id, index)}>
-                                            <DeleteIcon></DeleteIcon>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell component="th" scope="row" padding="checkbox">
-                                        {`${item.name}
-                                          Cantidad: ${item.qty}
-                                        `}
-                                    </TableCell>
-                                    <TableCell align="right">{item.tracking_id}</TableCell>
-                                    <TableCell align="right">{item.status}</TableCell>
-                                    <TableCell padding="checkbox">
-                                        <Checkbox checked={selectedItems.findIndex((itemSelected) => {
-                                            return itemSelected.item_id === item.item_id
-                                        }) !== -1} onClick={(e: any) => handleSelectedItem(index)} />
-                                    </TableCell>
-                                </TableRow>
-                            ))}
-                        </TableBody>
-                    </Table>
+                        ))}
+                    </TableBody> 
+                    
+                </Table>
+                :
+                <Snackbars showInfo={true} variant="info" msg="Aún no tienes artículos asociados"></Snackbars>
+
+
+                }
+
                 </Paper>
             </Container>
         </div>

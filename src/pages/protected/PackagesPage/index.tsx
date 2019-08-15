@@ -1,11 +1,13 @@
 import React from 'react';
 import useStyles from "./styles"
-import { Container, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Checkbox, Button } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, TableBody, IconButton, Checkbox, Button, Typography, Snackbar } from '@material-ui/core';
 import Edit from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { userContext } from '../../../App';
 import axios, { AxiosResponse } from 'axios';
 import { Link } from 'react-router-dom';
+import Snackbars from '../../Snackbar/snackbar';
+
 
 type response = {
     tracking_id: string,
@@ -34,7 +36,7 @@ export default function Packages() {
         axios
             .get(`http://localhost:8080/packages`, {
 
-                headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).companyID, iscompany: (context as any).session.isCompany },
+                headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID, iscompany: (context as any).session.isCompany },
 
             })
 
@@ -62,33 +64,39 @@ export default function Packages() {
     return (
         <Container className={classes.container}>
             <Paper className={classes.root}>
-                <Table className={classes.table}>
-                    <TableHead>
-                        <TableRow hover>
-                            <TableCell></TableCell>
-                            <TableCell>Paquete</TableCell>
-                            <TableCell align="right">Número de artículos</TableCell>
-                            <TableCell align="right">Estatus del paquete</TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {
-                            packages.map((pck, index) => (
-                                <TableRow key={pck.tracking_id} hover>
-                                    <TableCell padding="checkbox">
-                                        <IconButton disabled={packages[index].status !== "PENDING" ? false : true} component={Link} to={`packages/edit/${pck.tracking_id}`}>
-                                            <Edit></Edit>
-                                        </IconButton>
-                                    </TableCell>
-                                    <TableCell component="th" scope="row" padding="checkbox">
-                                        {`${pck.tracking_id}`}
-                                    </TableCell>
-                                    <TableCell align="right">{pck.qty}</TableCell>
-                                    <TableCell align="right">{pck.status}</TableCell>
+                {
+                    packages.length > 0 ?
+                        <Table className={classes.table}>
+                            <TableHead>
+                                <TableRow hover>
+                                    <TableCell></TableCell>
+                                    <TableCell>Paquete</TableCell>
+                                    <TableCell align="right">Número de artículos</TableCell>
+                                    <TableCell align="right">Estatus del paquete</TableCell>
                                 </TableRow>
-                            ))}
-                    </TableBody>
-                </Table>
+                            </TableHead>
+                            <TableBody>
+                                {
+                                    packages.map((pck, index) => (
+                                        <TableRow key={pck.tracking_id} hover>
+                                            <TableCell padding="checkbox">
+                                                <IconButton disabled={packages[index].status !== "PENDIENTE" ? false : true} component={Link} to={`packages/edit/${pck.tracking_id}`}>
+                                                    <Edit></Edit>
+                                                </IconButton>
+                                            </TableCell>
+                                            <TableCell component="th" scope="row" padding="checkbox">
+                                                {`${pck.tracking_id}`}
+                                            </TableCell>
+                                            <TableCell align="right">{pck.qty}</TableCell>
+                                            <TableCell align="right">{pck.status}</TableCell>
+                                        </TableRow>
+                                    ))}
+                            </TableBody>
+                        </Table>
+                        :
+                        <Snackbars showInfo={true} variant="info" msg="Aún no tienes paquetes asociados"></Snackbars>
+                }
+
             </Paper>
         </Container>
     )

@@ -23,7 +23,7 @@ import Visibility from '@material-ui/icons/Visibility';
 import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
-import Snackbars from './snackbar'
+import Snackbars from '../Snackbar/snackbar';
 
 
 
@@ -69,6 +69,8 @@ export const SignUp = (props: any) => {
   });
 
   const [showInfo, setShowInfo] = React.useState(false)
+
+  const [showError, setShowError] = React.useState(false)
 
   const handleClickShowPassword = () => {
     setValues({ ...values, showPassword: !values.showPassword });
@@ -170,7 +172,8 @@ export const SignUp = (props: any) => {
             user: res.data.user,
             companyID: res.data.companyID,
             token: res.data.token,
-            usersCompanies: res.data.usersCompanies
+            usersCompanies: res.data.usersCompanies,
+            isCompany: false
           }
           if (context) context.setSession(user)
           console.log('SESION')
@@ -189,6 +192,7 @@ export const SignUp = (props: any) => {
           setSubmit(true)
           break
         case 'failed':
+          setShowError(true)
           setResError({ ...resError, error: true, msg: res.data.msg })
           break
 
@@ -205,14 +209,14 @@ export const SignUp = (props: any) => {
     <div>
       {
         // Cuando reciba el response, de ahi establezco el error y el mensaje de error
-        resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
+        resError.error === true ? <Snackbars showInfo={showError} error={true} set={setShowError} msg={resError.msg} variant="error"></Snackbars>  : null
       }
       {
         // Cuando este todo bien hago submit y voy al dashboard
         submitting === true ? <Redirect to='/dashboard' /> : null
 
       }
-      <Snackbars showInfo={showInfo}></Snackbars>
+      <Snackbars showInfo={showInfo} msg="Registrando" error={false} variant="info"></Snackbars>
 
       <Container component="main" maxWidth="xs">
         <CssBaseline />

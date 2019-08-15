@@ -7,6 +7,7 @@ import { userContext } from '../../../App';
 import axios, { AxiosResponse } from 'axios';
 import { Redirect, Link } from 'react-router-dom';
 import EditShipment from './editShipment';
+import Snackbars from '../../Snackbar/snackbar';
 
 type response = {
     id: number,
@@ -73,6 +74,8 @@ export default function Shipments() {
 
         <Container className={classes.container}>
             <Paper className={classes.root}>
+            {
+                shipments.length > 0 ?
                 <Table className={classes.table}>
                     <TableHead>
                         <TableRow hover>
@@ -82,11 +85,13 @@ export default function Shipments() {
                             <TableCell align="right">Tipo de envío</TableCell>
                         </TableRow>
                     </TableHead>
-                    <TableBody>
+
+
+                        <TableBody>
                         {shipments.map((ship, index) => (
                             <TableRow key={ship.id} hover>
                                 <TableCell padding="checkbox">
-                                    <IconButton disabled={shipments[index].status !== "PENDING" ? false : true} component={Link} to={`shipments/edit/${ship.id}`}>
+                                    <IconButton disabled={shipments[index].status !== "EN TRANSITO" || shipments[index].status !== "EN CAMINO" ? false : true} component={Link} to={`shipments/edit/${ship.id}`}>
                                         <Edit></Edit>
                                     </IconButton>
                                 </TableCell>
@@ -107,6 +112,11 @@ export default function Shipments() {
                         ))}
                     </TableBody>
                 </Table>
+                :
+                <Snackbars showInfo={true} variant="info" msg="Aún no tienes envíos asociados"></Snackbars>
+            
+            }
+                
             </Paper>
         </Container>
     )

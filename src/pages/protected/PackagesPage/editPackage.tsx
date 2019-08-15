@@ -117,7 +117,10 @@ export default function EditPackage(props: any) {
             status: status
         }
         axios
-            .patch(`http://localhost:8080/packages/edit`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID , iscompany: (context as any).session.isCompany} })
+            .patch(`http://localhost:8080/packages/edit`, req, 
+            { headers: { 'userToken': (user as any).token, 
+            'companyID': (user as any).companyID , 
+            iscompany: (context as any).session.isCompany} })
 
             .then((res: any) => {
 
@@ -135,8 +138,8 @@ export default function EditPackage(props: any) {
     }
 
     const options = [
-        'Pendiente',
-        'En almacen',
+        'PENDIENTE',
+        'EN ALMACEN',
     ];
     const handleChange = (e: any) => {
         const { name, value } = e.target

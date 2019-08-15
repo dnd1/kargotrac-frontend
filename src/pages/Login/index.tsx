@@ -31,7 +31,7 @@ import VisibilityOff from '@material-ui/icons/VisibilityOff';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import IconButton from '@material-ui/core/IconButton';
 import { userContext } from '../../App'
-import Snackbars from './snackbar';
+import Snackbars from '../Snackbar/snackbar';
 
 
 export const Login = (props: any) => {
@@ -58,6 +58,8 @@ export const Login = (props: any) => {
   })
 
   const [showInfo, setShowInfo] = React.useState(false)
+
+  const [showError, setShowError] = React.useState(false)
 
   const [values, setValues] = React.useState({
     showPassword: false,
@@ -198,6 +200,7 @@ export const Login = (props: any) => {
           setSubmit(true)
           break
         case 'failed':
+          setShowError(true)
           setResError({ ...resError, error: true, msg: res.data.msg })
           break
 
@@ -217,7 +220,7 @@ export const Login = (props: any) => {
     <div>
       {
         // Cuando reciba el response, de ahi establezco el error y el mensaje de error
-        resError.error === true ? <PopUp errorMessage={resError.msg}></PopUp> : null
+        resError.error === true ? <Snackbars showInfo={showError} error={true} set={setShowError} msg={resError.msg} variant="error"></Snackbars>  : null
 
 
       }
@@ -232,7 +235,7 @@ export const Login = (props: any) => {
         submitting === true && (context as any).session.isCompany? <Redirect to='/dashboard/packages' /> : null
 
       }
-      <Snackbars showInfo={showInfo}></Snackbars>
+      <Snackbars showInfo={showInfo} msg="Ingresando" error={false} variant="info"></Snackbars>
       <Container component="main" maxWidth="xs">
         <CssBaseline />
         <div className={classes.paper}>

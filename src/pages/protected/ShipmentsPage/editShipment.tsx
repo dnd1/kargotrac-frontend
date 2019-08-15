@@ -89,7 +89,9 @@ export default function EditShipment(props: any) {
 
         const itemsFirst = list.filter(item => item.ShipmentId === parseInt(props.id))
         setSelectedItems(itemsFirst)
-        const itemsLast = list.filter(item => item.ShipmentId !== parseInt(props.id))
+        console.log("ITEM LIST!!!")
+        console.log(itemsList)
+        const itemsLast = list.filter(item => item.ShipmentId !== parseInt(props.id) && item.ShipmentId === null)
 
         setItems([...itemsFirst, ...itemsLast])
         //setItems(list)
