@@ -29,7 +29,7 @@ type company = {
   token: any
 }
 type userSession = {
-  session: user | null,
+  session: company | user | null,
   setSession: (s: string) => any
 }
 export const userContext = React.createContext<userSession | null>(null);
@@ -62,9 +62,10 @@ export const App: React.FC = () => {
   console.log('sesioooooon')
 
   console.log('SESION EN APP')
+  const actualContext : any = userSesion
   //if(user) console.log(user)
   if (sesion) console.log(userSesion)
-  const [session, setSession] = React.useState(obj)
+  const [session, setSession] = React.useState(actualContext)
   const context = React.useContext(userContext)
   return (
     <userContext.Provider value={{ session, setSession }}>
