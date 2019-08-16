@@ -142,7 +142,7 @@ export const SignUp = (props: any) => {
         companyID: id
       }
 
-      axios.post(`http://localhost:8080/register`, user)
+      axios.post(`${process.env.URL}/register`, user)
         .then(res => {
           console.log(res);
           
@@ -170,7 +170,7 @@ export const SignUp = (props: any) => {
           //const user = JSON.parse(res.data)
           const user: any = {
             user: res.data.user,
-            companyID: res.data.companyID,
+            company: res.data.company,
             token: res.data.token,
             usersCompanies: res.data.usersCompanies,
             isCompany: false

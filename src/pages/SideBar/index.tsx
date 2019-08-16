@@ -42,16 +42,17 @@ const SplitButton = (props: any) => {
     else options = [props.company]
     console.log("Opciones")
     console.log(options.length)
+    console.log("USERS COMPANIES")
+    console.log(props.companyIDs)
+    console.log("COMPANY ID")
+    console.log(props.company)
     const index = options.length > 1 ? options.findIndex(isActualCompany) : 0
     console.log(`indice ${index}`)
     const [selectedIndex, setSelectedIndex] = React.useState(index);
 
     const context = React.useContext(userContext)
 
-    console.log("USERS COMPANIES")
-    console.log(props.companyIDs)
-    console.log("COMPANY ID")
-    console.log(props.company)
+
     // Falta: la actual debe ser la seleccionada (el index inicial)
     // selectedIndex es el companyIDs que matchee con company (si hay mas de una compania)
 
@@ -59,7 +60,9 @@ const SplitButton = (props: any) => {
     // Find index of the actual company
 
     function isActualCompany(element: any) {
-        return parseInt(element.companyID) === parseInt(props.company)
+        console.log("ELEMENTO")
+        console.log(element)
+        return parseInt(element.id) === parseInt(props.company.id)
     }
     function handleClick() {
 
@@ -68,14 +71,14 @@ const SplitButton = (props: any) => {
 
     function handleMenuItemClick(event: any, index: any) {
         setSelectedIndex(index);
-        changeCompanyContext(options[index].companyID)
+        changeCompanyContext(options[index])
         setOpen(false);
     }
 
-    function changeCompanyContext(companyId: any) {
+    function changeCompanyContext(company: any) {
         const user: any = {
             user: ((context as any).session as any).user,
-            companyID: companyId,
+            company: company,
             token: ((context as any).session as any).token,
             usersCompanies: ((context as any).session as any).usersCompanies,
             isCompany: ((context as any).session as any).isCompany
@@ -103,7 +106,7 @@ const SplitButton = (props: any) => {
         <Grid container alignContent="center">
             <Grid item xs={12}>
                 <ButtonGroup variant="contained" color="primary" ref={anchorRef} aria-label="split button">
-                    <Button onClick={handleClick}>{options.length > 1 ? options[selectedIndex].companyID || options[selectedIndex] : options[0].companyID}</Button>
+                    <Button onClick={handleClick}>{options.length > 1 ? options[selectedIndex].username: options[0].username}</Button>
                     <Button
                         color="primary"
                         variant="contained"
@@ -133,7 +136,7 @@ const SplitButton = (props: any) => {
                                                 selected={index === selectedIndex}
                                                 onClick={event => handleMenuItemClick(event, index)}
                                             >
-                                                {option.companyID || option}
+                                                {option.username}
                                             </MenuItem>
                                         ))}
                                     </MenuList>
@@ -208,7 +211,7 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
                         <Box flexGrow={1}></Box>
 
                         {   !((context as any).session as any).isCompany ?
-                            <SplitButton companyIDs={user ? user.usersCompanies : ''} company={user ? user.companyID : ''}></SplitButton> :
+                            <SplitButton companyIDs={user ? user.usersCompanies : ''} company={user ? user.company : ''}></SplitButton> :
                             null
                         }
 

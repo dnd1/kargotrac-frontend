@@ -34,9 +34,9 @@ export default function Packages() {
     const fetchPackages = () => {
 
         axios
-            .get(`http://localhost:8080/packages`, {
+            .get(`${process.env.URL}/packages`, {
 
-                headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID, iscompany: (context as any).session.isCompany },
+                headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id, iscompany: (context as any).session.isCompany },
 
             })
 
@@ -58,7 +58,7 @@ export default function Packages() {
 
     React.useEffect(() => { fetchPackages() }, []);
 
-    React.useEffect(() => { fetchPackages() }, [(user as any).companyID]);
+    React.useEffect(() => { fetchPackages() }, [(user as any).company.id]);
     // Aqui uso el use effect para cargar los shipments
     const classes = useStyles();
     return (

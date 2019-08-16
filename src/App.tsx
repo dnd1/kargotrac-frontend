@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-
+import dotenv from 'dotenv'
 import { BrowserRouter as Router, Route, Link, RouteComponentProps, Switch } from "react-router-dom";
 import Homepage from './pages/Homepage';
 import { Login } from './pages/Login';
@@ -14,10 +14,11 @@ import PackagesPage from './pages/protected/PackagesPage';
 import EditShipment from './pages/protected/ShipmentsPage/editShipment';
 import EditPackage from './pages/protected/PackagesPage/editPackage';
 // 
+dotenv.config()
 
 type user = {
   user: any,
-  companyID: any,
+  company: any,
   token: any,
   usersCompanies: any,
   isCompany: any
@@ -51,7 +52,7 @@ export const App: React.FC = () => {
   } else if (sesion) {
     userSesion = {
       user: obj.user,
-      companyID: obj.companyID,
+      company: obj.company,
       token: obj.token,
       usersCompanies: obj.usersCompanies,
       isCompany: false
@@ -63,7 +64,6 @@ export const App: React.FC = () => {
 
   console.log('SESION EN APP')
   const actualContext : any = userSesion
-  //if(user) console.log(user)
   if (sesion) console.log(userSesion)
   const [session, setSession] = React.useState(actualContext)
   const context = React.useContext(userContext)

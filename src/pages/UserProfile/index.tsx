@@ -80,7 +80,7 @@ export const UserProfile = () => {
             }
         }
 
-        axios.patch(`http://localhost:8080/users/me`, update, {
+        axios.patch(`${process.env.URL}/users/me`, update, {
             headers: {
                 userToken: (user as any).token,
                 companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
@@ -106,7 +106,7 @@ export const UserProfile = () => {
             switch (res.data.status) {
                 case 'success':
 
-                    axios.get(`http://localhost:8080/users/me`, {
+                    axios.get(`${process.env.URL}/users/me`, {
                         headers: {
                             userToken: (user as any).token,
                             companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
@@ -118,7 +118,7 @@ export const UserProfile = () => {
                             if (!(context as any).session.isCompany) {
                                 const user: any = {
                                     user: res.data.user,
-                                    companyID: res.data.companyID,
+                                    company: res.data.companyID,
                                     token: res.data.token,
                                     usersCompanies: context && context.session ? (context.session as any).usersCompanies : '',
                                     isCompany: false

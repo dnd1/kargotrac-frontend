@@ -70,9 +70,9 @@ export default function EditPackage(props: any) {
         console.log("?????????????????//")
         console.log(props.id)
         axios
-            .get(`http://localhost:8080/packages/items`, {
+            .get(`${process.env.URL}/packages/items`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).companyID, trackingid: props.id },
+                headers: { userToken: (user as any).token, companyID: (user as any).company.id, trackingid: props.id },
 
 
             })
@@ -105,7 +105,7 @@ export default function EditPackage(props: any) {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    React.useEffect(() => { fetchItems() }, [(user as any).companyID]);
+    React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
 
     const handleSave = () => {
 
@@ -117,9 +117,9 @@ export default function EditPackage(props: any) {
             status: status
         }
         axios
-            .patch(`http://localhost:8080/packages/edit`, req, 
+            .patch(`${process.env.URL}/packages/edit`, req, 
             { headers: { 'userToken': (user as any).token, 
-            'companyID': (user as any).companyID , 
+            'companyID': (user as any).company.id , 
             iscompany: (context as any).session.isCompany} })
 
             .then((res: any) => {

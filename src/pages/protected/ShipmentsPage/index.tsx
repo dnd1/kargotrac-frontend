@@ -42,10 +42,10 @@ export default function Shipments() {
         console.log("FETCH SHIPMENTS ")
         console.log((context as any).session)
         axios
-            .get(`http://localhost:8080/shipments`, {
+            .get(`${process.env.URL}/shipments`, {
 
                 headers: { userToken: (user as any).token, 
-                        companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).companyID, 
+                        companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).company.id, 
                         iscompany: (context as any).session.isCompany },
 
             })
@@ -67,7 +67,7 @@ export default function Shipments() {
 
     React.useEffect(() => { fetchShipments() }, []);
 
-    React.useEffect(() => { fetchShipments() }, [(user as any).companyID]);
+    React.useEffect(() => { fetchShipments() }, [(user as any).company.id]);
     // Aqui uso el use effect para cargar los shipments
     const classes = useStyles();
     return (

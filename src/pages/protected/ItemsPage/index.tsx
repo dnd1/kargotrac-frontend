@@ -118,7 +118,7 @@ export default function ItemsPage() {
         }
         const emptyItems: response[] = []
         setSelectedItems(emptyItems)
-        axios.post(`http://localhost:8080/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.post(`${process.env.URL}/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
                 console.log("AQUIIII")
                 console.log(res)
@@ -143,7 +143,7 @@ export default function ItemsPage() {
     }
 
     const postReq = (req: any) => {
-        axios.post(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.post(`${process.env.URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
                 setItems([...items, res.data])
                 //
@@ -154,7 +154,7 @@ export default function ItemsPage() {
     }
 
     const patchReq = (req: any) => {
-        axios.patch(`http://localhost:8080/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID } })
+        axios.patch(`${process.env.URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
                 //setItems(res.data)
                 //
@@ -183,7 +183,7 @@ export default function ItemsPage() {
                 quantity: item.quantity,
                 tracking_id: item.tracking_id,
                 userID: (user as any).user.id,
-                companyID: (user as any).companyID
+                companyID: (user as any).company.id
             }
             if (action === "add") postReq(req)
             else if (action === "edit") {
@@ -250,9 +250,9 @@ export default function ItemsPage() {
             item_id: id,
             package_id: items[index].package_id
         }
-        axios.delete(`http://localhost:8080/items`,
+        axios.delete(`${process.env.URL}/items`,
             {
-                headers: { 'userToken': (user as any).token, 'companyID': (user as any).companyID }, data: {
+                headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id }, data: {
                     tracking_id: items[index].tracking_id,
                     status: items[index].status,
                     name: items[index].name,
@@ -288,11 +288,11 @@ export default function ItemsPage() {
     const fetchItems = () => {
 
         axios
-            .get(`http://localhost:8080/items`, {
+            .get(`${process.env.URL}/items`, {
 
                 headers: {
                     userToken: (user as any).token,
-                    companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                    companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id,
                     iscompany: (context as any).session.isCompany
                 },
 
@@ -314,7 +314,7 @@ export default function ItemsPage() {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    React.useEffect(() => { fetchItems() }, [(user as any).companyID]);
+    React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
 
     // Cuando haga click en editar, tomo el indice y muestro esa informacion, y en vez de tener un boton de agregar tendre el de guardar
     // Set open y open debo hacer uni oara crear y uno para editar para evitar cocnflictos 

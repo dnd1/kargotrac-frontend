@@ -109,11 +109,11 @@ export default function EditShipment(props: any) {
     const fetchItems = () => {
 
         axios
-            .get(`http://localhost:8080/items`, {
+            .get(`${process.env.URL}/items`, {
 
                 headers: {
                     userToken: (user as any).token,
-                    companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                    companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id,
                     iscompany: (context as any).session.isCompany
                 },
 
@@ -121,7 +121,7 @@ export default function EditShipment(props: any) {
 
             .then((res: AxiosResponse<response[]>) => {
                 if ((context as any).session.isCompany) {
-                    axios.get(`http://localhost:8080/getShipment`, { headers: { userToken: (user as any).token, id: props.id } })
+                    axios.get(`${process.env.URL}/getShipment`, { headers: { userToken: (user as any).token, id: props.id } })
                         .then((res) => {
                             setValues({
                                 lbs_weight: res.data.shipment.lbs_weight,
@@ -147,7 +147,7 @@ export default function EditShipment(props: any) {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    React.useEffect(() => { fetchItems() }, [(user as any).companyID]);
+    React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
 
     const handleSave = () => {
         console.log("SELECTED ITEMS SAVED")
@@ -168,11 +168,11 @@ export default function EditShipment(props: any) {
             companyEdits: edits
         }
         axios
-            .patch(`http://localhost:8080/shipments/edit`, req,
+            .patch(`${process.env.URL}/shipments/edit`, req,
                 {
                     headers: {
                         'userToken': (user as any).token,
-                        'companyID': (user as any).companyID,
+                        'companyID': (user as any).company.id,
                         iscompany: (context as any).session.isCompany
                     }
                 })
