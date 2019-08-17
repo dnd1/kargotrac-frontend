@@ -35,7 +35,6 @@ type response = {
 
 export default function ItemsPage() {
     const classes = useStyles();
-    //let index = -1
 
     const context = React.useContext(userContext)
     console.log("Contexto en Items page")
@@ -44,8 +43,7 @@ export default function ItemsPage() {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
-    console.log("USER")
-    console.log(user)
+
     const [item, setItem] = React.useState(
         {
             name: "",
@@ -71,23 +69,20 @@ export default function ItemsPage() {
         }
         else
             newSelected.push(itemSelected)
-        console.log(selectedItems)
-        console.log("ITEM SELECTED")
+
         setSelectedItems(newSelected)
-        console.log(items[index])
+
     }
 
     function handleChangeSelect(value: any) {
-        console.log("ESTE ES EL VALUE!!!!!!!!!!")
-        console.log(value)
+
         setItem({ ...item, tracking_id: value })
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        console.log(item)
+
         const { name, value } = e.target
-        console.log("Entre a handle change")
-        console.log(`name: ${name} and value: ${value} `)
+
         setItem({ ...item, [name]: value })
 
         if (e.target.name === "name") setNameError(e.target.value.length === 0)
@@ -102,16 +97,13 @@ export default function ItemsPage() {
     const [selectedValue, setSelectedValue] = React.useState('Aéreo');
 
     function handleChangeShipWay(event: React.ChangeEvent<HTMLInputElement>) {
-        // Los seleccionados son los que llevaran este tipo de envio, luego debo eliminarlos de selectedItems y agregarlos
-        // a selectedShiypmentWay
+
         setSelectedValue(event.target.value);
-        console.log(`nameeee ${event.target.name}`)
+
     }
     const handleShipmentWay = (e: any) => {
         e.preventDefault()
 
-        // Post request a agregar envio
-        console.log(selectedItems)
         const req = {
             items: selectedItems,
             shippingWay: selectedValue
@@ -120,9 +112,7 @@ export default function ItemsPage() {
         setSelectedItems(emptyItems)
         axios.post(`${process.env.URL}/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
-                console.log("AQUIIII")
-                console.log(res)
-                //
+
                 const emptyItems: response[] = []
                 setSelectedItems(emptyItems)
 
@@ -156,12 +146,7 @@ export default function ItemsPage() {
     const patchReq = (req: any) => {
         axios.patch(`${process.env.URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
-                //setItems(res.data)
-                //
-                console.log(res.data)
-                console.log("ESTO ES ITEMS")
-                console.log(items.slice(0, index))
-                console.log(items.slice(index + 1, items.length - 1))
+
                 setItems([...items.slice(0, index), res.data, ...items.slice(index + 1, items.length)])
             }, (error) => {
                 window.alert(error)
