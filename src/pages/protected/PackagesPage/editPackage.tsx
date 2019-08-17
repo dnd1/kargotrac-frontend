@@ -67,7 +67,8 @@ export default function EditPackage(props: any) {
     // Handle request for items, save in row
     // Cargo el contexto para sacar el user.id y el companyid
     const fetchItems = () => {
-
+        console.log("?????????????????//")
+        console.log(props.id)
         axios
             .get(`${process.env.URL}/packages/items`, {
 
@@ -90,7 +91,7 @@ export default function EditPackage(props: any) {
                     seller: res.data.package.seller
                 })
                 setStatus(res.data.package.status)
-
+                console.log(res.data)
 
             })
 
@@ -123,9 +124,9 @@ export default function EditPackage(props: any) {
 
             .then((res: any) => {
 
-
+                //setItems(res.data)
                 setRedirect(true)
-
+                console.log(res)
 
             })
 

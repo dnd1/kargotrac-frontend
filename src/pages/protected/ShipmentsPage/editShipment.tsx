@@ -43,6 +43,14 @@ export default function EditShipment(props: any) {
     if (context && context.session) user = JSON.stringify(context.session)
     if (user) user = JSON.parse(user)
 
+    const [item, setItem] = React.useState(
+        {
+            name: "",
+            quantity: 0,
+            tracking_id: ""
+        }
+    )
+
 
     const [index, setIndex] = React.useState(-1)
     const [selectedItems, setSelectedItems] = React.useState<response[]>([])
@@ -69,12 +77,18 @@ export default function EditShipment(props: any) {
     // Items para el ItemsPage 
 
     const set = (itemsList: response[]) => {
-
+        // Ordeno los checked primero que coinciden en shipmentId con el id que paso como parametro
+        // Al final setItems 
+        // selectedItems son los elegidos, si lo deschequeo entonces lo elimino de ahi
+        // si chequeo entonces lo agrego
+        console.log("INICIO")
+        console.log(itemsList)
         let list: response[] = [...itemsList]
 
         const itemsFirst = list.filter(item => item.ShipmentId === parseInt(props.id))
         setSelectedItems(itemsFirst)
-
+        console.log("ITEM LIST!!!")
+        console.log(itemsList)
         const itemsLast = list.filter(item => item.ShipmentId !== parseInt(props.id) && item.ShipmentId === null)
 
         setItems([...itemsFirst, ...itemsLast])
@@ -115,6 +129,7 @@ export default function EditShipment(props: any) {
                             })
                         })
                 }
+                //setItems(res.data)
 
                 set(res.data)
 
@@ -133,7 +148,10 @@ export default function EditShipment(props: any) {
     React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
 
     const handleSave = () => {
-
+        console.log("SELECTED ITEMS SAVED")
+        console.log(selectedItems)
+        console.log("DESELECTED ITEMS SAVED")
+        console.log(deselectedItems)
         const edits = {
             lbs_weight: values.lbs_weight,
             pvl_weight: values.pvl_weight,
