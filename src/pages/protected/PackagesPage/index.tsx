@@ -34,7 +34,7 @@ export default function Packages() {
     const fetchPackages = () => {
 
         axios
-            .get(`${process.env.URL}/packages`, {
+            .get(`${process.env.REACT_APP_URL}/packages`, {
 
                 headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id, iscompany: (context as any).session.isCompany },
 
@@ -58,7 +58,7 @@ export default function Packages() {
 
     React.useEffect(() => { fetchPackages() }, []);
 
-    React.useEffect(() => { fetchPackages() }, [(user as any).company.id]);
+    React.useEffect(() => { fetchPackages() }, [(user as any).company ? (user as any).company.id : null]);
     // Aqui uso el use effect para cargar los shipments
     const classes = useStyles();
     return (
@@ -80,7 +80,7 @@ export default function Packages() {
                                     packages.map((pck, index) => (
                                         <TableRow key={pck.tracking_id} hover>
                                             <TableCell padding="checkbox">
-                                                <IconButton disabled={packages[index].status !== "PENDIENTE" ? false : true} component={Link} to={`packages/edit/${pck.tracking_id}`}>
+                                                <IconButton disabled={packages[index].status !== "PENDIENTE" ? true : false} component={Link} to={`packages/edit/${pck.tracking_id}`}>
                                                     <Edit></Edit>
                                                 </IconButton>
                                             </TableCell>

@@ -53,10 +53,10 @@ export default function PopUp(props: any) {
                     handleChangeSelect = {props.handleChangeSelect}
                     suggestions={props.suggestions}></IntegrationDownshift>
                     <DialogActions>
-                        <Button onClick={props.handleClose} color="primary">
+                        <Button onClick={props.handleClose} color="secondary">
                             Cancelar
                         </Button>
-                        <Button color="primary" type="submit" onClick={props.name && props.qty && props.name.length > 0 && props.qty > 0 ? props.handleClose : closeError}>
+                        <Button color="secondary" type="submit" onClick={props.name && props.qty && props.name.length > 0 && props.qty > 0 ? props.handleClose : closeError}>
                             {props.action === "Editar artículo" ? 'Guardar' : 'Agregar'}
                         </Button>
                     </DialogActions>

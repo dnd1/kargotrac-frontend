@@ -141,8 +141,8 @@ export const SignUp = (props: any) => {
         password: signup.password,
         companyID: id
       }
-
-      axios.post(`${process.env.URL}/register`, user)
+      //console.log(process.env.URL)
+      axios.post(`${process.env.REACT_APP_URL}/register`, user)
         .then(res => {
           console.log(res);
           
@@ -300,7 +300,7 @@ export const SignUp = (props: any) => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               className={classes.submit}
               disabled={showInfo ? true : false}
             >

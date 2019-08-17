@@ -80,7 +80,7 @@ export const UserProfile = () => {
             }
         }
 
-        axios.patch(`${process.env.URL}/users/me`, update, {
+        axios.patch(`${process.env.REACT_APP_URL}/users/me`, update, {
             headers: {
                 userToken: (user as any).token,
                 companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
@@ -106,7 +106,7 @@ export const UserProfile = () => {
             switch (res.data.status) {
                 case 'success':
 
-                    axios.get(`${process.env.URL}/users/me`, {
+                    axios.get(`${process.env.REACT_APP_URL}/users/me`, {
                         headers: {
                             userToken: (user as any).token,
                             companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
@@ -323,7 +323,7 @@ export const UserProfile = () => {
                         type="submit"
                         fullWidth
                         variant="contained"
-                        color="primary"
+                        color="secondary"
                         className={classes.submit}
                     >
                         Guardar

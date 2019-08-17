@@ -129,7 +129,7 @@ export const Login = (props: any) => {
       console.log("COMPANY ID")
       console.log(props.companyID)
       if (props.isCompany) {
-        axios.post(`${process.env.URL}/companies`, user, {headers: {id: props.companyID}})
+        axios.post(`${process.env.REACT_APP_URL}/companies`, user, {headers: {id: props.companyID}})
           .then(res => {
             responseHandler(res)
           }, (error) => {
@@ -139,7 +139,7 @@ export const Login = (props: any) => {
           })
 
       } else {
-        axios.post(`${process.env.HOST}:${process.env.PORT}/users`, user)
+        axios.post(`${process.env.REACT_APP_URL}/users`, user)
         .then(res => {
           responseHandler(res)
         }, (error) => {
@@ -297,7 +297,7 @@ export const Login = (props: any) => {
               type="submit"
               fullWidth
               variant="contained"
-              color="primary"
+              color="secondary"
               className={classes.submit}
               disabled={showInfo ? true : false}
             >

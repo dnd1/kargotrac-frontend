@@ -10,6 +10,7 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import IconButton from '@material-ui/core/IconButton';
 import CommentIcon from '@material-ui/icons/Comment';
+import Snackbars from '../../Snackbar/snackbar';
 
 type response = {
     tracking_id: string,
@@ -31,19 +32,21 @@ export default function CreateShipmentForm(props: any) {
     // Arreglo de response
 
     // {itemid: , checked:}
-    //props.selectedItems.map
-
-
+    //props.selectedItems.map 
 
     return (
+            items.length > 0 ?
         <Dialog open={props.open} onClose={props.handleClose} aria-labelledby="form-dialog-title" >
             <DialogTitle id="form-dialog-title">{props.action}</DialogTitle>
             <DialogContent>
                 <DialogContentText>
                     {props.msg}
                 </DialogContentText>
+ 
                 <form onSubmit={props.handleShipmentWay}>
-                    <List>
+                    
+                    
+                        <List>
                         {items.map((value: response) => {
                             const labelId = `checkbox-list-label-${value.name}`;
 
@@ -69,18 +72,20 @@ export default function CreateShipmentForm(props: any) {
                         inputProps={{ 'aria-label': 'Marítimo' }} />} label="Marítimo" />
 
                     <DialogActions>
-                        <Button onClick={props.handleClose} color="primary">
+                        <Button onClick={props.handleClose} color="secondary">
                             Cancelar
                         </Button>
-                        <Button color="primary" type="submit" onClick={props.handleClose}>
+                        <Button color="secondary" type="submit" onClick={props.handleClose}>
                             {props.action === "Crear envío" ? 'Crear' : 'Editar'}
                         </Button>
                     </DialogActions>
-
-
-                </form>
+                    </form>
+                    
 
             </DialogContent>
         </Dialog >
+        :
+                    
+        props.openError ? <Snackbars showInfo={props.openError} error={true} set={props.setOpenError} variant="error" msg="Debe seleccionar al menos un artículo"></Snackbars> : null
     )
 }

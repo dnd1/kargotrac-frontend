@@ -70,7 +70,7 @@ export default function EditPackage(props: any) {
         console.log("?????????????????//")
         console.log(props.id)
         axios
-            .get(`${process.env.URL}/packages/items`, {
+            .get(`${process.env.REACT_APP_URL}/packages/items`, {
 
                 headers: { userToken: (user as any).token, companyID: (user as any).company.id, trackingid: props.id },
 
@@ -117,7 +117,7 @@ export default function EditPackage(props: any) {
             status: status
         }
         axios
-            .patch(`${process.env.URL}/packages/edit`, req, 
+            .patch(`${process.env.REACT_APP_URL}/packages/edit`, req, 
             { headers: { 'userToken': (user as any).token, 
             'companyID': (user as any).company.id , 
             iscompany: (context as any).session.isCompany} })
@@ -263,7 +263,7 @@ export default function EditPackage(props: any) {
                         </TableBody>
                     </Table>
                 </Paper>
-                <Button variant="outlined" color="primary" className={classes.button} onClick={(event: any) => handleSave()} >
+                <Button variant="outlined" color="secondary" className={classes.button} onClick={(event: any) => handleSave()} >
                     Guardar
                 </Button>
             </Container>

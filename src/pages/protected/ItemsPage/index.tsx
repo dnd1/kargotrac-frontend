@@ -64,7 +64,7 @@ export default function ItemsPage() {
             return item.item_id === itemSelected.item_id
         })
 
-        if (i > 0) {
+        if (i >= 0) {
             newSelected.splice(i, 1);
         }
         else
@@ -110,7 +110,7 @@ export default function ItemsPage() {
         }
         const emptyItems: response[] = []
         setSelectedItems(emptyItems)
-        axios.post(`${process.env.URL}/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
+        axios.post(`${process.env.REACT_APP_URL}/shipments`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
 
                 const emptyItems: response[] = []
@@ -133,7 +133,7 @@ export default function ItemsPage() {
     }
 
     const postReq = (req: any) => {
-        axios.post(`${process.env.URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
+        axios.post(`${process.env.REACT_APP_URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
                 setItems([...items, res.data])
                 //
@@ -144,7 +144,7 @@ export default function ItemsPage() {
     }
 
     const patchReq = (req: any) => {
-        axios.patch(`${process.env.URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
+        axios.patch(`${process.env.REACT_APP_URL}/items`, req, { headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id } })
             .then(res => {
 
                 setItems([...items.slice(0, index), res.data, ...items.slice(index + 1, items.length)])
@@ -235,7 +235,7 @@ export default function ItemsPage() {
             item_id: id,
             package_id: items[index].package_id
         }
-        axios.delete(`${process.env.URL}/items`,
+        axios.delete(`${process.env.REACT_APP_URL}/items`,
             {
                 headers: { 'userToken': (user as any).token, 'companyID': (user as any).company.id }, data: {
                     tracking_id: items[index].tracking_id,
@@ -261,7 +261,15 @@ export default function ItemsPage() {
     const [openShipment, setOpenShipment] = React.useState(false)
     const handleOpenShipment = (e: any) => {
         // Set open el popup de create shipment
-        setOpenShipment(true)
+        
+        if(selectedItems.length === 0) {
+            setEmptyShipment(true)
+            setOpenShipment(false)
+        } 
+        else{
+            setOpenShipment(true)
+        }
+        
         console.log("Open shipment")
     }
 
@@ -273,7 +281,7 @@ export default function ItemsPage() {
     const fetchItems = () => {
 
         axios
-            .get(`${process.env.URL}/items`, {
+            .get(`${process.env.REACT_APP_URL}/items`, {
 
                 headers: {
                     userToken: (user as any).token,
@@ -284,7 +292,8 @@ export default function ItemsPage() {
             })
 
             .then((res: any) => {
-                
+                console.log("ITEMS")
+                console.log(res.data)
                 setItems(res.data)
 
             })
@@ -296,6 +305,8 @@ export default function ItemsPage() {
             })
 
     }
+
+    const [emptyShipment, setEmptyShipment] = React.useState(false)
 
     React.useEffect(() => { fetchItems() }, []);
 
@@ -351,12 +362,14 @@ export default function ItemsPage() {
             </PopUp>
             <CreateShipmentForm
                 open={openShipment}
+                openError={emptyShipment}
                 action={"Crear envío"}
                 handleClose={handleCloseShipment}
                 selectedItems={selectedItems}
                 selectedValue={selectedValue}
                 handleChangeShipWay={handleChangeShipWay}
                 handleShipmentWay={handleShipmentWay}
+                setOpenError={setEmptyShipment}
             >
             </CreateShipmentForm>
             <Container className={classes.container}>
@@ -378,12 +391,12 @@ export default function ItemsPage() {
                         {items.map((item, index) => (
                             <TableRow key={item.item_id} hover>
                                 <TableCell padding="checkbox">
-                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? false : true} onClick={(event: any) => handleClickOpen(event, index, "edit")}>
+                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? true : false} onClick={(event: any) => handleClickOpen(event, index, "edit")}>
                                         <Edit></Edit>
                                     </IconButton>
                                 </TableCell>
                                 <TableCell padding="checkbox">
-                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? false : true} onClick={(e: any) => handleDelete(item.item_id, index)}>
+                                    <IconButton disabled={items[index].status !== "PENDIENTE" ? true : false} onClick={(e: any) => handleDelete(item.item_id, index)}>
                                         <DeleteIcon></DeleteIcon>
                                     </IconButton>
                                 </TableCell>

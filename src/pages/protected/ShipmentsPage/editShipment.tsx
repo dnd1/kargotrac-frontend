@@ -63,7 +63,7 @@ export default function EditShipment(props: any) {
             return item.item_id === itemSelected.item_id
         })
 
-        if (i > 0) {
+        if (i >= 0) {
             newSelected.splice(i, 1);
             setDeselectedItems([...deselectedItems, itemSelected])
         }
@@ -107,7 +107,7 @@ export default function EditShipment(props: any) {
     const fetchItems = () => {
 
         axios
-            .get(`${process.env.URL}/items`, {
+            .get(`${process.env.REACT_APP_URL}/items`, {
 
                 headers: {
                     userToken: (user as any).token,
@@ -119,7 +119,7 @@ export default function EditShipment(props: any) {
 
             .then((res: AxiosResponse<response[]>) => {
                 if ((context as any).session.isCompany) {
-                    axios.get(`${process.env.URL}/getShipment`, { headers: { userToken: (user as any).token, id: props.id } })
+                    axios.get(`${process.env.REACT_APP_URL}/getShipment`, { headers: { userToken: (user as any).token, id: props.id } })
                         .then((res) => {
                             setValues({
                                 lbs_weight: res.data.shipment.lbs_weight,
@@ -145,13 +145,20 @@ export default function EditShipment(props: any) {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
+    React.useEffect(() => { fetchItems() }, [(user as any).company ? (user as any).company.id : null]);
 
+    const [createNewShip, setCreateNewShip] = React.useState(false)
+    const [newItems, setNewItems] = React.useState<response[]>([])
     const handleSave = () => {
         console.log("SELECTED ITEMS SAVED")
         console.log(selectedItems)
         console.log("DESELECTED ITEMS SAVED")
         console.log(deselectedItems)
+        const shipmentItems = selectedItems.filter(item => item.ShipmentId === parseInt(props.id))
+        const addedItems = selectedItems.slice(shipmentItems.length, selectedItems.length)
+        console.log("NEW ITEMS")
+        console.log(addedItems)
+        console.log(items.length, selectedItems.length)
         const edits = {
             lbs_weight: values.lbs_weight,
             pvl_weight: values.pvl_weight,
@@ -163,14 +170,15 @@ export default function EditShipment(props: any) {
             selectedItems: selectedItems,
             deselectedItems: deselectedItems,
             ShipmentId: props.id,
-            companyEdits: edits
+            companyEdits: edits,
+            newItems: addedItems
         }
         axios
-            .patch(`${process.env.URL}/shipments/edit`, req,
+            .patch(`${process.env.REACT_APP_URL}/shipments/edit`, req,
                 {
                     headers: {
                         'userToken': (user as any).token,
-                        'companyID': (user as any).company.id,
+                        'companyID': (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id,
                         iscompany: (context as any).session.isCompany
                     }
                 })

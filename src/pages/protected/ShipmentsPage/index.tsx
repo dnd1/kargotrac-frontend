@@ -42,7 +42,7 @@ export default function Shipments() {
         console.log("FETCH SHIPMENTS ")
         console.log((context as any).session)
         axios
-            .get(`${process.env.URL}/shipments`, {
+            .get(`${process.env.REACT_APP_URL}/shipments`, {
 
                 headers: { userToken: (user as any).token, 
                         companyID: (context as any).session.isCompany ? (user as any).user.id :  (user as any).company.id, 
@@ -67,7 +67,7 @@ export default function Shipments() {
 
     React.useEffect(() => { fetchShipments() }, []);
 
-    React.useEffect(() => { fetchShipments() }, [(user as any).company.id]);
+    React.useEffect(() => { fetchShipments() }, [(user as any).company ? (user as any).company.id : null]);
     // Aqui uso el use effect para cargar los shipments
     const classes = useStyles();
     return (
@@ -91,7 +91,7 @@ export default function Shipments() {
                         {shipments.map((ship, index) => (
                             <TableRow key={ship.id} hover>
                                 <TableCell padding="checkbox">
-                                    <IconButton disabled={shipments[index].status !== "EN TRANSITO" || shipments[index].status !== "EN CAMINO" ? false : true} component={Link} to={`shipments/edit/${ship.id}`}>
+                                    <IconButton disabled={shipments[index].status !== "POR EMPACAR" && shipments[index].status !== "EMPACADO" ? true : false} component={Link} to={`shipments/edit/${ship.id}`}>
                                         <Edit></Edit>
                                     </IconButton>
                                 </TableCell>
