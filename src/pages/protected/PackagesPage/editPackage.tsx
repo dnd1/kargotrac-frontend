@@ -72,7 +72,7 @@ export default function EditPackage(props: any) {
         axios
             .get(`${process.env.REACT_APP_URL}/packages/items`, {
 
-                headers: { userToken: (user as any).token, companyID: (user as any).company.id, trackingid: props.id },
+                headers: { userToken: (user as any).token, companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id, trackingid: props.id },
 
 
             })
@@ -105,7 +105,7 @@ export default function EditPackage(props: any) {
 
     React.useEffect(() => { fetchItems() }, []);
 
-    React.useEffect(() => { fetchItems() }, [(user as any).company.id]);
+    React.useEffect(() => { fetchItems() }, [(user as any).company ? (user as any).company.id : null]);
 
     const handleSave = () => {
 
