@@ -52,7 +52,6 @@ const SplitButton = (props: any) => {
 
     const context = React.useContext(userContext)
 
-
     // Falta: la actual debe ser la seleccionada (el index inicial)
     // selectedIndex es el companyIDs que matchee con company (si hay mas de una compania)
 
@@ -173,6 +172,7 @@ export default function PersistentDrawerLeft(props: { children?: any }) {
         setOpen(false);
     }
 
+    console.log("ESTE ES EL USUARIO EN PERFIL")
     console.log(user)
 
     return (

@@ -225,7 +225,7 @@ export default function EditShipment(props: any) {
     }
 
     const options = [
-        "POR EMPACAR", "EMPACADO", "EN TRANSITO", "EN DESTINO"
+        "POR EMPACAR", "EMPACADO", "EN TRANSITO", "EN DESTINO", "ENTREGADO"
     ]; 
 
     return (

@@ -88,7 +88,7 @@ export default function Shipments() {
 
 
                         <TableBody>
-                        {shipments.map((ship, index) => (
+                        {shipments.filter(ship => ship.status !== "ENTREGADO").map((ship, index) => (
                             <TableRow key={ship.id} hover>
                                 <TableCell padding="checkbox">
                                     <IconButton disabled={shipments[index].status !== "POR EMPACAR" && shipments[index].status !== "EMPACADO" ? true : false} component={Link} to={`shipments/edit/${ship.id}`}>

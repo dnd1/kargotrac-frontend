@@ -83,7 +83,7 @@ export const UserProfile = () => {
         axios.patch(`${process.env.REACT_APP_URL}/users/me`, update, {
             headers: {
                 userToken: (user as any).token,
-                companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).companyID,
+                companyID: (context as any).session.isCompany ? (user as any).user.id : (user as any).company.id,
                 iscompany: (context as any).session.isCompany
             }
         })
@@ -118,15 +118,15 @@ export const UserProfile = () => {
                             if (!(context as any).session.isCompany) {
                                 const user: any = {
                                     user: res.data.user,
-                                    company: res.data.companyID,
+                                    company: context && context.session ? (context.session as any).company : '',
                                     token: res.data.token,
                                     usersCompanies: context && context.session ? (context.session as any).usersCompanies : '',
                                     isCompany: false
                                 }
 
-
+                                console.log("Sesion en perfil")
                                 if (context) context.setSession(user)
-                                //if (context && context.session) console.log(context.session)
+                                if (context && context.session) console.log(context.session)
                                 window.sessionStorage.setItem("session", JSON.stringify(user));
                             } else {
                                 const user: any = {
@@ -145,8 +145,8 @@ export const UserProfile = () => {
                             window.alert(error)
                         })
 
-                    console.log(res.data)
-                    if (context) context.setSession(res.data)
+                   // console.log(res.data)
+                   // if (context) context.setSession(res.data)
 
 
 
