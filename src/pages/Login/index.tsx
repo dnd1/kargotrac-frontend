@@ -129,7 +129,7 @@ export const Login = (props: any) => {
       console.log("COMPANY ID")
       console.log(props.companyID)
       if (props.isCompany) {
-        axios.post(`${process.env.REACT_APP_URL}/companies`, user, {headers: {id: props.companyID}})
+        axios.post(`${process.env.REACT_APP_URL}/companies`, user, { headers: { id: props.companyID } })
           .then(res => {
             responseHandler(res)
           }, (error) => {
@@ -140,13 +140,13 @@ export const Login = (props: any) => {
 
       } else {
         axios.post(`${process.env.REACT_APP_URL}/users`, user)
-        .then(res => {
-          responseHandler(res)
-        }, (error) => {
-          // Snackbar con error
-          setShowInfo(false)
-          window.alert(error)
-        })
+          .then(res => {
+            responseHandler(res)
+          }, (error) => {
+            // Snackbar con error
+            setShowInfo(false)
+            window.alert(error)
+          })
       }
     }
   }
@@ -160,9 +160,9 @@ export const Login = (props: any) => {
         case 'success':
 
           // Debo chequear si es compania 
-          if(res.data.isCompany){
+          if (res.data.isCompany) {
             const company: any = {
-              user : res.data.company,
+              user: res.data.company,
               isCompany: true,
               token: res.data.token
             }
@@ -172,14 +172,9 @@ export const Login = (props: any) => {
 
             if (context && context.session) console.log(context.session)
             window.sessionStorage.setItem("session", JSON.stringify(company));
-            window.alert(`
-                    El usuario ${res.data.company.email} ha sido registrado
-                    El token de sesion es ${res.data.token}
-                    Con Status ${res.status}
-                    `)
 
-          }else
-          {  
+
+          } else {
             const user: any = {
               user: res.data.user,
               company: res.data.company,
@@ -192,11 +187,7 @@ export const Login = (props: any) => {
 
             if (context && context.session) console.log(context.session)
             window.sessionStorage.setItem("session", JSON.stringify(user));
-            window.alert(`
-                    El usuario ${res.data.user.email} ha sido registrado
-                    El token de sesion es ${res.data.token}
-                    Con Status ${res.status}
-                    `)}
+          }
           setSubmit(true)
           break
         case 'failed':
@@ -220,19 +211,19 @@ export const Login = (props: any) => {
     <div>
       {
         // Cuando reciba el response, de ahi establezco el error y el mensaje de error
-        resError.error === true ? <Snackbars showInfo={showError} error={true} set={setShowError} msg={resError.msg} variant="error"></Snackbars>  : null
+        resError.error === true ? <Snackbars showInfo={showError} error={true} set={setShowError} msg={resError.msg} variant="error"></Snackbars> : null
 
 
       }
 
       {
         // Cuando este todo bien hago submit y voy al dashboard
-        submitting === true && !(context as any).session.isCompany? <Redirect to='/dashboard' /> : null
+        submitting === true && !(context as any).session.isCompany ? <Redirect to='/dashboard' /> : null
 
       }
       {
         // Cuando este todo bien hago submit y voy al dashboard
-        submitting === true && (context as any).session.isCompany? <Redirect to='/dashboard/packages' /> : null
+        submitting === true && (context as any).session.isCompany ? <Redirect to='/dashboard/packages' /> : null
 
       }
       <Snackbars showInfo={showInfo} msg="Ingresando" error={false} variant="info"></Snackbars>

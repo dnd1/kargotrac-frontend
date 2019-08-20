@@ -182,12 +182,7 @@ export const SignUp = (props: any) => {
           //setSession(user)
           // Aqui debo cargar el estado y manejarlo
           window.sessionStorage.setItem("session", JSON.stringify(user));
-          //window.sessionStorage.setItem("user", res.data.user)
-          window.alert(`
-                  El usuario ${res.data.user.email} ha sido registrado
-                  El token de sesion es ${res.data.token}
-                  Con Status ${res.status}
-                  `)
+
           
           setSubmit(true)
           break
